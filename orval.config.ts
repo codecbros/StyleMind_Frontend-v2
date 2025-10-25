@@ -1,9 +1,12 @@
 import { defineConfig } from 'orval'
+import * as dotenv from 'dotenv';
+
+dotenv.config();
 
 export default defineConfig({
     api: {
         input: {
-            target: 'https://stylemind-backend.onrender.com/api-docs-json',
+            target: process.env.VITE_SWAGGER_API_URL as string,
         },
         output: {
             mode: 'tags-split',
