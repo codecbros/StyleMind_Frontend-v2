@@ -1,5 +1,6 @@
 import Axios, { AxiosError, type AxiosRequestConfig } from 'axios';
 
+
 export const AXIOS_INSTANCE = Axios.create({
     baseURL: import.meta.env.VITE_PUBLIC_API_URL,
     headers: {
@@ -29,7 +30,10 @@ AXIOS_INSTANCE.interceptors.response.use(
         if (error.response?.status === 401) {
             // Token expirado o no válido
             localStorage.removeItem('token');
-            window.location.href = '/login';
+            // En lugar de redireccionar, solo marcamos como no autenticado 
+            //cambiar esto para cuando esten las otras paginas
+            console.error('Usuario no autenticado');
+            // window.location.href = '/login';
         }
         return Promise.reject(error);
     }

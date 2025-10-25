@@ -13,6 +13,9 @@ dist-ssr
 *.local
 .env
 
+# Generated API files
+src/api/generated/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

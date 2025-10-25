@@ -3,7 +3,7 @@ import { defineConfig } from 'orval'
 export default defineConfig({
     api: {
         input: {
-            target: 'https://stylemind-backend.onrender.com/api-docs',
+            target: 'https://stylemind-backend.onrender.com/api-docs-json',
         },
         output: {
             mode: 'tags-split',
