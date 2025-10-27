@@ -3,10 +3,17 @@ import * as dotenv from 'dotenv';
 
 dotenv.config();
 
+
+const SWAGGER_URL = process.env.VITE_SWAGGER_API_URL;
+
+if (!SWAGGER_URL) {
+    throw new Error('❌ Error: VITE_SWAGGER_API_URL no está definida.');
+}
+
 export default defineConfig({
     api: {
         input: {
-            target: process.env.VITE_SWAGGER_API_URL as string,
+            target: SWAGGER_URL,
         },
         output: {
             mode: 'tags-split',

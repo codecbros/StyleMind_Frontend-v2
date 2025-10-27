@@ -1,5 +1,8 @@
 import Axios, { AxiosError, type AxiosRequestConfig } from 'axios';
 
+type CancelablePromise<T> = Promise<T> & {
+    cancel: () => void;
+};
 
 export const AXIOS_INSTANCE = Axios.create({
     baseURL: import.meta.env.VITE_PUBLIC_API_URL,
@@ -7,7 +10,6 @@ export const AXIOS_INSTANCE = Axios.create({
         'Content-Type': 'application/json',
     },
 });
-
 
 AXIOS_INSTANCE.interceptors.request.use(
     (config) => {
@@ -22,16 +24,11 @@ AXIOS_INSTANCE.interceptors.request.use(
     }
 );
 
-
 AXIOS_INSTANCE.interceptors.response.use(
     (response) => response,
     (error: AxiosError) => {
-        // Manejo de errores globales
         if (error.response?.status === 401) {
-            // Token expirado o no válido
             localStorage.removeItem('token');
-            // En lugar de redireccionar, solo marcamos como no autenticado 
-            //cambiar esto para cuando esten las otras paginas
             console.error('Usuario no autenticado');
             // window.location.href = '/login';
         }
@@ -42,18 +39,17 @@ AXIOS_INSTANCE.interceptors.response.use(
 export const customInstance = <T>(
     config: AxiosRequestConfig,
     options?: AxiosRequestConfig
-): Promise<T> => {
-    const source = Axios.CancelToken.source();
+): CancelablePromise<T> => {
+    const abortController = new AbortController();
 
     const promise = AXIOS_INSTANCE({
         ...config,
         ...options,
-        cancelToken: source.token,
-    }).then(({ data }) => data);
+        signal: abortController.signal,
+    }).then(({ data }) => data) as CancelablePromise<T>;
 
-    // @ts-ignore
     promise.cancel = () => {
-        source.cancel('Query was cancelled');
+        abortController.abort();
     };
 
     return promise;
