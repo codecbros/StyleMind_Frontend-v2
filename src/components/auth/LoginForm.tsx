@@ -1,8 +1,9 @@
 import { LoaderCircle } from 'lucide-react';
-import { Form } from 'react-hook-form';
 import { Link } from 'react-router-dom';
+import { useLogin } from '../../api/generated/auth/auth';
 import { Button } from '../ui/button';
 import {
+  Form,
   FormControl,
   FormField,
   FormItem,
@@ -12,6 +13,7 @@ import {
 import { Input } from '../ui/input';
 
 export default function LoginForm() {
+  const { isPending } = useLogin();
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -56,10 +58,10 @@ export default function LoginForm() {
           <Button
             className="font-semibold flex items-center gap-2"
             type="submit"
-            disabled={isLoading}
+            disabled={isPending}
           >
-            {isLoading && <LoaderCircle className="animate-spin w-4 h-4" />}
-            {isLoading ? 'Iniciando sesión...' : 'Ingresar a mi cuenta'}
+            {isPending && <LoaderCircle className="animate-spin w-4 h-4" />}
+            {isPending ? 'Iniciando sesión...' : 'Ingresar a mi cuenta'}
           </Button>
           <p className="text-sm text-muted-foreground font-semibold">
             ¿No tienes una cuenta?{' '}

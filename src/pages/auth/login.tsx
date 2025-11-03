@@ -1,4 +1,5 @@
 import authImage from '@/assets/images/authImg.jpg';
+import LoginForm from '../../components/auth/LoginForm';
 import {
   Card,
   CardContent,
@@ -36,7 +37,9 @@ export default function Login() {
               </CardDescription>
             </div>
           </CardHeader>
-          <CardContent></CardContent>
+          <CardContent>
+            <LoginForm />
+          </CardContent>
         </Card>
       </section>
     </>
