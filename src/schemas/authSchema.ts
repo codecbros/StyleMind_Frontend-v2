@@ -6,7 +6,7 @@ const loginSchema = z.object({
   }),
   password: z
     .string()
-    .min(6, {
+    .min(8, {
       message:
         'La contraseña debe tener al menos 8 caracteres, incluyendo mayúsculas, minúsculas, números y símbolos especiales.',
     })

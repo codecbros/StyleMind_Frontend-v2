@@ -12,17 +12,19 @@ const DEFAULT_OPTIONS: CookieOptions = {
   sameSite: 'strict',
 };
 
-const COOKIE_NAME = 'auth-token';
-
-export const setAuthToken = (token: string, options?: CookieOptions) => {
+export const setCookie = (
+  name: string,
+  value: string,
+  options?: CookieOptions
+) => {
   const cookieOptions = { ...DEFAULT_OPTIONS, ...options };
-  Cookies.set(COOKIE_NAME, token, cookieOptions);
+  Cookies.set(name, value, cookieOptions);
 };
 
-export const getAuthToken = (): string | undefined => {
-  return Cookies.get(COOKIE_NAME);
+export const getCookie = (name: string): string | undefined => {
+  return Cookies.get(name);
 };
 
-export const removeAuthToken = () => {
-  Cookies.remove(COOKIE_NAME);
+export const removeCookie = (name: string) => {
+  Cookies.remove(name);
 };

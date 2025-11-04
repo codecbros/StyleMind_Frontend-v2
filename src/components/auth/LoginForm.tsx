@@ -3,8 +3,9 @@ import { LoaderCircle } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
 import type { CreateUserDto } from '../../api/generated/schemas';
+import { QUERY_KEYS } from '../../constants/querys';
 import { useLoginCustom } from '../../hooks/useLoginCustom';
-import { setAuthToken } from '../../lib/auth-cookies';
+import { setCookie } from '../../lib/auth-cookies';
 import { ErrorToast, SuccessToast } from '../../lib/toast';
 import { loginSchema } from '../../schemas/authSchema';
 import { Button } from '../ui/button';
@@ -34,7 +35,7 @@ export default function LoginForm() {
   async function onSubmit(data: LoginFormValues) {
     mutate(data, {
       onSuccess: (response) => {
-        setAuthToken(response.data.token);
+        setCookie(QUERY_KEYS.AUTH, response.data.token);
         SuccessToast({ title: 'Inicio de sesión exitoso' });
         form.reset();
         //TODO: enviar hacia el dashboard

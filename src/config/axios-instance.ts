@@ -1,5 +1,6 @@
-import { getAuthToken, removeAuthToken } from '@/lib/auth-cookies';
+import { getCookie, removeCookie } from '@/lib/auth-cookies';
 import Axios, { AxiosError, type AxiosRequestConfig } from 'axios';
+import { QUERY_KEYS } from '../constants/querys';
 
 type CancelablePromise<T> = Promise<T> & {
   cancel: () => void;
@@ -14,7 +15,7 @@ export const AXIOS_INSTANCE = Axios.create({
 
 AXIOS_INSTANCE.interceptors.request.use(
   (config) => {
-    const token = getAuthToken();
+    const token = getCookie(QUERY_KEYS.AUTH);
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -29,7 +30,7 @@ AXIOS_INSTANCE.interceptors.response.use(
   (response) => response,
   (error: AxiosError) => {
     if (error.response?.status === 401) {
-      removeAuthToken();
+      removeCookie(QUERY_KEYS.AUTH);
       console.error('Usuario no autenticado');
     }
     return Promise.reject(error);
