@@ -1,3 +1,4 @@
+import { getAuthToken, removeAuthToken } from '@/lib/auth-cookies';
 import Axios, { AxiosError, type AxiosRequestConfig } from 'axios';
 
 type CancelablePromise<T> = Promise<T> & {
@@ -13,7 +14,7 @@ export const AXIOS_INSTANCE = Axios.create({
 
 AXIOS_INSTANCE.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('token');
+    const token = getAuthToken();
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -28,7 +29,7 @@ AXIOS_INSTANCE.interceptors.response.use(
   (response) => response,
   (error: AxiosError) => {
     if (error.response?.status === 401) {
-      localStorage.removeItem('token');
+      removeAuthToken();
       console.error('Usuario no autenticado');
     }
     return Promise.reject(error);
