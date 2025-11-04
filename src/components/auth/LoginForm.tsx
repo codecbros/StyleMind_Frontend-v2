@@ -2,8 +2,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { LoaderCircle } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
-import { useLogin } from '../../api/generated/auth/auth';
 import type { CreateUserDto } from '../../api/generated/schemas';
+import { useLoginCustom } from '../../hooks/useLoginCustom';
 import { ErrorToast, SuccessToast } from '../../lib/toast';
 import { loginSchema } from '../../schemas/authSchema';
 import { Button } from '../ui/button';
@@ -20,7 +20,8 @@ import { Input } from '../ui/input';
 type LoginFormValues = Pick<CreateUserDto, 'email' | 'password'>;
 
 export default function LoginForm() {
-  const { mutate, isPending } = useLogin();
+  const { mutate, isPending } = useLoginCustom();
+
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -30,13 +31,13 @@ export default function LoginForm() {
   });
 
   async function onSubmit(data: LoginFormValues) {
-    mutate(data as any, {
+    mutate(data, {
       onSuccess: () => {
         SuccessToast({ title: 'Inicio de sesión exitoso' });
+        form.reset();
       },
-      onError: (error) => {
-        console.log(error);
-        ErrorToast({ title: 'Error al iniciar sesión' });
+      onError: () => {
+        ErrorToast({ title: 'Correo o contraseña incorrectos' });
       },
     });
   }
@@ -92,10 +93,7 @@ export default function LoginForm() {
           </Button>
           <p className="text-sm text-muted-foreground font-semibold">
             ¿No tienes una cuenta?{' '}
-            <Link
-              to="/auth/register"
-              className="text-primary hover:underline font-semibold"
-            >
+            <Link to="" className="text-primary hover:underline font-semibold">
               Regístrate aquí
             </Link>
           </p>
