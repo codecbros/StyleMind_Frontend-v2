@@ -1,6 +1,11 @@
+import { zodResolver } from '@hookform/resolvers/zod';
 import { LoaderCircle } from 'lucide-react';
+import { useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
 import { useLogin } from '../../api/generated/auth/auth';
+import type { CreateUserDto } from '../../api/generated/schemas';
+import { ErrorToast, SuccessToast } from '../../lib/toast';
+import { loginSchema } from '../../schemas/authSchema';
 import { Button } from '../ui/button';
 import {
   Form,
@@ -12,8 +17,30 @@ import {
 } from '../ui/form';
 import { Input } from '../ui/input';
 
+type LoginFormValues = Pick<CreateUserDto, 'email' | 'password'>;
+
 export default function LoginForm() {
-  const { isPending } = useLogin();
+  const { mutate, isPending } = useLogin();
+  const form = useForm<LoginFormValues>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: '',
+      password: '',
+    },
+  });
+
+  async function onSubmit(data: LoginFormValues) {
+    mutate(data as any, {
+      onSuccess: () => {
+        SuccessToast({ title: 'Inicio de sesión exitoso' });
+      },
+      onError: (error) => {
+        console.log(error);
+        ErrorToast({ title: 'Error al iniciar sesión' });
+      },
+    });
+  }
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
