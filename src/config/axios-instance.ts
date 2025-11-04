@@ -1,58 +1,60 @@
+import { getCookie, removeCookie } from '@/lib/auth-cookies';
 import Axios, { AxiosError, type AxiosRequestConfig } from 'axios';
+import { QUERY_KEYS } from '../constants/querys';
 
 type CancelablePromise<T> = Promise<T> & {
-    cancel: () => void;
+  cancel: () => void;
 };
 
 export const AXIOS_INSTANCE = Axios.create({
-    baseURL: import.meta.env.VITE_PUBLIC_API_URL,
-    headers: {
-        'Content-Type': 'application/json',
-    },
+  baseURL: import.meta.env.VITE_PUBLIC_API_URL,
+  headers: {
+    'Content-Type': 'application/json',
+  },
 });
 
 AXIOS_INSTANCE.interceptors.request.use(
-    (config) => {
-        const token = localStorage.getItem('token');
-        if (token) {
-            config.headers.Authorization = `Bearer ${token}`;
-        }
-        return config;
-    },
-    (error) => {
-        return Promise.reject(error);
+  (config) => {
+    const token = getCookie(QUERY_KEYS.AUTH);
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
     }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
 );
 
 AXIOS_INSTANCE.interceptors.response.use(
-    (response) => response,
-    (error: AxiosError) => {
-        if (error.response?.status === 401) {
-            localStorage.removeItem('token');
-            console.error('Usuario no autenticado');
-            // window.location.href = '/login';
-        }
-        return Promise.reject(error);
+  (response) => response,
+  (error: AxiosError) => {
+    if (error.response?.status === 401) {
+      removeCookie(QUERY_KEYS.AUTH);
+      console.error('Usuario no autenticado');
     }
+    return Promise.reject(error);
+  }
 );
 
+// Instancia normal para todos los endpoints
 export const customInstance = <T>(
-    config: AxiosRequestConfig,
-    options?: AxiosRequestConfig
+  config: AxiosRequestConfig,
+  options?: AxiosRequestConfig
 ): CancelablePromise<T> => {
-    const abortController = new AbortController();
+  const abortController = new AbortController();
 
-    const promise = AXIOS_INSTANCE({
-        ...config,
-        ...options,
-        signal: abortController.signal,
-    }).then(({ data }) => data) as CancelablePromise<T>;
+  const promise = AXIOS_INSTANCE({
+    ...config,
+    ...options,
+    signal: abortController.signal,
+  }).then(({ data }) => data) as CancelablePromise<T>;
 
-    promise.cancel = () => {
-        abortController.abort();
-    };
+  promise.cancel = () => {
+    abortController.abort();
+  };
 
-    return promise;
+  return promise;
 };
 
 export default customInstance;
