@@ -1,5 +1,25 @@
-const Profile = () => {
-  return <div>profile</div>;
-};
+import { Card } from '@/components/ui/card';
+import { useState } from 'react';
+import CenteredContainer from '../components/CenteredContainer';
 
-export default Profile;
+export default function Profile() {
+  const [isEditing, setIsEditing] = useState(false);
+
+  return (
+    <>
+      <h1 className="text-center text-2xl lg:text-3xl uppercase font-extrabold">
+        perfil
+      </h1>
+      <CenteredContainer>
+        <Card>
+          <h4 className="mb-3 text-lg  font-semibold">
+            Completa tu perfil: Cuanta más información proporciones, mejores
+            serán las combinaciones
+          </h4>
+
+          {isEditing ? null : null}
+        </Card>
+      </CenteredContainer>
+    </>
+  );
+}
