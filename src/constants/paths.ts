@@ -1,6 +1,10 @@
-// Base paths - relativos para que funcionen en cualquier entorno
+const DASHBOARD_PREFIX = '/dashboard';
+
 export const PATHS = {
-    Home: '/',
-    Login: '/login',
-    Register: '/register',
-} as const
+  Home: '/',
+  Login: '/login',
+  Register: '/register',
+
+  // Dashboard paths
+  Profile: `${DASHBOARD_PREFIX}/perfil`,
+} as const;
