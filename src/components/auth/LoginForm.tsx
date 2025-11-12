@@ -1,8 +1,9 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { LoaderCircle } from 'lucide-react';
 import { useForm } from 'react-hook-form';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import type { CreateUserDto } from '../../api/generated/schemas';
+import { PATHS } from '../../constants/paths';
 import { QUERY_KEYS } from '../../constants/querys';
 import { useLoginCustom } from '../../hooks/useLoginCustom';
 import { setCookie } from '../../lib/auth-cookies';
@@ -23,6 +24,7 @@ type LoginFormValues = Pick<CreateUserDto, 'email' | 'password'>;
 
 export default function LoginForm() {
   const { mutate, isPending } = useLoginCustom();
+  const navigate = useNavigate();
 
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
@@ -38,7 +40,7 @@ export default function LoginForm() {
         setCookie(QUERY_KEYS.AUTH, response.data.token);
         SuccessToast({ title: 'Inicio de sesión exitoso' });
         form.reset();
-        //TODO: enviar hacia el dashboard
+        navigate(PATHS.Profile);
       },
       onError: () => {
         ErrorToast({ title: 'Correo o contraseña incorrectos' });
