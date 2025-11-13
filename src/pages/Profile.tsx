@@ -2,6 +2,7 @@ import { Card } from '@/components/ui/card';
 import { useState } from 'react';
 import CenteredContainer from '../components/CenteredContainer';
 import ProfileForm from '../components/form/ProfileForm';
+import ProfileViewDetails from '../components/ProfileViewDetails';
 
 export default function Profile() {
   const [isEditing, setIsEditing] = useState(true);
@@ -18,7 +19,14 @@ export default function Profile() {
             serán las combinaciones
           </h4>
 
-          <ProfileForm isEditing={isEditing} setIsEditing={setIsEditing} />
+          {isEditing ? (
+            <ProfileForm isEditing={isEditing} setIsEditing={setIsEditing} />
+          ) : (
+            <ProfileViewDetails
+              isEditing={isEditing}
+              setIsEditing={setIsEditing}
+            />
+          )}
         </Card>
       </CenteredContainer>
     </>
