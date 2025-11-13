@@ -1,5 +1,7 @@
 import { LoaderCircle } from 'lucide-react';
+import type { Dispatch, SetStateAction } from 'react';
 import { useProfileForm } from '../../hooks/form/useProfileForm';
+import type { profileProps, UserProfile } from '../../pages/Profile';
 import { SkinTonePicker } from '../SkinTonePicker';
 import {
   Accordion,
@@ -37,15 +39,12 @@ import {
   SelectValue,
 } from '../ui/select';
 import { Textarea } from '../ui/textarea';
-import type { authProps, UserProfile } from './ProfileForm';
 
-export type ProfileFormValues = authProps & { profile: UserProfile };
-
-const AcctionFormProfile = ({
+export default function ProfileForm({
   setIsEditing,
   isEditing,
   profile,
-}: ProfileFormValues) => {
+}: profileProps) {
   const { form, onSubmit, handleDeleteAccount, isLoading } = useProfileForm({
     setIsEditing,
     isEditing,
@@ -333,6 +332,4 @@ const AcctionFormProfile = ({
       </form>
     </Form>
   );
-};
-
-export default AcctionFormProfile;
+}

@@ -1,11 +1,11 @@
 import { Card } from '@/components/ui/card';
 import { LoaderCircle } from 'lucide-react';
-import { useState } from 'react';
+import { useState, type Dispatch, type SetStateAction } from 'react';
 import type { UpdateUserDto } from '../api/generated/schemas';
 import { useGetMyProfile } from '../api/generated/users/users';
 import CenteredContainer from '../components/CenteredContainer';
-import ProfileForm from '../components/form/ProfileForm';
-import ProfileViewDetails from '../components/ProfileViewDetails';
+import ProfileForm from '../components/profile/ProfileForm';
+import ProfileViewDetails from '../components/profile/ProfileViewDetails';
 import { COOKIE_KEYS } from '../constants/cookies';
 import { QUERY_KEYS } from '../constants/querys';
 import { getCookie } from '../lib/auth-cookies';
@@ -17,6 +17,12 @@ export type UserProfile = Omit<UpdateUserDto, 'genderId'> & {
     id: string;
     name: string;
   };
+};
+
+export type profileProps = {
+  isEditing: boolean;
+  setIsEditing: Dispatch<SetStateAction<boolean>>;
+  profile?: UserProfile | undefined;
 };
 
 export default function Profile() {

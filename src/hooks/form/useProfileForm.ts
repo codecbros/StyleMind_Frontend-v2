@@ -5,18 +5,19 @@ import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import type { UpdateUserDto } from '../../api/generated/schemas';
 import { useUpdateUser } from '../../api/generated/users/users';
-import type { ProfileFormValues } from '../../components/form/Form';
+
 import { COOKIE_KEYS } from '../../constants/cookies';
 import { QUERY_KEYS } from '../../constants/querys';
 import { removeCookie } from '../../lib/auth-cookies';
 import { ErrorToast, SuccessToast } from '../../lib/toast';
+import type { profileProps } from '../../pages/Profile';
 import { updateProfileSchema } from '../../schemas/userSchema';
 
 export function useProfileForm({
   setIsEditing,
   isEditing,
   profile,
-}: ProfileFormValues) {
+}: profileProps) {
   const { mutate, isPending } = useUpdateUser();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
@@ -40,7 +41,6 @@ export function useProfileForm({
     defaultValues,
   });
 
-  console.log(form);
   async function onSubmit(data: UpdateUserDto) {
     if (isEqual(data, defaultValues)) {
       SuccessToast({

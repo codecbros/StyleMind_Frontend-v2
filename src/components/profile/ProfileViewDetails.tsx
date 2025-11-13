@@ -1,19 +1,12 @@
-import type { Dispatch, SetStateAction } from 'react';
-import type { UserProfile } from '../pages/Profile';
-import { ProfileField } from './ProfileField';
-import { Button } from './ui/button';
-
-type profileViewDetailsProps = {
-  isEditing: boolean;
-  setIsEditing: Dispatch<SetStateAction<boolean>>;
-  profile?: UserProfile;
-};
+import type { profileProps } from '../../pages/Profile';
+import { ProfileField } from '../ProfileField';
+import { Button } from '../ui/button';
 
 export default function ProfileViewDetails({
   setIsEditing,
   isEditing,
   profile,
-}: profileViewDetailsProps) {
+}: profileProps) {
   return (
     <div className="flex flex-col gap-3">
       <section className="space-y-4">
