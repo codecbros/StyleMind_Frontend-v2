@@ -1,6 +1,7 @@
 import { Card } from '@/components/ui/card';
 import { useState } from 'react';
 import CenteredContainer from '../components/CenteredContainer';
+import ProfileForm from '../components/form/ProfileForm';
 
 export default function Profile() {
   const [isEditing, setIsEditing] = useState(false);
@@ -17,7 +18,11 @@ export default function Profile() {
             serán las combinaciones
           </h4>
 
-          {isEditing ? null : null}
+          {isEditing ? (
+            <ProfileForm isEditing={isEditing} setIsEditing={setIsEditing} />
+          ) : (
+            <></>
+          )}
         </Card>
       </CenteredContainer>
     </>

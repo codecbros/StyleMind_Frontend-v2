@@ -1,4 +1,5 @@
 import { LoaderCircle } from 'lucide-react';
+import type { Dispatch, SetStateAction } from 'react';
 import { SkinTonePicker } from '../SkinTonePicker';
 import {
   Accordion,
@@ -36,7 +37,6 @@ import {
   SelectValue,
 } from '../ui/select';
 import { Textarea } from '../ui/textarea';
-import type { Dispatch, SetStateAction } from 'react';
 
 type authProps = {
   isEditing: boolean;
