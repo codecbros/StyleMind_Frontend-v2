@@ -1,3 +1,4 @@
 export const QUERY_KEYS = {
-  AUTH: 'auth-token',
+  USER_PROFILE: 'profile',
+  GENDERS: 'genders',
 };

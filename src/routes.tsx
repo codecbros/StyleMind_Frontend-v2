@@ -1,10 +1,12 @@
 import App from '@/App';
 import { PATHS } from '@/constants/paths';
-import RegisterPage from '@/pages/auth/register';
 import { createBrowserRouter } from 'react-router-dom';
-import AuthLayout from './layouts/authLayout';
+import AuthLayout from './layouts/AuthLayout';
+import DashboardLayout from './layouts/dashboardLayout';
 import RootLayout from './layouts/RootLayout';
-import Login from './pages/auth/login';
+import Login from './pages/auth/Login';
+import RegisterPage from './pages/auth/Register';
+import Profile from './pages/Profile';
 
 export const router = createBrowserRouter([
   {
@@ -24,6 +26,15 @@ export const router = createBrowserRouter([
           {
             path: PATHS.Register,
             element: <RegisterPage />,
+          },
+        ],
+      },
+      {
+        element: <DashboardLayout />,
+        children: [
+          {
+            path: PATHS.Profile,
+            element: <Profile />,
           },
         ],
       },
