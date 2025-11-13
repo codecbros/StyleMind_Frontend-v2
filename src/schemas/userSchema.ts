@@ -132,7 +132,7 @@ const profileSchema = baseUserSchema
   .omit({ email: true });
 
 const updateProfileSchema = profileSchema.extend({
-  genderId: z.undefined().optional(),
+  genderId: z.string().optional(),
 });
 
 export {

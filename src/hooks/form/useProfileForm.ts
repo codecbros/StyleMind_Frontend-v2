@@ -1,24 +1,16 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useQueryClient } from '@tanstack/react-query';
 import { isEqual } from '@ver0/deep-equal';
-import type { Dispatch, SetStateAction } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import type { UpdateUserDto } from '../../api/generated/schemas';
-import {
-  useGetMyProfile,
-  useUpdateUser,
-} from '../../api/generated/users/users';
+import { useUpdateUser } from '../../api/generated/users/users';
+import type { ProfileFormValues } from '../../components/form/Form';
 import { COOKIE_KEYS } from '../../constants/cookies';
 import { QUERY_KEYS } from '../../constants/querys';
-import { getCookie, removeCookie } from '../../lib/auth-cookies';
+import { removeCookie } from '../../lib/auth-cookies';
 import { ErrorToast, SuccessToast } from '../../lib/toast';
 import { updateProfileSchema } from '../../schemas/userSchema';
-
-type authProps = {
-  isEditing: boolean;
-  setIsEditing: Dispatch<SetStateAction<boolean>>;
-};
 
 // Tipo extendido para el perfil que incluye el objeto gender completo
 type UserProfile = Omit<UpdateUserDto, 'genderId'> & {
@@ -30,26 +22,14 @@ type UserProfile = Omit<UpdateUserDto, 'genderId'> & {
   };
 };
 
-export function useProfileForm({ setIsEditing, isEditing }: authProps) {
+export function useProfileForm({
+  setIsEditing,
+  isEditing,
+  profile,
+}: ProfileFormValues) {
   const queryClient = useQueryClient();
   const { mutate, isPending } = useUpdateUser();
   const navigate = useNavigate();
-  const token = getCookie(COOKIE_KEYS.AUTH_TOKEN);
-
-  const {
-    data: profile,
-    isLoading: isProfileLoading,
-    isError,
-  } = useGetMyProfile({
-    query: {
-      queryKey: [QUERY_KEYS.USER_PROFILE],
-      enabled: !!token,
-    },
-  }) as {
-    data: UserProfile | undefined;
-    isLoading: boolean;
-    isError: boolean;
-  };
 
   const defaultValues: UpdateUserDto = {
     firstName: profile?.firstName || '',
@@ -70,9 +50,7 @@ export function useProfileForm({ setIsEditing, isEditing }: authProps) {
   });
 
   async function onSubmit(data: UpdateUserDto) {
-    const currentValues = form.getValues();
-
-    if (isEqual(data, currentValues)) {
+    if (isEqual(data, defaultValues)) {
       SuccessToast({
         title: '¡Sin cambios',
         description: 'No hay cambios para guardar',
@@ -84,12 +62,12 @@ export function useProfileForm({ setIsEditing, isEditing }: authProps) {
     mutate(
       { data },
       {
-        onSuccess: () => {
+        onSuccess: async () => {
           setIsEditing(!isEditing);
           SuccessToast({
             title: 'Perfil actualizado correctamente',
           });
-          queryClient.invalidateQueries({
+          await queryClient.invalidateQueries({
             queryKey: [QUERY_KEYS.USER_PROFILE],
           });
         },
@@ -127,9 +105,6 @@ export function useProfileForm({ setIsEditing, isEditing }: authProps) {
     form,
     onSubmit,
     handleDeleteAccount,
-    profile,
-    isProfileLoading,
-    isError,
     isLoading: isPending,
   };
 }
