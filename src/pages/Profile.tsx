@@ -18,11 +18,7 @@ export default function Profile() {
             serán las combinaciones
           </h4>
 
-          {isEditing ? (
-            <ProfileForm isEditing={isEditing} setIsEditing={setIsEditing} />
-          ) : (
-            <></>
-          )}
+          <ProfileForm isEditing={isEditing} setIsEditing={setIsEditing} />
         </Card>
       </CenteredContainer>
     </>

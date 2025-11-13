@@ -1,11 +1,6 @@
 import { LoaderCircle } from 'lucide-react';
 import type { Dispatch, SetStateAction } from 'react';
-import type { UpdateUserDto } from '../../api/generated/schemas';
-import { useGetMyProfile } from '../../api/generated/users/users';
-import { COOKIE_KEYS } from '../../constants/cookies';
-import { QUERY_KEYS } from '../../constants/querys';
 import { useProfileForm } from '../../hooks/form/useProfileForm';
-import { getCookie } from '../../lib/auth-cookies';
 import { SkinTonePicker } from '../SkinTonePicker';
 import {
   Accordion,
@@ -45,48 +40,30 @@ import {
 import { Skeleton } from '../ui/skeleton';
 import { Textarea } from '../ui/textarea';
 
-// Tipo extendido para el perfil que incluye el objeto gender completo
-type UserProfile = Omit<UpdateUserDto, 'genderId'> & {
-  id?: string;
-  email?: string;
-  gender?: {
-    id: string;
-    name: string;
-  };
-};
-
 type authProps = {
   isEditing: boolean;
   setIsEditing: Dispatch<SetStateAction<boolean>>;
 };
 
 export default function ProfileForm({ setIsEditing, isEditing }: authProps) {
-  const { form, onSubmit, handleDeleteAccount, isLoading } = useProfileForm({
+  const {
+    form,
+    onSubmit,
+    handleDeleteAccount,
+    isLoading,
+    isError,
+    profile,
+    isProfileLoading,
+  } = useProfileForm({
     setIsEditing,
     isEditing,
   });
-
-  const token = getCookie(COOKIE_KEYS.AUTH_TOKEN);
-  const {
-    data: profile,
-    isLoading: isProfileLoading,
-    isError,
-  } = useGetMyProfile({
-    query: {
-      queryKey: [QUERY_KEYS.USER_PROFILE],
-      enabled: !!token,
-    },
-  }) as {
-    data: UserProfile | undefined;
-    isLoading: boolean;
-    isError: boolean;
-  };
 
   if (isProfileLoading) {
     return <Skeleton />;
   }
 
-  if (isError || !profile) {
+  if (profile instanceof Error || isError) {
     return <div>Error al cargar el perfil</div>;
   }
 
