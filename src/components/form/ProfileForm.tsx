@@ -13,7 +13,7 @@ export type authProps = {
 };
 
 // Tipo extendido para el perfil que incluye el objeto gender completo
-type UserProfile = Omit<UpdateUserDto, 'genderId'> & {
+export type UserProfile = Omit<UpdateUserDto, 'genderId'> & {
   id?: string;
   email?: string;
   gender?: {

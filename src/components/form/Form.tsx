@@ -37,9 +37,9 @@ import {
   SelectValue,
 } from '../ui/select';
 import { Textarea } from '../ui/textarea';
-import type { authProps } from './ProfileForm';
+import type { authProps, UserProfile } from './ProfileForm';
 
-export type ProfileFormValues = authProps & { profile: any };
+export type ProfileFormValues = authProps & { profile: UserProfile };
 
 const AcctionFormProfile = ({
   setIsEditing,
@@ -144,7 +144,7 @@ const AcctionFormProfile = ({
 
               <div className="grid grid-cols-2 gap-6">
                 <FormField
-                  control={form.control as any}
+                  control={form.control}
                   name="weight"
                   render={({ field }) => (
                     <FormItem>
@@ -152,7 +152,7 @@ const AcctionFormProfile = ({
                       <FormControl>
                         <Input
                           type="number"
-                          step="0.1"
+                          step="0"
                           placeholder="70.5"
                           min="0"
                           {...field}
@@ -164,7 +164,7 @@ const AcctionFormProfile = ({
                   )}
                 />
                 <FormField
-                  control={form.control as any}
+                  control={form.control}
                   name="height"
                   render={({ field }) => (
                     <FormItem>
@@ -172,7 +172,7 @@ const AcctionFormProfile = ({
                       <FormControl>
                         <Input
                           type="number"
-                          step="1"
+                          step="0"
                           placeholder="175"
                           min="0"
                           {...field}

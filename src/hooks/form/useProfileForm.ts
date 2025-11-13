@@ -12,36 +12,27 @@ import { removeCookie } from '../../lib/auth-cookies';
 import { ErrorToast, SuccessToast } from '../../lib/toast';
 import { updateProfileSchema } from '../../schemas/userSchema';
 
-// Tipo extendido para el perfil que incluye el objeto gender completo
-type UserProfile = Omit<UpdateUserDto, 'genderId'> & {
-  id?: string;
-  email?: string;
-  gender?: {
-    id: string;
-    name: string;
-  };
-};
-
 export function useProfileForm({
   setIsEditing,
   isEditing,
   profile,
 }: ProfileFormValues) {
-  const queryClient = useQueryClient();
   const { mutate, isPending } = useUpdateUser();
+  const queryClient = useQueryClient();
   const navigate = useNavigate();
 
   const defaultValues: UpdateUserDto = {
     firstName: profile?.firstName || '',
     lastName: profile?.lastName || '',
+    genderId: profile?.gender?.id || '',
     skinColor: profile?.skinColor || undefined,
     weight: profile?.weight ?? undefined,
     height: profile?.height ?? undefined,
     bodyDescription: profile?.bodyDescription || undefined,
     profileDescription: profile?.profileDescription || undefined,
     birthDate: profile?.birthDate || undefined,
-    genderId: profile?.gender?.id || '',
     hairColor: profile?.hairColor || undefined,
+    profilePicture: profile?.profilePicture || undefined,
   };
 
   const form = useForm<UpdateUserDto>({
@@ -49,6 +40,7 @@ export function useProfileForm({
     defaultValues,
   });
 
+  console.log(form);
   async function onSubmit(data: UpdateUserDto) {
     if (isEqual(data, defaultValues)) {
       SuccessToast({

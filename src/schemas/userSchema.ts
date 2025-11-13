@@ -78,30 +78,30 @@ const registerSchema = baseUserSchema.extend({
 
 const physicalTraitsSchema = z.object({
   skinColor: z.string().optional(),
+
   weight: z.preprocess((val) => {
-    if (val === '' || val === undefined || val === null) return undefined;
+    if (val === '' || val === null || val === undefined) return undefined;
     const num = Number(val);
-    return typeof num === 'number' && !isNaN(num) ? num : undefined;
-  }, z.number().int().positive().optional()) as z.ZodType<
-    number | undefined,
-    any,
-    any
+    return isNaN(num) ? undefined : num;
+  }, z.number().int().nonnegative().optional()) as z.ZodType<
+    number | undefined
   >,
+
   height: z.preprocess((val) => {
-    if (val === '' || val === undefined || val === null) return undefined;
+    if (val === '' || val === null || val === undefined) return undefined;
     const num = Number(val);
-    return typeof num === 'number' && !isNaN(num) ? num : undefined;
-  }, z.number().int().positive().optional()) as z.ZodType<
-    number | undefined,
-    any,
-    any
+    return isNaN(num) ? undefined : num;
+  }, z.number().int().nonnegative().optional()) as z.ZodType<
+    number | undefined
   >,
+
   hairColor: z
     .string()
     .max(50, {
-      message: 'El color de cabello debe tener un máximo de 20 caracteres.',
+      message: 'El color de cabello debe tener un máximo de 50 caracteres.',
     })
     .optional(),
+
   bodyDescription: z
     .string()
     .max(350, {
@@ -131,8 +131,77 @@ const profileSchema = baseUserSchema
   })
   .omit({ email: true });
 
-const updateProfileSchema = profileSchema.extend({
-  genderId: z.string().optional(),
+const updateProfileSchema = z.object({
+  // Obligatorios (sin optional)
+  firstName: z
+    .string()
+    .min(2, 'El nombre debe tener al menos 2 caracteres.')
+    .max(50, 'El nombre no puede tener más de 50 caracteres.')
+    .regex(
+      /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/,
+      'El nombre solo puede contener letras y espacios.'
+    ),
+
+  lastName: z
+    .string()
+    .min(2, 'El apellido debe tener al menos 2 caracteres.')
+    .max(50, 'El apellido no puede tener más de 50 caracteres.')
+    .regex(
+      /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/,
+      'El apellido solo puede contener letras y espacios.'
+    ),
+
+  genderId: z.string().min(1, 'El género es requerido'), // ✅ Obligatorio
+
+  // Opcionales
+  skinColor: z.string().optional(),
+
+  weight: z.preprocess((val) => {
+    if (val === '' || val === null || val === undefined) return undefined;
+    const num = Number(val);
+    return isNaN(num) ? undefined : num;
+  }, z.number().int().nonnegative().optional()) as z.ZodType<
+    number | undefined
+  >,
+
+  height: z.preprocess((val) => {
+    if (val === '' || val === null || val === undefined) return undefined;
+    const num = Number(val);
+    return isNaN(num) ? undefined : num;
+  }, z.number().int().nonnegative().optional()) as z.ZodType<
+    number | undefined
+  >,
+
+  hairColor: z
+    .string()
+    .max(50, 'El color de cabello debe tener un máximo de 50 caracteres.')
+    .optional(),
+
+  bodyDescription: z
+    .string()
+    .max(
+      350,
+      'La descripción del cuerpo debe tener un máximo de 350 caracteres.'
+    )
+    .optional(),
+
+  profileDescription: z
+    .string()
+    .max(
+      500,
+      'La descripción del perfil debe tener un máximo de 500 caracteres.'
+    )
+    .optional(),
+
+  birthDate: z
+    .string()
+    .regex(
+      /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/,
+      'La fecha debe tener el formato ISO 8601.'
+    )
+    .optional(),
+
+  profilePicture: z.string().optional(),
 });
 
 export {
