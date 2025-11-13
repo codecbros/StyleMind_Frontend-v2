@@ -1,11 +1,48 @@
 import { Card } from '@/components/ui/card';
+import { LoaderCircle } from 'lucide-react';
 import { useState } from 'react';
+import type { UpdateUserDto } from '../api/generated/schemas';
+import { useGetMyProfile } from '../api/generated/users/users';
 import CenteredContainer from '../components/CenteredContainer';
 import ProfileForm from '../components/form/ProfileForm';
 import ProfileViewDetails from '../components/ProfileViewDetails';
+import { COOKIE_KEYS } from '../constants/cookies';
+import { QUERY_KEYS } from '../constants/querys';
+import { getCookie } from '../lib/auth-cookies';
+
+export type UserProfile = Omit<UpdateUserDto, 'genderId'> & {
+  id?: string;
+  email?: string;
+  gender?: {
+    id: string;
+    name: string;
+  };
+};
 
 export default function Profile() {
   const [isEditing, setIsEditing] = useState(false);
+
+  const token = getCookie(COOKIE_KEYS.AUTH_TOKEN);
+  const {
+    data,
+    isLoading: isProfileLoading,
+    isError,
+  } = useGetMyProfile({
+    query: {
+      queryKey: [QUERY_KEYS.USER_PROFILE],
+      enabled: !!token,
+    },
+  }) as {
+    data: UserProfile | undefined;
+    isLoading: boolean;
+    isError: boolean;
+  };
+
+  const profile = data?.data as UserProfile;
+
+  if (data instanceof Error || isError) {
+    return <div>Error al cargar el perfil</div>;
+  }
 
   return (
     <>
@@ -19,12 +56,19 @@ export default function Profile() {
             serán las combinaciones
           </h4>
 
-          {isEditing ? (
-            <ProfileForm isEditing={isEditing} setIsEditing={setIsEditing} />
+          {isProfileLoading && !profile ? (
+            <LoaderCircle className="animate-spin mx-auto" />
+          ) : profile && !isProfileLoading && isEditing ? (
+            <ProfileForm
+              isEditing={isEditing}
+              setIsEditing={setIsEditing}
+              profile={profile}
+            />
           ) : (
             <ProfileViewDetails
               isEditing={isEditing}
               setIsEditing={setIsEditing}
+              profile={profile}
             />
           )}
         </Card>

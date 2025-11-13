@@ -1,48 +1,19 @@
-import { LoaderCircle } from 'lucide-react';
 import type { Dispatch, SetStateAction } from 'react';
-import { useGetMyProfile } from '../api/generated/users/users';
-import { COOKIE_KEYS } from '../constants/cookies';
-import { QUERY_KEYS } from '../constants/querys';
-import { getCookie } from '../lib/auth-cookies';
-import type { UserProfile } from './form/ProfileForm';
+import type { UserProfile } from '../pages/Profile';
 import { ProfileField } from './ProfileField';
 import { Button } from './ui/button';
 
-type authProps = {
+type profileViewDetailsProps = {
   isEditing: boolean;
   setIsEditing: Dispatch<SetStateAction<boolean>>;
+  profile?: UserProfile;
 };
 
 export default function ProfileViewDetails({
   setIsEditing,
   isEditing,
-}: authProps) {
-  const token = getCookie(COOKIE_KEYS.AUTH_TOKEN);
-  const {
-    data,
-    isLoading: isProfileLoading,
-    isError,
-  } = useGetMyProfile({
-    query: {
-      queryKey: [QUERY_KEYS.USER_PROFILE],
-      enabled: !!token,
-    },
-  }) as {
-    data: UserProfile | undefined;
-    isLoading: boolean;
-    isError: boolean;
-  };
-
-  if (isProfileLoading) {
-    return <LoaderCircle className="animate-spin mx-auto" />;
-  }
-
-  if (data instanceof Error || isError) {
-    return <div>Error al cargar el perfil</div>;
-  }
-
-  const profile = data?.data as UserProfile;
-
+  profile,
+}: profileViewDetailsProps) {
   return (
     <div className="flex flex-col gap-3">
       <section className="space-y-4">
