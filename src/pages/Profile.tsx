@@ -5,7 +5,7 @@ import ProfileForm from '../components/form/ProfileForm';
 import ProfileViewDetails from '../components/ProfileViewDetails';
 
 export default function Profile() {
-  const [isEditing, setIsEditing] = useState(true);
+  const [isEditing, setIsEditing] = useState(false);
 
   return (
     <>
