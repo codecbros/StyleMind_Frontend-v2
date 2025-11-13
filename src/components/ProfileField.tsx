@@ -2,13 +2,13 @@ import { format, parseISO } from 'date-fns';
 
 type ProfileFieldProps = {
   label: string;
-  value: any;
+  value?: string | number | null | undefined;
 };
 
 export function ProfileField({ label, value }: ProfileFieldProps) {
   const formattedValue =
     label === 'Fecha de Nacimiento' && value
-      ? format(parseISO(value), 'dd/MM/yyyy')
+      ? format(parseISO(value as string), 'dd/MM/yyyy')
       : value;
 
   return (
@@ -18,7 +18,8 @@ export function ProfileField({ label, value }: ProfileFieldProps) {
         value ? (
           <span
             className="w-8 h-8 rounded-full"
-            style={{ backgroundColor: value }}
+            aria-label={`Color de piel: ${value}`}
+            style={{ backgroundColor: value as string }}
           ></span>
         ) : (
           <p className="text-sm text-primary/60">No Especificado</p>

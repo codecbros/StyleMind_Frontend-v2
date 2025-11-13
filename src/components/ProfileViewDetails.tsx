@@ -55,7 +55,7 @@ export default function ProfileViewDetails({
         </div>
       </section>
       <section className="space-y-4">
-        <h4 className="text-lg font-semibold">información Personal</h4>
+        <h4 className="text-lg font-semibold">Información Personal</h4>
         <div className="grid grid-cols-2 gap-4">
           <ProfileField label="Peso (lb)" value={profile?.weight} />
           <ProfileField label="Altura (cm)" value={profile?.height} />
@@ -66,7 +66,7 @@ export default function ProfileViewDetails({
         </div>
       </section>
       <section className="space-y-4">
-        <h4 className="text-lg font-semibold">Catacreristicas Fisicas</h4>
+        <h4 className="text-lg font-semibold">Características Físicas</h4>
         <div className="grid grid-cols-2 gap-4">
           <ProfileField label="Tono de piel" value={profile?.skinColor} />
           <ProfileField label="Color de cabello" value={profile?.hairColor} />
@@ -75,8 +75,8 @@ export default function ProfileViewDetails({
           <div className="flex flex-col gap-2.5">
             <p className="text-sm text-primary/80">Descripción del cuerpo</p>
             <textarea
-              disabled
-              className="text-sm text-primary/60 p-2"
+              readOnly
+              className="text-sm text-primary/60 p-2 whitespace-pre-line border rounded min-h-12"
               value={profile?.bodyDescription || 'No especificado'}
             />
           </div>
@@ -86,8 +86,8 @@ export default function ProfileViewDetails({
         <h4 className="text-lg font-semibold">Descripción del perfil </h4>
         <div className="grid grid-cols-1">
           <textarea
-            disabled
-            className="text-sm text-primary/60 p-2"
+            readOnly
+            className="text-sm text-primary/60 p-2 whitespace-pre-line border rounded min-h-12"
             value={profile?.profileDescription || 'No especificado'}
           />
         </div>
