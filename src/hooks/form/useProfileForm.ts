@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { QUERY_KEYS } from '../../constants/querys';
 import { removeCookie } from '../../lib/auth-cookies';
 import { ErrorToast, SuccessToast } from '../../lib/toast';
+import { updateProfileSchema } from '../../schemas/userSchema';
 
 type authProps = {
   isEditing: boolean;
@@ -17,7 +18,7 @@ export function useProfileForm({ setIsEditing, isEditing }: authProps) {
   const defaultValues = {};
 
   const form = useForm<any>({
-    resolver: zodResolver({} as any),
+    resolver: zodResolver(updateProfileSchema),
     defaultValues,
   });
 

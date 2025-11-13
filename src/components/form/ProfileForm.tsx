@@ -50,6 +50,8 @@ export default function ProfileForm({ setIsEditing, isEditing }: authProps) {
     isEditing,
   });
 
+  const isLoading = false;
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit as any)} className="space-y-6">
