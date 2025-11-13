@@ -12,7 +12,7 @@ export default function Profile() {
       </h1>
       <CenteredContainer>
         <Card>
-          <h4 className="mb-3 text-lg  font-semibold">
+          <h4 className="mb-3 text-lg font-semibold">
             Completa tu perfil: Cuanta más información proporciones, mejores
             serán las combinaciones
           </h4>

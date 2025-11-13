@@ -1,12 +1,12 @@
 import App from '@/App';
 import { PATHS } from '@/constants/paths';
 import { createBrowserRouter } from 'react-router-dom';
-import AuthLayout from './layouts/authLayout';
+import AuthLayout from './layouts/AuthLayout';
 import DashboardLayout from './layouts/dashboardLayout';
 import RootLayout from './layouts/RootLayout';
-import Login from './pages/auth/login';
-import RegisterPage from './pages/auth/register';
-import Profile from './pages/profile';
+import Login from './pages/auth/Login';
+import RegisterPage from './pages/auth/Register';
+import Profile from './pages/Profile';
 
 export const router = createBrowserRouter([
   {
