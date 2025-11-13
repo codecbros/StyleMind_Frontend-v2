@@ -3,8 +3,8 @@ import { LoaderCircle } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
 import type { CreateUserDto } from '../../api/generated/schemas';
+import { COOKIE_KEYS } from '../../constants/cookies';
 import { PATHS } from '../../constants/paths';
-import { QUERY_KEYS } from '../../constants/querys';
 import { useLoginCustom } from '../../hooks/useLoginCustom';
 import { setCookie } from '../../lib/auth-cookies';
 import { ErrorToast, SuccessToast } from '../../lib/toast';
@@ -37,7 +37,7 @@ export default function LoginForm() {
   async function onSubmit(data: LoginFormValues) {
     mutate(data, {
       onSuccess: (response) => {
-        setCookie(QUERY_KEYS.AUTH, response.data.token);
+        setCookie(COOKIE_KEYS.AUTH_TOKEN, response.data.token);
         SuccessToast({ title: 'Inicio de sesión exitoso' });
         form.reset();
         navigate(PATHS.Profile);

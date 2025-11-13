@@ -1,6 +1,11 @@
 import { LoaderCircle } from 'lucide-react';
 import type { Dispatch, SetStateAction } from 'react';
+import type { UpdateUserDto } from '../../api/generated/schemas';
+import { useGetMyProfile } from '../../api/generated/users/users';
+import { COOKIE_KEYS } from '../../constants/cookies';
+import { QUERY_KEYS } from '../../constants/querys';
 import { useProfileForm } from '../../hooks/form/useProfileForm';
+import { getCookie } from '../../lib/auth-cookies';
 import { SkinTonePicker } from '../SkinTonePicker';
 import {
   Accordion,
@@ -37,7 +42,18 @@ import {
   SelectTrigger,
   SelectValue,
 } from '../ui/select';
+import { Skeleton } from '../ui/skeleton';
 import { Textarea } from '../ui/textarea';
+
+// Tipo extendido para el perfil que incluye el objeto gender completo
+type UserProfile = Omit<UpdateUserDto, 'genderId'> & {
+  id?: string;
+  email?: string;
+  gender?: {
+    id: string;
+    name: string;
+  };
+};
 
 type authProps = {
   isEditing: boolean;
@@ -45,20 +61,42 @@ type authProps = {
 };
 
 export default function ProfileForm({ setIsEditing, isEditing }: authProps) {
-  const { form, onSubmit, handleDeleteAccount, profile } = useProfileForm({
+  const { form, onSubmit, handleDeleteAccount, isLoading } = useProfileForm({
     setIsEditing,
     isEditing,
   });
 
-  const isLoading = false;
+  const token = getCookie(COOKIE_KEYS.AUTH_TOKEN);
+  const {
+    data: profile,
+    isLoading: isProfileLoading,
+    isError,
+  } = useGetMyProfile({
+    query: {
+      queryKey: [QUERY_KEYS.USER_PROFILE],
+      enabled: !!token,
+    },
+  }) as {
+    data: UserProfile | undefined;
+    isLoading: boolean;
+    isError: boolean;
+  };
+
+  if (isProfileLoading) {
+    return <Skeleton />;
+  }
+
+  if (isError || !profile) {
+    return <div>Error al cargar el perfil</div>;
+  }
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit as any)} className="space-y-6">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
         <FormLabel>Informacion Personal</FormLabel>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <FormField
-            control={form.control as any}
+            control={form.control}
             name="firstName"
             render={({ field }) => (
               <FormItem>
