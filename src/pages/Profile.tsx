@@ -4,7 +4,7 @@ import CenteredContainer from '../components/CenteredContainer';
 import ProfileForm from '../components/form/ProfileForm';
 
 export default function Profile() {
-  const [isEditing, setIsEditing] = useState(false);
+  const [isEditing, setIsEditing] = useState(true);
 
   return (
     <>

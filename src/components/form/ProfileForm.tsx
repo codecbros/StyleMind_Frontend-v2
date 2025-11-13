@@ -1,5 +1,6 @@
 import { LoaderCircle } from 'lucide-react';
 import type { Dispatch, SetStateAction } from 'react';
+import { useProfileForm } from '../../hooks/form/useProfileForm';
 import { SkinTonePicker } from '../SkinTonePicker';
 import {
   Accordion,
@@ -44,7 +45,10 @@ type authProps = {
 };
 
 export default function ProfileForm({ setIsEditing, isEditing }: authProps) {
-  const { form, onSubmit, isLoading, handleDeleteAccount, profile } = {} as any;
+  const { form, onSubmit, handleDeleteAccount, profile } = useProfileForm({
+    setIsEditing,
+    isEditing,
+  });
 
   return (
     <Form {...form}>
