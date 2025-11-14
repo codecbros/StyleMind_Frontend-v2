@@ -9,7 +9,7 @@ import { useUpdateUser } from '../../api/generated/users/users';
 import { COOKIE_KEYS } from '../../constants/cookies';
 import { QUERY_KEYS } from '../../constants/querys';
 import { removeCookie } from '../../lib/auth-cookies';
-import { ErrorToast, SuccessToast } from '../../lib/toast';
+import { ErrorToast, SuccessToast, WarningToast } from '../../lib/toast';
 import type { profileProps } from '../../pages/Profile';
 import { updateProfileSchema } from '../../schemas/userSchema';
 
@@ -43,8 +43,8 @@ export function useProfileForm({
 
   async function onSubmit(data: UpdateUserDto) {
     if (isEqual(data, defaultValues)) {
-      SuccessToast({
-        title: '¡Sin cambios',
+      WarningToast({
+        title: 'Sin cambios',
         description: 'No hay cambios para guardar',
       });
       setIsEditing(false);

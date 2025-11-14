@@ -1,13 +1,12 @@
 import { Card } from '@/components/ui/card';
-import { AlertCircle } from 'lucide-react';
 import { useState, type Dispatch, type SetStateAction } from 'react';
 import type { UpdateUserDto } from '../api/generated/schemas';
 import { useGetMyProfile } from '../api/generated/users/users';
 import CenteredContainer from '../components/CenteredContainer';
+import { ErrorFallback } from '../components/ErrorFallback';
 import ProfileForm from '../components/profile/ProfileForm';
 import ProfileViewDetails from '../components/profile/ProfileViewDetails';
 import { ProfileSkeleton } from '../components/skeletons/ProfileSkeleton';
-import { Alert, AlertDescription, AlertTitle } from '../components/ui/alert';
 import { COOKIE_KEYS } from '../constants/cookies';
 import { QUERY_KEYS } from '../constants/querys';
 import { getCookie } from '../lib/auth-cookies';
@@ -55,22 +54,10 @@ export default function Profile() {
         <h1 className="text-center text-2xl md:text-3xl lg:text-4xl uppercase font-extrabold tracking-wide px-4">
           Perfil
         </h1>
-        <CenteredContainer>
-          <Card className="w-full p-6 sm:px-6 md:px-8 lg:px-10  md:py-8">
-            <Alert variant="destructive" className="border-2">
-              <AlertCircle className="h-5 w-5" />
-              <AlertTitle className="text-lg font-semibold uppercase tracking-wide">
-                Error al Cargar tu Perfil
-              </AlertTitle>
-              <AlertDescription className="mt-2 space-y-3">
-                <p className="text-sm leading-relaxed">
-                  No pudimos cargar tu información. Por favor, verifica tu
-                  conexión e intenta nuevamente.
-                </p>
-              </AlertDescription>
-            </Alert>
-          </Card>
-        </CenteredContainer>
+        <ErrorFallback
+          title="No se pudo cargar el perfil"
+          description="Hubo un problema al cargar tu perfil. Por favor, intenta nuevamente más tarde."
+        />
       </>
     );
   }
