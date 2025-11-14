@@ -18,12 +18,14 @@ const skinTones = [
 
 export function SkinTonePicker({ value, onChange }: SkinTonePickerProps) {
   return (
-    <div className="flex flex-wrap justify-start ml-2 gap-2">
+    <div className="flex flex-wrap justify-start gap-3 py-2">
       {skinTones.map((tone) => (
         <Button
           key={tone.color}
-          className={`w-8 h-8 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${
-            value === tone.color ? 'ring-2 ring-offset-2 ring-blue-500' : ''
+          className={`size-8 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all hover:scale-110 cursor-pointer ${
+            value === tone.color
+              ? 'ring-2 ring-offset-2 ring-primary scale-110'
+              : ''
           }`}
           style={{ backgroundColor: tone.color }}
           onClick={() => onChange(tone.color)}
@@ -31,7 +33,7 @@ export function SkinTonePicker({ value, onChange }: SkinTonePickerProps) {
           type="button"
         >
           {value === tone.color && (
-            <Check className="text-white mx-auto" size={16} />
+            <Check className="text-white mx-auto drop-shadow-md" size={18} />
           )}
           <span className="sr-only">{tone.name}</span>
         </Button>

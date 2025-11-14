@@ -1,4 +1,3 @@
-// CenteredContainer.tsx
 interface CenteredContainerProps {
   children: React.ReactNode;
   className?: string;

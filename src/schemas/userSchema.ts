@@ -151,25 +151,25 @@ const updateProfileSchema = z.object({
       'El apellido solo puede contener letras y espacios.'
     ),
 
-  genderId: z.string().min(1, 'El género es requerido'), // ✅ Obligatorio
+  genderId: z.string().min(1, 'El género es requerido'),
 
   // Opcionales
   skinColor: z.string().optional(),
 
   weight: z.preprocess((val) => {
-    if (val === '' || val === null || val === undefined) return undefined;
+    if (val === '' || val === null || val === undefined) return null;
     const num = Number(val);
-    return isNaN(num) ? undefined : num;
-  }, z.number().int().nonnegative().optional()) as z.ZodType<
-    number | undefined
+    return isNaN(num) ? null : num;
+  }, z.number().int().nonnegative().nullable().optional()) as z.ZodType<
+    number | null | undefined
   >,
 
   height: z.preprocess((val) => {
-    if (val === '' || val === null || val === undefined) return undefined;
+    if (val === '' || val === null || val === undefined) return null;
     const num = Number(val);
-    return isNaN(num) ? undefined : num;
-  }, z.number().int().nonnegative().optional()) as z.ZodType<
-    number | undefined
+    return isNaN(num) ? null : num;
+  }, z.number().int().nonnegative().nullable().optional()) as z.ZodType<
+    number | null | undefined
   >,
 
   hairColor: z

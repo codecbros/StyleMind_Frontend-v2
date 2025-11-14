@@ -12,21 +12,25 @@ export function ProfileField({ label, value }: ProfileFieldProps) {
       : value;
 
   return (
-    <div className="flex flex-col gap-1.5">
-      <span className="text-base text-primary/80">{label}</span>
-      {label === 'Tono de piel' ? (
+    <div className="flex flex-col gap-2">
+      <span className="text-xs font-medium  uppercase tracking-widest">
+        {label}
+      </span>
+      {label === 'Tono de Piel' ? (
         value ? (
-          <span
-            className="w-8 h-8 rounded-full"
-            aria-label={`Color de piel: ${value}`}
-            style={{ backgroundColor: value as string }}
-          ></span>
+          <div className="flex items-center gap-3">
+            <span
+              className="w-10 h-10 rounded-full border-2 border-border shadow-sm"
+              aria-label={`Color de piel: ${value}`}
+              style={{ backgroundColor: value as string }}
+            ></span>
+          </div>
         ) : (
-          <p className="text-sm text-primary/60">No Especificado</p>
+          <p className="text-base text-muted-foreground/60">No especificado</p>
         )
       ) : (
-        <p className="text-sm text-primary/60 text-wrap">
-          {formattedValue || 'No Especificado'}
+        <p className="text-base text-muted-foreground leading-relaxed">
+          {formattedValue || 'No especificado'}
         </p>
       )}
     </div>
