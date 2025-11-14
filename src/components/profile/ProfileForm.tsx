@@ -1,7 +1,6 @@
 import { LoaderCircle } from 'lucide-react';
-import type { Dispatch, SetStateAction } from 'react';
 import { useProfileForm } from '../../hooks/form/useProfileForm';
-import type { profileProps, UserProfile } from '../../pages/Profile';
+import type { profileProps } from '../../pages/Profile';
 import { SkinTonePicker } from '../SkinTonePicker';
 import {
   Accordion,
@@ -9,17 +8,6 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '../ui/accordion';
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from '../ui/alert-dialog';
 import { Button } from '../ui/button';
 import {
   Form,
@@ -285,7 +273,8 @@ export default function ProfileForm({
         />
         {isEditing ? (
           <div className="flex flex-col gap-4 md:flex-row justify-between items-center mt-5">
-            <AlertDialog>
+            {/*
+              <AlertDialog>
               <AlertDialogTrigger
                 asChild
                 className="w-full md:w-max order-3 md:order-1"
@@ -311,8 +300,9 @@ export default function ProfileForm({
                 </AlertDialogFooter>
               </AlertDialogContent>
             </AlertDialog>
+            */}
             <Button
-              className="font-semibold w-full md:w-max order-2"
+              className="font-semibold w-full md:w-max cursor-pointer"
               type="button"
               variant="outline"
               onClick={() => setIsEditing(!isEditing)}
@@ -320,7 +310,7 @@ export default function ProfileForm({
               Cancelar
             </Button>
             <Button
-              className="font-semibold w-full md:w-max order-1 md:order-3"
+              className="font-semibold w-full md:w-max order-1 cursor-pointer"
               type="submit"
               disabled={isLoading}
             >

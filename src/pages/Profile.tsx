@@ -56,7 +56,7 @@ export default function Profile() {
         perfil
       </h1>
       <CenteredContainer>
-        <Card>
+        <Card className="px-6">
           <h4 className="mb-3 text-lg font-semibold">
             Completa tu perfil: Cuanta más información proporciones, mejores
             serán las combinaciones

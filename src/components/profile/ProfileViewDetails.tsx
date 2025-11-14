@@ -8,19 +8,30 @@ export default function ProfileViewDetails({
   profile,
 }: profileProps) {
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-8 py-2">
       <section className="space-y-4">
-        <h4 className="text-lg font-semibold">Información Básica</h4>
-        <div className="grid grid-cols-2 gap-4">
+        <div className="flex items-center gap-3">
+          <h3 className="text-lg font-semibold uppercase tracking-wide text-foreground">
+            Información Básica
+          </h3>
+          <div className="h-0.5 flex-1 bg-linear-to-r from-foreground/20 via-foreground/10 to-transparent" />
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-5">
           <ProfileField label="Nombres" value={profile?.firstName} />
           <ProfileField label="Apellidos" value={profile?.lastName} />
-          <ProfileField label="Genero" value={profile?.gender?.name} />
+          <ProfileField label="Género" value={profile?.gender?.name} />
           <ProfileField label="Correo" value={profile?.email} />
         </div>
       </section>
+
       <section className="space-y-4">
-        <h4 className="text-lg font-semibold">Información Personal</h4>
-        <div className="grid grid-cols-2 gap-4">
+        <div className="flex items-center gap-3">
+          <h3 className="text-lg font-semibold uppercase tracking-wide text-foreground">
+            Información Personal
+          </h3>
+          <div className="h-0.5 flex-1 bg-linear-to-r from-foreground/20 via-foreground/10 to-transparent" />
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-5">
           <ProfileField label="Peso (lb)" value={profile?.weight} />
           <ProfileField label="Altura (cm)" value={profile?.height} />
           <ProfileField
@@ -29,40 +40,53 @@ export default function ProfileViewDetails({
           />
         </div>
       </section>
+
       <section className="space-y-4">
-        <h4 className="text-lg font-semibold">Características Físicas</h4>
-        <div className="grid grid-cols-2 gap-4">
+        <div className="flex items-center gap-3">
+          <h3 className="text-lg font-semibold uppercase tracking-wide text-foreground">
+            Características Físicas
+          </h3>
+          <div className="h-0.5 flex-1 bg-linear-to-r from-foreground/20 via-foreground/10 to-transparent" />
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-5">
           <ProfileField label="Tono de piel" value={profile?.skinColor} />
           <ProfileField label="Color de cabello" value={profile?.hairColor} />
         </div>
-        <div className="grid grid-cols-1 gap-4">
-          <div className="flex flex-col gap-2.5">
-            <p className="text-sm text-primary/80">Descripción del cuerpo</p>
-            <textarea
-              readOnly
-              className="text-sm text-primary/60 p-2 whitespace-pre-line border rounded min-h-12"
-              value={profile?.bodyDescription || 'No especificado'}
-            />
+        <div className="mt-3">
+          <div className="flex flex-col gap-2">
+            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+              Descripción del cuerpo
+            </p>
+            <div className="bg-muted/30 rounded-lg p-4 border border-border/40">
+              <p className="text-sm text-foreground leading-relaxed whitespace-pre-line">
+                {profile?.bodyDescription || 'No especificado'}
+              </p>
+            </div>
           </div>
         </div>
       </section>
-      <section className="space-y-2">
-        <h4 className="text-lg font-semibold">Descripción del perfil </h4>
-        <div className="grid grid-cols-1">
-          <textarea
-            readOnly
-            className="text-sm text-primary/60 p-2 whitespace-pre-line border rounded min-h-12"
-            value={profile?.profileDescription || 'No especificado'}
-          />
+
+      <section className="space-y-4">
+        <div className="flex items-center gap-3">
+          <h3 className="text-lg font-semibold uppercase tracking-wide text-foreground">
+            Descripción del Perfil
+          </h3>
+          <div className="h-0.5 flex-1 bg-linear-to-r from-foreground/20 via-foreground/10 to-transparent" />
+        </div>
+        <div className="bg-muted/30 rounded-lg p-4 border border-border/40">
+          <p className="text-sm text-foreground leading-relaxed whitespace-pre-line">
+            {profile?.profileDescription || 'No especificado'}
+          </p>
         </div>
       </section>
-      <div className="flex items-center justify-end">
+
+      <div className="flex items-center justify-end pt-4 border-t border-border/40">
         <Button
-          className="font-semibold"
+          className="font-semibold cursor-pointer px-8 uppercase tracking-wide text-sm"
           type="button"
           onClick={() => setIsEditing(!isEditing)}
         >
-          Editar
+          Editar Perfil
         </Button>
       </div>
     </div>
