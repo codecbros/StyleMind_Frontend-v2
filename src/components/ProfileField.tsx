@@ -13,10 +13,10 @@ export function ProfileField({ label, value }: ProfileFieldProps) {
 
   return (
     <div className="flex flex-col gap-2">
-      <span className="text-xs font-medium text-muted-foreground uppercase tracking-widest">
+      <span className="text-xs font-medium  uppercase tracking-widest">
         {label}
       </span>
-      {label === 'Tono de piel' ? (
+      {label === 'Tono de Piel' ? (
         value ? (
           <div className="flex items-center gap-3">
             <span
@@ -29,7 +29,7 @@ export function ProfileField({ label, value }: ProfileFieldProps) {
           <p className="text-base text-muted-foreground/60">No especificado</p>
         )
       ) : (
-        <p className="text-base text-foreground leading-relaxed">
+        <p className="text-base text-muted-foreground leading-relaxed">
           {formattedValue || 'No especificado'}
         </p>
       )}

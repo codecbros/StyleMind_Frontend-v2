@@ -31,7 +31,7 @@ export default function ProfileViewDetails({
           </h3>
           <div className="h-0.5 flex-1 bg-linear-to-r from-foreground/20 via-foreground/10 to-transparent" />
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 md:gap-x-8 gap-y-4 md:gap-y-5">
+        <div className="grid grid-cols-2 gap-x-6 md:gap-x-8 gap-y-4 md:gap-y-5">
           <ProfileField label="Peso (lb)" value={profile?.weight} />
           <ProfileField label="Altura (cm)" value={profile?.height} />
           <ProfileField
@@ -48,7 +48,7 @@ export default function ProfileViewDetails({
           </h3>
           <div className="h-0.5 flex-1 bg-linear-to-r from-foreground/20 via-foreground/10 to-transparent" />
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 md:gap-x-8 gap-y-4 md:gap-y-5">
+        <div className="grid grid-cols-2 gap-x-6 md:gap-x-8 gap-y-4 md:gap-y-5">
           <ProfileField label="Tono de Piel" value={profile?.skinColor} />
           <ProfileField label="Color de Cabello" value={profile?.hairColor} />
         </div>
