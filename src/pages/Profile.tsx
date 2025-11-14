@@ -1,11 +1,11 @@
 import { Card } from '@/components/ui/card';
-import { LoaderCircle } from 'lucide-react';
 import { useState, type Dispatch, type SetStateAction } from 'react';
 import type { UpdateUserDto } from '../api/generated/schemas';
 import { useGetMyProfile } from '../api/generated/users/users';
 import CenteredContainer from '../components/CenteredContainer';
 import ProfileForm from '../components/profile/ProfileForm';
 import ProfileViewDetails from '../components/profile/ProfileViewDetails';
+import { ProfileSkeleton } from '../components/skeletons/ProfileSkeleton';
 import { COOKIE_KEYS } from '../constants/cookies';
 import { QUERY_KEYS } from '../constants/querys';
 import { getCookie } from '../lib/auth-cookies';
@@ -63,7 +63,7 @@ export default function Profile() {
           </h4>
 
           {isProfileLoading && !profile ? (
-            <LoaderCircle className="animate-spin mx-auto" />
+            <ProfileSkeleton />
           ) : profile && !isProfileLoading && isEditing ? (
             <ProfileForm
               isEditing={isEditing}
