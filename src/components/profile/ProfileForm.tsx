@@ -33,7 +33,7 @@ export default function ProfileForm({
   isEditing,
   profile,
 }: profileProps) {
-  const { form, onSubmit, handleDeleteAccount, isLoading } = useProfileForm({
+  const { form, onSubmit, isLoading } = useProfileForm({
     setIsEditing,
     isEditing,
     profile,
@@ -41,75 +41,91 @@ export default function ProfileForm({
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        <FormLabel>Informacion Personal</FormLabel>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <FormField
-            control={form.control}
-            name="firstName"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Nombres *</FormLabel>
-                <FormControl>
-                  <Input type="text" placeholder="Ej: María" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        <section className="space-y-6">
+          <div className="flex items-center gap-3">
+            <h3 className="text-lg font-semibold uppercase tracking-wide text-foreground">
+              Datos Personales
+            </h3>
+            <div className="h-0.5 flex-1 bg-linear-to-r from-foreground/20 via-foreground/10 to-transparent" />
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <FormField
+              control={form.control}
+              name="firstName"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-xs font-semibold uppercase tracking-wider">
+                    Nombres *
+                  </FormLabel>
+                  <FormControl>
+                    <Input type="text" placeholder="Ej: María" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control as any}
+              name="lastName"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-xs font-semibold uppercase tracking-wider">
+                    Apellidos *
+                  </FormLabel>
+                  <FormControl>
+                    <Input
+                      type="text"
+                      placeholder="Ej: García López"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+
           <FormField
             control={form.control as any}
-            name="lastName"
-            render={({ field }) => (
+            name="genderId"
+            render={() => (
               <FormItem>
-                <FormLabel>Apellidos *</FormLabel>
-                <FormControl>
-                  <Input
-                    type="text"
-                    placeholder="Ej: García López"
-                    {...field}
-                  />
-                </FormControl>
+                <FormLabel className="text-xs font-semibold uppercase tracking-wider">
+                  Género
+                </FormLabel>
+                <Select disabled defaultValue={'current'}>
+                  <FormControl className="hover:border-primary/50 border border-muted-foreground">
+                    <SelectTrigger>
+                      <SelectValue>{profile?.gender?.name}</SelectValue>
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="current">
+                      {profile?.gender?.name}
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
                 <FormMessage />
               </FormItem>
             )}
           />
-        </div>
+        </section>
 
-        <FormField
-          control={form.control as any}
-          name="genderId"
-          render={() => (
-            <FormItem>
-              <FormLabel>Género</FormLabel>
-              <Select disabled defaultValue={'current'}>
-                <FormControl className="hover:border-primary/50 border border-muted-foreground">
-                  <SelectTrigger>
-                    <SelectValue>{profile?.gender?.name}</SelectValue>
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectItem value="current">
-                    {profile?.gender?.name}
-                  </SelectItem>
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        {/* Información Personal (Opcional) */}
         <Accordion type="single" collapsible className="w-full">
-          <AccordionItem value="item-1">
-            <AccordionTrigger>Información Personal (Opcional)</AccordionTrigger>
-            <AccordionContent>
+          <AccordionItem value="item-1" className="border-border/40">
+            <AccordionTrigger className="text-base font-semibold uppercase tracking-wide hover:text-foreground/80">
+              Medidas y Edad
+            </AccordionTrigger>
+            <AccordionContent className="pt-6 space-y-6">
               <FormField
                 control={form.control as any}
                 name="birthDate"
                 render={({ field }) => (
-                  <FormItem className="mb-6">
-                    <FormLabel>Fecha de nacimiento</FormLabel>
+                  <FormItem>
+                    <FormLabel className="text-xs font-semibold uppercase tracking-wider">
+                      Fecha de Nacimiento
+                    </FormLabel>
                     <FormControl>
                       <Input
                         type="date"
@@ -121,8 +137,9 @@ export default function ProfileForm({
                         }}
                       />
                     </FormControl>
-                    <FormDescription>
-                      Tu fecha de nacimiento se usa para calcular tu edad.
+                    <FormDescription className="text-xs">
+                      Nos ayuda a personalizar mejor tus recomendaciones de
+                      estilo.
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
@@ -135,7 +152,9 @@ export default function ProfileForm({
                   name="weight"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Peso (lb)</FormLabel>
+                      <FormLabel className="text-xs font-semibold uppercase tracking-wider">
+                        Peso (lb)
+                      </FormLabel>
                       <FormControl>
                         <Input
                           type="number"
@@ -145,17 +164,21 @@ export default function ProfileForm({
                           {...field}
                         />
                       </FormControl>
-                      <FormDescription>Tu peso en Libras.</FormDescription>
+                      <FormDescription className="text-xs">
+                        En libras.
+                      </FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
                 <FormField
-                  control={form.control}
+                  control={form.control as any}
                   name="height"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Altura (cm)</FormLabel>
+                      <FormLabel className="text-xs font-semibold uppercase tracking-wider">
+                        Altura (cm)
+                      </FormLabel>
                       <FormControl>
                         <Input
                           type="number"
@@ -165,8 +188,8 @@ export default function ProfileForm({
                           {...field}
                         />
                       </FormControl>
-                      <FormDescription>
-                        Tu altura en centímetros.
+                      <FormDescription className="text-xs">
+                        En centímetros.
                       </FormDescription>
                       <FormMessage />
                     </FormItem>
@@ -177,28 +200,29 @@ export default function ProfileForm({
           </AccordionItem>
         </Accordion>
 
-        {/* Características Físicas (Opcional) */}
         <Accordion type="single" collapsible className="w-full">
-          <AccordionItem value="item-2">
-            <AccordionTrigger>
-              Características Físicas (Opcional)
+          <AccordionItem value="item-2" className="border-border/40">
+            <AccordionTrigger className="text-base font-semibold uppercase tracking-wide hover:text-foreground/80">
+              Apariencia Física
             </AccordionTrigger>
-            <AccordionContent className="space-y-6">
+            <AccordionContent className="pt-6 space-y-6">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <FormField
                   control={form.control as any}
                   name="skinColor"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Tono de piel</FormLabel>
+                      <FormLabel className="text-xs font-semibold uppercase tracking-wider">
+                        Tono de Piel
+                      </FormLabel>
                       <FormControl>
                         <SkinTonePicker
                           value={field.value}
                           onChange={field.onChange}
                         />
                       </FormControl>
-                      <FormDescription>
-                        Selecciona el tono de piel que mejor te describa.
+                      <FormDescription className="text-xs">
+                        Ayuda a sugerir colores que te favorezcan.
                       </FormDescription>
                       <FormMessage />
                     </FormItem>
@@ -209,16 +233,18 @@ export default function ProfileForm({
                   name="hairColor"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Color de cabello</FormLabel>
+                      <FormLabel className="text-xs font-semibold uppercase tracking-wider">
+                        Color de Cabello
+                      </FormLabel>
                       <FormControl>
                         <Input
                           type="text"
-                          placeholder="Ej: Castaño oscuro, Rubio cenizo, etc."
+                          placeholder="Ej: Castaño oscuro, Rubio cenizo"
                           {...field}
                         />
                       </FormControl>
-                      <FormDescription>
-                        Describe tu color de cabello actual.
+                      <FormDescription className="text-xs">
+                        Para armonizar tus outfits con tu paleta natural.
                       </FormDescription>
                       <FormMessage />
                     </FormItem>
@@ -230,16 +256,18 @@ export default function ProfileForm({
                 name="bodyDescription"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Descripción del cuerpo</FormLabel>
+                    <FormLabel className="text-xs font-semibold uppercase tracking-wider">
+                      Tipo de Cuerpo
+                    </FormLabel>
                     <FormControl>
                       <Textarea
-                        placeholder="Describe tu tipo de cuerpo, características distintivas, etc."
+                        placeholder="Describe tu silueta y proporciones (ej: pera, reloj de arena, atlético, rectangular)"
+                        className="resize-none min-h-[100px]"
                         {...field}
                       />
                     </FormControl>
-                    <FormDescription>
-                      Proporciona una breve descripción de tu cuerpo (máximo 350
-                      caracteres).
+                    <FormDescription className="text-xs">
+                      Esto nos permite sugerir prendas que realcen tu figura.
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
@@ -254,55 +282,29 @@ export default function ProfileForm({
           name="profileDescription"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-base">
-                Descripción del perfil (Opcional)
+              <FormLabel className="text-base font-semibold uppercase tracking-wide">
+                Tu Estilo Personal
               </FormLabel>
               <FormControl>
                 <Textarea
-                  placeholder="Describe tu personalidad, intereses, hobbies, etc."
+                  placeholder="Cuéntanos sobre tu estilo, preferencias de moda, ocasiones para vestir, colores favoritos, o cualquier detalle que nos ayude a conocerte mejor"
+                  className="resize-none min-h-[120px]"
                   {...field}
                 />
               </FormControl>
-              <FormDescription>
-                Proporciona una breve descripción de ti mismo (máximo 500
-                caracteres).
+              <FormDescription className="text-xs">
+                Mientras más detalles compartas, mejores combinaciones podremos
+                crear para ti.
               </FormDescription>
               <FormMessage />
             </FormItem>
           )}
         />
+
         {isEditing ? (
-          <div className="flex flex-col gap-4 md:flex-row justify-between items-center mt-5">
-            {/*
-              <AlertDialog>
-              <AlertDialogTrigger
-                asChild
-                className="w-full md:w-max order-3 md:order-1"
-              >
-                <Button variant="destructive">Eliminar Cuenta</Button>
-              </AlertDialogTrigger>
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>
-                    ¿Estás completamente seguro?
-                  </AlertDialogTitle>
-                  <AlertDialogDescription>
-                    Esta acción eliminará tu cuenta de forma permanente y no
-                    podrás recuperarla. Todos tus datos asociados se perderán.
-                    Por favor, confirma si deseas continuar.
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                  <AlertDialogAction onClick={handleDeleteAccount}>
-                    Eliminar
-                  </AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
-            */}
+          <div className="flex flex-col gap-4 md:flex-row justify-between items-center pt-6 border-t border-border/40">
             <Button
-              className="font-semibold w-full md:w-max cursor-pointer"
+              className="font-semibold w-full md:w-max cursor-pointer uppercase tracking-wide text-sm px-8"
               type="button"
               variant="outline"
               onClick={() => setIsEditing(!isEditing)}
@@ -310,12 +312,12 @@ export default function ProfileForm({
               Cancelar
             </Button>
             <Button
-              className="font-semibold w-full md:w-max order-1 cursor-pointer"
+              className="font-semibold w-full md:w-max order-1 cursor-pointer uppercase tracking-wide text-sm px-8"
               type="submit"
               disabled={isLoading}
             >
               {isLoading && <LoaderCircle className="animate-spin w-4 h-4" />}
-              {isLoading ? 'Actualizando Datos...' : 'Guardar'}
+              {isLoading ? 'Actualizando...' : 'Guardar Cambios'}
             </Button>
           </div>
         ) : null}

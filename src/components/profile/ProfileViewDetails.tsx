@@ -12,7 +12,7 @@ export default function ProfileViewDetails({
       <section className="space-y-4">
         <div className="flex items-center gap-3">
           <h3 className="text-lg font-semibold uppercase tracking-wide text-foreground">
-            Información Básica
+            Datos Básicos
           </h3>
           <div className="h-0.5 flex-1 bg-linear-to-r from-foreground/20 via-foreground/10 to-transparent" />
         </div>
@@ -27,7 +27,7 @@ export default function ProfileViewDetails({
       <section className="space-y-4">
         <div className="flex items-center gap-3">
           <h3 className="text-lg font-semibold uppercase tracking-wide text-foreground">
-            Información Personal
+            Medidas y Edad
           </h3>
           <div className="h-0.5 flex-1 bg-linear-to-r from-foreground/20 via-foreground/10 to-transparent" />
         </div>
@@ -44,18 +44,18 @@ export default function ProfileViewDetails({
       <section className="space-y-4">
         <div className="flex items-center gap-3">
           <h3 className="text-lg font-semibold uppercase tracking-wide text-foreground">
-            Características Físicas
+            Apariencia Física
           </h3>
           <div className="h-0.5 flex-1 bg-linear-to-r from-foreground/20 via-foreground/10 to-transparent" />
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-5">
-          <ProfileField label="Tono de piel" value={profile?.skinColor} />
-          <ProfileField label="Color de cabello" value={profile?.hairColor} />
+          <ProfileField label="Tono de Piel" value={profile?.skinColor} />
+          <ProfileField label="Color de Cabello" value={profile?.hairColor} />
         </div>
         <div className="mt-3">
           <div className="flex flex-col gap-2">
             <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-              Descripción del cuerpo
+              Tipo de Cuerpo
             </p>
             <div className="bg-muted/30 rounded-lg p-4 border border-border/40">
               <p className="text-sm text-foreground leading-relaxed whitespace-pre-line">
@@ -69,7 +69,7 @@ export default function ProfileViewDetails({
       <section className="space-y-4">
         <div className="flex items-center gap-3">
           <h3 className="text-lg font-semibold uppercase tracking-wide text-foreground">
-            Descripción del Perfil
+            Estilo Personal
           </h3>
           <div className="h-0.5 flex-1 bg-linear-to-r from-foreground/20 via-foreground/10 to-transparent" />
         </div>
