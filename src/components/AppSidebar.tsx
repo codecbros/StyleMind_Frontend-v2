@@ -12,23 +12,24 @@ import {
 import { useIsMobile } from '@/hooks/use-mobile';
 import { LogOut, Shirt, SquarePlus, User } from 'lucide-react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { PATHS } from '../constants/paths';
 import { ErrorToast, SuccessToast } from '../lib/toast';
 
 // Menu items.
 const items = [
   {
     title: 'Perfil',
-    url: '/dashboard/perfil',
+    url: PATHS.Profile,
     icon: User,
   },
   {
     title: 'Armario',
-    url: '/dashboard/armario',
+    url: '',
     icon: Shirt,
   },
   {
     title: 'Nueva Prenda',
-    url: '/dashboard/armario/nueva-prenda',
+    url: PATHS.NewClothing,
     icon: SquarePlus,
   },
 ];
