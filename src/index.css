@@ -136,3 +136,11 @@
     transform: translateX(100%);
   }
 }
+
+.react-select{
+  > div{
+    padding: 2px 0;
+    border-radius: var(--radius-md);
+    border-color: var(--color-border);
+  }
+}

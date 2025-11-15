@@ -141,14 +141,14 @@ const NewClothing = () => {
         Nueva Prenda
       </h1>
       <CenteredContainer>
-        <Card>
+        <Card className="w-full px-4 sm:px-6 md:px-8 lg:px-10 py-6 md:py-8">
           <h4 className="mb-3 text-lg font-semibold">
             Cuanta más información proporciones, mejores serán las combinaciones
           </h4>
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit(onSubmit)}
-              className="flex flex-col gap-8"
+              className="flex flex-col gap-10"
             >
               <ImageUploader
                 fileObjects={fileObjects}
@@ -158,16 +158,23 @@ const NewClothing = () => {
                 isImagesUploading={isImagesUploading}
               />
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <FormField
                   control={form.control}
                   name="name"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Nombre de prenda</FormLabel>
+                      <FormLabel className="text-xs font-semibold uppercase tracking-wider">
+                        Nombre de la prenda
+                      </FormLabel>
                       <FormControl>
                         {field && (
-                          <Input placeholder="Camiseta basica" {...field} />
+                          <Input
+                            className="py-5"
+                            placeholder="Ej: Camisa Oxford azul, Jeans slim fit negro"
+                            maxLength={100}
+                            {...field}
+                          />
                         )}
                       </FormControl>
                       <FormMessage />
@@ -180,7 +187,9 @@ const NewClothing = () => {
                   name="categoriesId"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Categorias</FormLabel>
+                      <FormLabel className="text-xs font-semibold uppercase tracking-wider">
+                        Categorías
+                      </FormLabel>
                       <FormControl>
                         {field && (
                           <RSelect
@@ -204,7 +213,7 @@ const NewClothing = () => {
                                   (category) => category.id === value
                                 )?.name || '',
                             }))}
-                            placeholder="Selecciona las categorias"
+                            placeholder="Selecciona una o varias categorías"
                           />
                         )}
                       </FormControl>
@@ -218,14 +227,16 @@ const NewClothing = () => {
                   name="size"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Talla</FormLabel>
+                      <FormLabel className="text-xs font-semibold uppercase tracking-wider">
+                        Talla
+                      </FormLabel>
                       <Select
                         onValueChange={field.onChange}
                         defaultValue={field.value}
                       >
-                        <FormControl>
+                        <FormControl className="py-5">
                           <SelectTrigger className="w-full">
-                            <SelectValue placeholder="Selecciona una talla" />
+                            <SelectValue placeholder="Selecciona tu talla" />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
@@ -246,14 +257,16 @@ const NewClothing = () => {
                   name="season"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Temporada</FormLabel>
+                      <FormLabel className="text-xs font-semibold uppercase tracking-wider">
+                        Temporada
+                      </FormLabel>
                       <Select
                         onValueChange={field.onChange}
                         defaultValue={field.value}
                       >
-                        <FormControl>
+                        <FormControl className="py-5">
                           <SelectTrigger className="w-full">
-                            <SelectValue placeholder="Selecciona una temporada" />
+                            <SelectValue placeholder="¿Cuándo la usas más?" />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
@@ -274,10 +287,13 @@ const NewClothing = () => {
                   name="material"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Material</FormLabel>
+                      <FormLabel className="text-xs font-semibold uppercase tracking-wider">
+                        Material
+                      </FormLabel>
                       <FormControl>
                         <Input
-                          placeholder="Ej: Algodón, Poliéster, Cuero"
+                          className="py-5"
+                          placeholder="Ej: 100% algodón, Mezclilla, Cuero genuino"
                           {...field}
                         />
                       </FormControl>
@@ -291,10 +307,13 @@ const NewClothing = () => {
                   name="style"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Estilo</FormLabel>
+                      <FormLabel className="text-xs font-semibold uppercase tracking-wider">
+                        Estilo
+                      </FormLabel>
                       <FormControl>
                         <Input
-                          placeholder="Ej: Casual, Formal, Sporty"
+                          className="py-5"
+                          placeholder="Ej: Casual elegante, Deportivo, Bohemio"
                           {...field}
                         />
                       </FormControl>
@@ -308,10 +327,13 @@ const NewClothing = () => {
                   name="primaryColor"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Color Principal</FormLabel>
+                      <FormLabel className="text-xs font-semibold uppercase tracking-wider">
+                        Color principal
+                      </FormLabel>
                       <FormControl>
                         <Input
-                          placeholder="Color principal de la prenda"
+                          className="py-5"
+                          placeholder="Ej: Negro, Azul marino, Beige"
                           {...field}
                         />
                       </FormControl>
@@ -325,9 +347,15 @@ const NewClothing = () => {
                   name="secondaryColor"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Color Secundario (opcional)</FormLabel>
+                      <FormLabel className="text-xs font-semibold uppercase tracking-wider">
+                        Color secundario (opcional)
+                      </FormLabel>
                       <FormControl>
-                        <Input placeholder="Color secundario" {...field} />
+                        <Input
+                          className="py-5"
+                          placeholder="Ej: Rayas blancas, Detalles dorados"
+                          {...field}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -340,15 +368,20 @@ const NewClothing = () => {
                 name="description"
                 render={({ field }) => (
                   <FormItem className="-mt-4">
-                    <FormLabel className="">Descripción de la prenda</FormLabel>
+                    <FormLabel className="text-xs font-semibold uppercase tracking-wider">
+                      Descripción de la prenda
+                    </FormLabel>
                     <FormControl>
                       <Textarea
-                        placeholder="Ej: Camiseta de algodón color blanco, ideal para verano"
+                        className="resize-none min-h-[100px]"
+                        placeholder="Ej: Blusa de seda con mangas largas, perfecta para ocasiones formales. Tiene detalles de encaje en el cuello..."
+                        maxLength={1000}
                         {...field}
                       />
                     </FormControl>
                     <FormDescription>
-                      Proporciona una descripcion sobre la prenda (máximo 1000
+                      Describe características especiales, estado, combinaciones
+                      sugeridas o cualquier detalle relevante (máximo 1000
                       caracteres).
                     </FormDescription>
                     <FormMessage />

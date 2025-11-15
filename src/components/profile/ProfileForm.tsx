@@ -288,7 +288,7 @@ export default function ProfileForm({
               <FormControl>
                 <Textarea
                   placeholder="Cuéntanos sobre tu estilo, preferencias de moda, ocasiones para vestir, colores favoritos, o cualquier detalle que nos ayude a conocerte mejor"
-                  className="resize-none min-h-[120px]"
+                  className="resize-none min-h-[100px]"
                   {...field}
                 />
               </FormControl>
