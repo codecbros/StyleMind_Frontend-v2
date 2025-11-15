@@ -4,6 +4,11 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import RSelect from 'react-select';
 import { useGetMyCategories } from '../api/generated/categories/categories';
+import type { CreateClothesDto } from '../api/generated/schemas';
+import {
+  useAddClothes,
+  useUploadClothesImages,
+} from '../api/generated/wardrobe/wardrobe';
 import CenteredContainer from '../components/CenteredContainer';
 import type { FilesType } from '../components/ImageUpload';
 import ImageUploader from '../components/ImageUpload';
@@ -31,6 +36,7 @@ import { CLOTHING_CONSTANTS } from '../constants/clothing';
 import { COOKIE_KEYS } from '../constants/cookies';
 import { QUERY_KEYS } from '../constants/querys';
 import { getCookie } from '../lib/auth-cookies';
+import { ErrorToast, SuccessToast } from '../lib/toast';
 import { wardrobeItemSchema } from '../schemas/newClothingSchema';
 
 const NewClothing = () => {
@@ -38,7 +44,7 @@ const NewClothing = () => {
   const [originalFiles, setOriginalFiles] = useState<File[]>([]); // Para enviar al backend
   const [isImagesUploading, setIsImagesUploading] = useState(false);
 
-  const defaultValues = {
+  const defaultValues: CreateClothesDto = {
     name: '',
     description: '',
     season: '',
@@ -55,49 +61,72 @@ const NewClothing = () => {
     defaultValues,
   });
 
-  /*
-  const onSubmit = async (data: ClothingItemResponse) => {
-    try {
-      const response = await postClothing(data);
-      showSuccessToast('¡Prenda Guardada!', response.message);
-      const { id }: any = response.data;
-      setIsImagesUploading(true);
-
-      if (originalFiles.length > 0 && id) {
-        const formData = new FormData();
-
-        originalFiles.forEach((file) => {
-          formData.append('files', file);
-        });
-
-        if (id) {
-          await postImages(id, formData);
-          showSuccessToast(
-            '¡Imágenes subidas!',
-            'Las imágenes se han subido correctamente.'
-          );
-          setIsImagesUploading(false);
-        } else {
-          showErrorToast('Error al subir las imágenes');
-        }
-      }
-
-      setFileObjects([]);
-      setOriginalFiles([]);
-      form.reset();
-    } catch (error) {
-      showErrorToast(`Error al guardar la prenda
-        Por favor, revisa los datos ingresados`);
-      console.log(error);
-    }
-  };*/
-
   const token = getCookie(COOKIE_KEYS.AUTH_TOKEN);
+  const { mutate: addClothes, isPending } = useAddClothes();
+  const { mutate: uploadImage, isPending: isUploadingImages } =
+    useUploadClothesImages();
 
-  const onSubmit = async (data: any) => {
-    console.log('Form Data:', data);
-    // Aquí iría la lógica para enviar los datos al backend
+  const onSubmit = async (formData: any) => {
+    console.log('Form Data:', formData);
+
+    // ✅ Envuelve en un objeto con propiedad 'data'
+    addClothes(
+      { data: formData },
+      {
+        onSuccess: (response) => {
+          SuccessToast({
+            title: `La prenda ${formData.name} ha sido guardada exitosamente`,
+          });
+
+          const { id } = response.data;
+
+          // Subir imágenes si existen
+          if (originalFiles.length > 0 && id) {
+            setIsImagesUploading(true);
+
+            // ✅ uploadImage también necesita el objeto envuelto
+            uploadImage(
+              {
+                itemId: id,
+                data: { files: originalFiles }, // files como array de File
+              },
+              {
+                onSuccess: () => {
+                  SuccessToast({
+                    title: '¡Imágenes subidas!',
+                    description: 'Las imágenes se han subido correctamente.',
+                  });
+                  setIsImagesUploading(false);
+
+                  setFileObjects([]);
+                  setOriginalFiles([]);
+                },
+                onError: () => {
+                  ErrorToast({
+                    title: 'Error al subir las imágenes',
+                  });
+                  setIsImagesUploading(false);
+                },
+              }
+            );
+          } else {
+            setFileObjects([]);
+            setOriginalFiles([]);
+          }
+
+          form.reset();
+          console.log(response);
+        },
+        onError: () => {
+          ErrorToast({
+            title:
+              'Error al guardar la prenda. Por favor, revisa los datos ingresados',
+          });
+        },
+      }
+    );
   };
+
   const { data, isError, isLoading } = useGetMyCategories(
     {},
     {
@@ -159,6 +188,7 @@ const NewClothing = () => {
                       <FormControl>
                         {field && (
                           <RSelect
+                            isDisabled={isError}
                             isLoading={isLoading}
                             className="react-select"
                             isMulti
@@ -333,12 +363,12 @@ const NewClothing = () => {
               <Button
                 className="font-semibold w-full md:w-max order-1 md:order-3"
                 type="submit"
-                disabled={isLoading || isImagesUploading}
+                disabled={isPending || isUploadingImages}
               >
-                {(isLoading || isImagesUploading) && (
+                {(isPending || isUploadingImages) && (
                   <LoaderCircle className="animate-spin w-4 h-4 mr-1" />
                 )}
-                {isLoading || isImagesUploading ? 'Guardando...' : 'Guardar'}
+                {isPending || isUploadingImages ? 'Guardando...' : 'Guardar'}
               </Button>
             </form>
           </Form>
