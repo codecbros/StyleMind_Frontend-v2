@@ -10,7 +10,6 @@ import {
   useUploadClothesImages,
 } from '../api/generated/wardrobe/wardrobe';
 import CenteredContainer from '../components/CenteredContainer';
-import type { FilesType } from '../components/ImageUpload';
 import ImageUploader from '../components/ImageUpload';
 import { Button } from '../components/ui/button';
 import { Card } from '../components/ui/card';
@@ -35,13 +34,14 @@ import { Textarea } from '../components/ui/textarea';
 import { CLOTHING_CONSTANTS } from '../constants/clothing';
 import { COOKIE_KEYS } from '../constants/cookies';
 import { QUERY_KEYS } from '../constants/querys';
+import { useImageUploader } from '../hooks/useImageUpload';
 import { getCookie } from '../lib/auth-cookies';
 import { ErrorToast, SuccessToast } from '../lib/toast';
 import { wardrobeItemSchema } from '../schemas/newClothingSchema';
 
 const NewClothing = () => {
-  const [fileObjects, setFileObjects] = useState<FilesType[]>([]); // Para la UI con previews
-  const [originalFiles, setOriginalFiles] = useState<File[]>([]); // Para enviar al backend
+  const { images, addImages, removeImage, getFiles, clearImages } =
+    useImageUploader();
   const [isImagesUploading, setIsImagesUploading] = useState(false);
 
   const defaultValues: CreateClothesDto = {
@@ -67,6 +67,8 @@ const NewClothing = () => {
     useUploadClothesImages();
 
   const onSubmit = async (formData: any) => {
+    const files = getFiles();
+
     addClothes(
       { data: formData },
       {
@@ -78,13 +80,13 @@ const NewClothing = () => {
           const { id } = response.data;
 
           // Subir imágenes si existen
-          if (originalFiles.length > 0 && id) {
+          if (files.length > 0 && id) {
             setIsImagesUploading(true);
 
             uploadImage(
               {
                 itemId: id,
-                data: { files: originalFiles },
+                data: { files },
               },
               {
                 onSuccess: () => {
@@ -93,9 +95,7 @@ const NewClothing = () => {
                     description: 'Las imágenes se han subido correctamente.',
                   });
                   setIsImagesUploading(false);
-
-                  setFileObjects([]);
-                  setOriginalFiles([]);
+                  clearImages();
                 },
                 onError: () => {
                   ErrorToast({
@@ -106,17 +106,16 @@ const NewClothing = () => {
               }
             );
           } else {
-            setFileObjects([]);
-            setOriginalFiles([]);
+            clearImages();
           }
 
           form.reset();
         },
         onError: (error) => {
           ErrorToast({
-            title:
-              `${error?.response?.data?.message}, intenta cambiando el nombre a la prenda o de categoria` ||
-              'Error al guardar la prenda. Por favor, revisa los datos ingresados',
+            title: error?.response?.data?.message
+              ? `${error.response.data.message}. Intenta cambiando el nombre de la prenda o la categoría`
+              : 'Error al guardar la prenda. Por favor, revisa los datos ingresados',
           });
         },
       }
@@ -151,11 +150,10 @@ const NewClothing = () => {
               className="flex flex-col gap-10"
             >
               <ImageUploader
-                fileObjects={fileObjects}
-                originalFiles={originalFiles}
-                setFileObjects={setFileObjects}
-                setOriginalFiles={setOriginalFiles}
-                isImagesUploading={isImagesUploading}
+                images={images}
+                onAddImages={addImages}
+                onRemoveImage={removeImage}
+                isUploading={isImagesUploading}
               />
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
