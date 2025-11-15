@@ -35,7 +35,7 @@ import { COOKIE_KEYS } from '../constants/cookies';
 import { QUERY_KEYS } from '../constants/querys';
 import { useImageUploader } from '../hooks/useImageUpload';
 import { getCookie } from '../lib/auth-cookies';
-import { ErrorToast, SuccessToast } from '../lib/toast';
+import { ErrorToast, SuccessToast, WarningToast } from '../lib/toast';
 import { wardrobeItemSchema } from '../schemas/newClothingSchema';
 
 const NewClothing = () => {
@@ -75,6 +75,14 @@ const NewClothing = () => {
 
   const onSubmit = async (formData: any) => {
     const files = getFiles();
+
+    if (files.length === 0) {
+      WarningToast({
+        title: 'Imagen requerida',
+        description: 'Debes agregar al menos una foto de la prenda',
+      });
+      return;
+    }
 
     addClothes(
       { data: formData },

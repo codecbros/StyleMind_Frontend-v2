@@ -52,3 +52,10 @@ export const wardrobeItemSchema = z.object({
     .min(1, { message: 'Selecciona al menos una categoría' })
     .max(3, { message: 'Máximo 3 categorías por prenda' }),
 });
+
+export const wardrobeItemWithImagesSchema = wardrobeItemSchema.extend({
+  images: z
+    .array(z.any())
+    .min(1, { message: 'Debes agregar al menos una imagen' })
+    .max(4, { message: 'Máximo 4 imágenes por prenda' }),
+});
