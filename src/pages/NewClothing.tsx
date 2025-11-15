@@ -222,65 +222,70 @@ const NewClothing = () => {
                   )}
                 />
 
-                <FormField
-                  control={form.control}
-                  name="size"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-xs font-semibold uppercase tracking-wider">
-                        Talla
-                      </FormLabel>
-                      <Select
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
-                      >
-                        <FormControl className="py-5">
-                          <SelectTrigger className="w-full">
-                            <SelectValue placeholder="Selecciona tu talla" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {CLOTHING_CONSTANTS.sizes.map((size) => (
-                            <SelectItem key={size.value} value={size.value}>
-                              {size.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                <div className="grid sm:grid-cols-2 md:col-span-2 gap-6 ">
+                  <FormField
+                    control={form.control}
+                    name="size"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-xs font-semibold uppercase tracking-wider">
+                          Talla
+                        </FormLabel>
+                        <Select
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                        >
+                          <FormControl className="py-5">
+                            <SelectTrigger className="w-full">
+                              <SelectValue placeholder="Selecciona tu talla" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {CLOTHING_CONSTANTS.sizes.map((size) => (
+                              <SelectItem key={size.value} value={size.value}>
+                                {size.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
 
-                <FormField
-                  control={form.control}
-                  name="season"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-xs font-semibold uppercase tracking-wider">
-                        Temporada
-                      </FormLabel>
-                      <Select
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
-                      >
-                        <FormControl className="py-5">
-                          <SelectTrigger className="w-full">
-                            <SelectValue placeholder="¿Cuándo la usas más?" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {CLOTHING_CONSTANTS.seasons.map((season) => (
-                            <SelectItem key={season.value} value={season.value}>
-                              {season.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                  <FormField
+                    control={form.control}
+                    name="season"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-xs font-semibold uppercase tracking-wider">
+                          Temporada
+                        </FormLabel>
+                        <Select
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                        >
+                          <FormControl className="py-5">
+                            <SelectTrigger className="w-full">
+                              <SelectValue placeholder="¿Cuándo la usas más?" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {CLOTHING_CONSTANTS.seasons.map((season) => (
+                              <SelectItem
+                                key={season.value}
+                                value={season.value}
+                              >
+                                {season.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
 
                 <FormField
                   control={form.control}
