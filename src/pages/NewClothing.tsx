@@ -67,9 +67,6 @@ const NewClothing = () => {
     useUploadClothesImages();
 
   const onSubmit = async (formData: any) => {
-    console.log('Form Data:', formData);
-
-    // ✅ Envuelve en un objeto con propiedad 'data'
     addClothes(
       { data: formData },
       {
@@ -84,11 +81,10 @@ const NewClothing = () => {
           if (originalFiles.length > 0 && id) {
             setIsImagesUploading(true);
 
-            // ✅ uploadImage también necesita el objeto envuelto
             uploadImage(
               {
                 itemId: id,
-                data: { files: originalFiles }, // files como array de File
+                data: { files: originalFiles },
               },
               {
                 onSuccess: () => {
@@ -115,11 +111,11 @@ const NewClothing = () => {
           }
 
           form.reset();
-          console.log(response);
         },
-        onError: () => {
+        onError: (error) => {
           ErrorToast({
             title:
+              `${error?.response?.data?.message}, intenta cambiando el nombre a la prenda o de categoria` ||
               'Error al guardar la prenda. Por favor, revisa los datos ingresados',
           });
         },
