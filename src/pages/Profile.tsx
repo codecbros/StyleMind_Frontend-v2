@@ -29,8 +29,8 @@ export type profileProps = {
 
 export default function Profile() {
   const [isEditing, setIsEditing] = useState(false);
-
   const token = getCookie(COOKIE_KEYS.AUTH_TOKEN);
+
   const {
     data,
     isLoading: isProfileLoading,

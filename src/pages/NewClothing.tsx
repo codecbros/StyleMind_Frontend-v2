@@ -2,6 +2,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { LoaderCircle } from 'lucide-react';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import RSelect from 'react-select';
+import { useGetMyCategories } from '../api/generated/categories/categories';
 import CenteredContainer from '../components/CenteredContainer';
 import type { FilesType } from '../components/ImageUpload';
 import ImageUploader from '../components/ImageUpload';
@@ -17,14 +19,23 @@ import {
   FormMessage,
 } from '../components/ui/form';
 import { Input } from '../components/ui/input';
-import { Select } from '../components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '../components/ui/select';
 import { Textarea } from '../components/ui/textarea';
+import { CLOTHING_CONSTANTS } from '../constants/clothing';
+import { COOKIE_KEYS } from '../constants/cookies';
+import { QUERY_KEYS } from '../constants/querys';
+import { getCookie } from '../lib/auth-cookies';
 import { wardrobeItemSchema } from '../schemas/newClothingSchema';
 
 const NewClothing = () => {
   const [fileObjects, setFileObjects] = useState<FilesType[]>([]); // Para la UI con previews
   const [originalFiles, setOriginalFiles] = useState<File[]>([]); // Para enviar al backend
-  const [isLoading, setIsLoading] = useState(false);
   const [isImagesUploading, setIsImagesUploading] = useState(false);
 
   const defaultValues = {
@@ -44,8 +55,8 @@ const NewClothing = () => {
     defaultValues,
   });
 
+  /*
   const onSubmit = async (data: ClothingItemResponse) => {
-    setIsLoading(true);
     try {
       const response = await postClothing(data);
       showSuccessToast('¡Prenda Guardada!', response.message);
@@ -66,7 +77,6 @@ const NewClothing = () => {
             'Las imágenes se han subido correctamente.'
           );
           setIsImagesUploading(false);
-          setIsLoading(false);
         } else {
           showErrorToast('Error al subir las imágenes');
         }
@@ -80,7 +90,25 @@ const NewClothing = () => {
         Por favor, revisa los datos ingresados`);
       console.log(error);
     }
+  };*/
+
+  const token = getCookie(COOKIE_KEYS.AUTH_TOKEN);
+
+  const onSubmit = async (data: any) => {
+    console.log('Form Data:', data);
+    // Aquí iría la lógica para enviar los datos al backend
   };
+  const { data, isError, isLoading } = useGetMyCategories(
+    {},
+    {
+      query: {
+        queryKey: [QUERY_KEYS.MY_CATEGORIES],
+        enabled: !!token,
+      },
+    }
+  );
+
+  const categories = data?.data || [];
 
   return (
     <>
@@ -104,6 +132,7 @@ const NewClothing = () => {
                 setOriginalFiles={setOriginalFiles}
                 isImagesUploading={isImagesUploading}
               />
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <FormField
                   control={form.control}
@@ -129,7 +158,8 @@ const NewClothing = () => {
                       <FormLabel>Categorias</FormLabel>
                       <FormControl>
                         {field && (
-                          <Select
+                          <RSelect
+                            isLoading={isLoading}
                             className="react-select"
                             isMulti
                             options={categories.map((category) => ({
@@ -163,9 +193,23 @@ const NewClothing = () => {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Talla</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Ej: S, M, L, XL" {...field} />
-                      </FormControl>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger className="w-full">
+                            <SelectValue placeholder="Selecciona una talla" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {CLOTHING_CONSTANTS.sizes.map((size) => (
+                            <SelectItem key={size.value} value={size.value}>
+                              {size.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -177,12 +221,23 @@ const NewClothing = () => {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Temporada</FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder="Ej: Verano (elige la temporada considerando el material)"
-                          {...field}
-                        />
-                      </FormControl>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger className="w-full">
+                            <SelectValue placeholder="Selecciona una temporada" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {CLOTHING_CONSTANTS.seasons.map((season) => (
+                            <SelectItem key={season.value} value={season.value}>
+                              {season.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -253,6 +308,7 @@ const NewClothing = () => {
                   )}
                 />
               </div>
+
               <FormField
                 control={form.control}
                 name="description"
