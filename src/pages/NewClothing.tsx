@@ -1,6 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { LoaderCircle } from 'lucide-react';
-import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import RSelect from 'react-select';
 import { useGetMyCategories } from '../api/generated/categories/categories';
@@ -40,9 +39,22 @@ import { ErrorToast, SuccessToast } from '../lib/toast';
 import { wardrobeItemSchema } from '../schemas/newClothingSchema';
 
 const NewClothing = () => {
+  const token = getCookie(COOKIE_KEYS.AUTH_TOKEN);
+  const { mutate: addClothes, isPending } = useAddClothes();
+  const { mutate: uploadImage, isPending: isUploadingImages } =
+    useUploadClothesImages();
   const { images, addImages, removeImage, getFiles, clearImages } =
     useImageUploader();
-  const [isImagesUploading, setIsImagesUploading] = useState(false);
+
+  const { data, isError, isLoading } = useGetMyCategories(
+    {},
+    {
+      query: {
+        queryKey: [QUERY_KEYS.MY_CATEGORIES],
+        enabled: !!token,
+      },
+    }
+  );
 
   const defaultValues: CreateClothesDto = {
     name: '',
@@ -61,11 +73,6 @@ const NewClothing = () => {
     defaultValues,
   });
 
-  const token = getCookie(COOKIE_KEYS.AUTH_TOKEN);
-  const { mutate: addClothes, isPending } = useAddClothes();
-  const { mutate: uploadImage, isPending: isUploadingImages } =
-    useUploadClothesImages();
-
   const onSubmit = async (formData: any) => {
     const files = getFiles();
 
@@ -81,8 +88,6 @@ const NewClothing = () => {
 
           // Subir imágenes si existen
           if (files.length > 0 && id) {
-            setIsImagesUploading(true);
-
             uploadImage(
               {
                 itemId: id,
@@ -94,14 +99,12 @@ const NewClothing = () => {
                     title: '¡Imágenes subidas!',
                     description: 'Las imágenes se han subido correctamente.',
                   });
-                  setIsImagesUploading(false);
                   clearImages();
                 },
                 onError: () => {
                   ErrorToast({
                     title: 'Error al subir las imágenes',
                   });
-                  setIsImagesUploading(false);
                 },
               }
             );
@@ -121,16 +124,6 @@ const NewClothing = () => {
       }
     );
   };
-
-  const { data, isError, isLoading } = useGetMyCategories(
-    {},
-    {
-      query: {
-        queryKey: [QUERY_KEYS.MY_CATEGORIES],
-        enabled: !!token,
-      },
-    }
-  );
 
   const categories = data?.data || [];
 
@@ -153,7 +146,7 @@ const NewClothing = () => {
                 images={images}
                 onAddImages={addImages}
                 onRemoveImage={removeImage}
-                isUploading={isImagesUploading}
+                isUploading={isUploadingImages}
               />
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -382,25 +375,28 @@ const NewClothing = () => {
                         {...field}
                       />
                     </FormControl>
+                    <FormMessage />
                     <FormDescription>
                       Describe características especiales, estado, combinaciones
                       sugeridas o cualquier detalle relevante (máximo 1000
                       caracteres).
                     </FormDescription>
-                    <FormMessage />
                   </FormItem>
                 )}
               />
 
               <Button
-                className="font-semibold w-full md:w-max order-1 md:order-3"
+                className="font-semibold w-full md:w-max ml-auto cursor-pointer"
                 type="submit"
+                aria-label="Guardar prenda"
                 disabled={isPending || isUploadingImages}
               >
                 {(isPending || isUploadingImages) && (
                   <LoaderCircle className="animate-spin w-4 h-4 mr-1" />
                 )}
-                {isPending || isUploadingImages ? 'Guardando...' : 'Guardar'}
+                {isPending || isUploadingImages
+                  ? 'Guardando...'
+                  : 'Guardar prenda'}
               </Button>
             </form>
           </Form>

@@ -79,7 +79,7 @@ export default function ImageUploader({
               />
               <button
                 type="button"
-                className="absolute -top-2 -right-2 w-7 h-7 bg-destructive rounded-full flex items-center justify-center hover:bg-destructive/90 transition-colors shadow-md"
+                className="absolute top-0.5 right-0.5 size-6 bg-destructive rounded-full flex items-center justify-center hover:bg-destructive/90 transition-colors shadow-md cursor-pointer"
                 onClick={() => onRemoveImage(image.id)}
                 aria-label={`Eliminar ${image.file.name}`}
               >
