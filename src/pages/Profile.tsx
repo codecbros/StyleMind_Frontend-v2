@@ -69,7 +69,7 @@ export default function Profile() {
       </h1>
       <CenteredContainer>
         <Card className="w-full px-4 sm:px-6 md:px-8 lg:px-10 py-6 md:py-8">
-          <div className="mb-6 md:mb-8">
+          <div className="md:mb-4">
             <h4 className="text-base md:text-lg font-semibold leading-relaxed">
               Completa tu perfil: Cuanta más información proporciones, mejores
               serán las combinaciones

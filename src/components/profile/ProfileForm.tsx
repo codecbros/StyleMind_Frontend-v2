@@ -59,7 +59,12 @@ export default function ProfileForm({
                     Nombres *
                   </FormLabel>
                   <FormControl>
-                    <Input type="text" placeholder="Ej: María" {...field} />
+                    <Input
+                      className="py-5"
+                      type="text"
+                      placeholder="Ej: María"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -75,6 +80,7 @@ export default function ProfileForm({
                   </FormLabel>
                   <FormControl>
                     <Input
+                      className="py-5"
                       type="text"
                       placeholder="Ej: García López"
                       {...field}
@@ -112,7 +118,7 @@ export default function ProfileForm({
           />
         </section>
 
-        <Accordion type="single" collapsible className="w-full">
+        <Accordion type="single" collapsible className="w-full mb-4">
           <AccordionItem value="item-1" className="border-border/40">
             <AccordionTrigger className="text-base font-semibold uppercase tracking-wide hover:text-foreground/80">
               Medidas y Edad
@@ -128,6 +134,7 @@ export default function ProfileForm({
                     </FormLabel>
                     <FormControl>
                       <Input
+                        className="py-5"
                         type="date"
                         max={new Date().toISOString().split('T')[0]}
                         value={field.value ? field.value.split('T')[0] : ''}
@@ -157,6 +164,7 @@ export default function ProfileForm({
                       </FormLabel>
                       <FormControl>
                         <Input
+                          className="py-5"
                           type="number"
                           step="0"
                           placeholder="70.5"
@@ -181,6 +189,7 @@ export default function ProfileForm({
                       </FormLabel>
                       <FormControl>
                         <Input
+                          className="py-5"
                           type="number"
                           step="0"
                           placeholder="175"
@@ -238,6 +247,7 @@ export default function ProfileForm({
                       </FormLabel>
                       <FormControl>
                         <Input
+                          className="py-5"
                           type="text"
                           placeholder="Ej: Castaño oscuro, Rubio cenizo"
                           {...field}
@@ -288,7 +298,7 @@ export default function ProfileForm({
               <FormControl>
                 <Textarea
                   placeholder="Cuéntanos sobre tu estilo, preferencias de moda, ocasiones para vestir, colores favoritos, o cualquier detalle que nos ayude a conocerte mejor"
-                  className="resize-none min-h-[120px]"
+                  className="resize-none min-h-[100px]"
                   {...field}
                 />
               </FormControl>

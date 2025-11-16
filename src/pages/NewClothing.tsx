@@ -1,6 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { LoaderCircle } from 'lucide-react';
-import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import RSelect from 'react-select';
 import { useGetMyCategories } from '../api/generated/categories/categories';
@@ -10,7 +9,6 @@ import {
   useUploadClothesImages,
 } from '../api/generated/wardrobe/wardrobe';
 import CenteredContainer from '../components/CenteredContainer';
-import type { FilesType } from '../components/ImageUpload';
 import ImageUploader from '../components/ImageUpload';
 import { Button } from '../components/ui/button';
 import { Card } from '../components/ui/card';
@@ -35,14 +33,28 @@ import { Textarea } from '../components/ui/textarea';
 import { CLOTHING_CONSTANTS } from '../constants/clothing';
 import { COOKIE_KEYS } from '../constants/cookies';
 import { QUERY_KEYS } from '../constants/querys';
+import { useImageUploader } from '../hooks/useImageUpload';
 import { getCookie } from '../lib/auth-cookies';
-import { ErrorToast, SuccessToast } from '../lib/toast';
+import { ErrorToast, SuccessToast, WarningToast } from '../lib/toast';
 import { wardrobeItemSchema } from '../schemas/newClothingSchema';
 
 const NewClothing = () => {
-  const [fileObjects, setFileObjects] = useState<FilesType[]>([]); // Para la UI con previews
-  const [originalFiles, setOriginalFiles] = useState<File[]>([]); // Para enviar al backend
-  const [isImagesUploading, setIsImagesUploading] = useState(false);
+  const token = getCookie(COOKIE_KEYS.AUTH_TOKEN);
+  const { mutate: addClothes, isPending } = useAddClothes();
+  const { mutate: uploadImage, isPending: isUploadingImages } =
+    useUploadClothesImages();
+  const { images, addImages, removeImage, getFiles, clearImages } =
+    useImageUploader();
+
+  const { data, isError, isLoading } = useGetMyCategories(
+    {},
+    {
+      query: {
+        queryKey: [QUERY_KEYS.MY_CATEGORIES],
+        enabled: !!token,
+      },
+    }
+  );
 
   const defaultValues: CreateClothesDto = {
     name: '',
@@ -61,15 +73,17 @@ const NewClothing = () => {
     defaultValues,
   });
 
-  const token = getCookie(COOKIE_KEYS.AUTH_TOKEN);
-  const { mutate: addClothes, isPending } = useAddClothes();
-  const { mutate: uploadImage, isPending: isUploadingImages } =
-    useUploadClothesImages();
-
   const onSubmit = async (formData: any) => {
-    console.log('Form Data:', formData);
+    const files = getFiles();
 
-    // ✅ Envuelve en un objeto con propiedad 'data'
+    if (files.length <= 0) {
+      WarningToast({
+        title: 'Imagen requerida',
+        description: 'Debes agregar al menos una foto de la prenda',
+      });
+      return;
+    }
+
     addClothes(
       { data: formData },
       {
@@ -81,14 +95,11 @@ const NewClothing = () => {
           const { id } = response.data;
 
           // Subir imágenes si existen
-          if (originalFiles.length > 0 && id) {
-            setIsImagesUploading(true);
-
-            // ✅ uploadImage también necesita el objeto envuelto
+          if (files.length > 0 && id) {
             uploadImage(
               {
                 itemId: id,
-                data: { files: originalFiles }, // files como array de File
+                data: { files },
               },
               {
                 onSuccess: () => {
@@ -96,46 +107,31 @@ const NewClothing = () => {
                     title: '¡Imágenes subidas!',
                     description: 'Las imágenes se han subido correctamente.',
                   });
-                  setIsImagesUploading(false);
-
-                  setFileObjects([]);
-                  setOriginalFiles([]);
+                  clearImages();
                 },
                 onError: () => {
                   ErrorToast({
                     title: 'Error al subir las imágenes',
                   });
-                  setIsImagesUploading(false);
                 },
               }
             );
           } else {
-            setFileObjects([]);
-            setOriginalFiles([]);
+            clearImages();
           }
 
           form.reset();
-          console.log(response);
         },
-        onError: () => {
+        onError: (error) => {
           ErrorToast({
-            title:
-              'Error al guardar la prenda. Por favor, revisa los datos ingresados',
+            title: error?.response?.data?.message
+              ? `${error.response.data.message}. Intenta cambiando el nombre de la prenda o la categoría`
+              : 'Error al guardar la prenda. Por favor, revisa los datos ingresados',
           });
         },
       }
     );
   };
-
-  const { data, isError, isLoading } = useGetMyCategories(
-    {},
-    {
-      query: {
-        queryKey: [QUERY_KEYS.MY_CATEGORIES],
-        enabled: !!token,
-      },
-    }
-  );
 
   const categories = data?.data || [];
 
@@ -145,33 +141,39 @@ const NewClothing = () => {
         Nueva Prenda
       </h1>
       <CenteredContainer>
-        <Card>
+        <Card className="w-full px-4 sm:px-6 md:px-8 lg:px-10 py-6 md:py-8">
           <h4 className="mb-3 text-lg font-semibold">
             Cuanta más información proporciones, mejores serán las combinaciones
           </h4>
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit(onSubmit)}
-              className="flex flex-col gap-8"
+              className="flex flex-col gap-10"
             >
               <ImageUploader
-                fileObjects={fileObjects}
-                originalFiles={originalFiles}
-                setFileObjects={setFileObjects}
-                setOriginalFiles={setOriginalFiles}
-                isImagesUploading={isImagesUploading}
+                images={images}
+                onAddImages={addImages}
+                onRemoveImage={removeImage}
+                isUploading={isUploadingImages}
               />
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <FormField
                   control={form.control}
                   name="name"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Nombre de prenda</FormLabel>
+                      <FormLabel className="text-xs font-semibold uppercase tracking-wider">
+                        Nombre de la prenda
+                      </FormLabel>
                       <FormControl>
                         {field && (
-                          <Input placeholder="Camiseta basica" {...field} />
+                          <Input
+                            className="py-5"
+                            placeholder="Ej: Camisa Oxford azul, Jeans slim fit negro"
+                            maxLength={100}
+                            {...field}
+                          />
                         )}
                       </FormControl>
                       <FormMessage />
@@ -184,7 +186,9 @@ const NewClothing = () => {
                   name="categoriesId"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Categorias</FormLabel>
+                      <FormLabel className="text-xs font-semibold uppercase tracking-wider">
+                        Categorías
+                      </FormLabel>
                       <FormControl>
                         {field && (
                           <RSelect
@@ -192,10 +196,12 @@ const NewClothing = () => {
                             isLoading={isLoading}
                             className="react-select"
                             isMulti
-                            options={categories.map((category) => ({
-                              value: category.id,
-                              label: category.name,
-                            }))}
+                            options={categories.map(
+                              (category: { id: any; name: any }) => ({
+                                value: category.id,
+                                label: category.name,
+                              })
+                            )}
                             onChange={(selectedOptions) => {
                               field.onChange(
                                 selectedOptions.map((option) => option.value)
@@ -205,10 +211,11 @@ const NewClothing = () => {
                               value,
                               label:
                                 categories.find(
-                                  (category) => category.id === value
+                                  (category: { id: string }) =>
+                                    category.id === value
                                 )?.name || '',
                             }))}
-                            placeholder="Selecciona las categorias"
+                            placeholder="Selecciona una o varias categorías"
                           />
                         )}
                       </FormControl>
@@ -217,71 +224,83 @@ const NewClothing = () => {
                   )}
                 />
 
-                <FormField
-                  control={form.control}
-                  name="size"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Talla</FormLabel>
-                      <Select
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
-                      >
-                        <FormControl>
-                          <SelectTrigger className="w-full">
-                            <SelectValue placeholder="Selecciona una talla" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {CLOTHING_CONSTANTS.sizes.map((size) => (
-                            <SelectItem key={size.value} value={size.value}>
-                              {size.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                <div className="grid sm:grid-cols-2 md:col-span-2 gap-6 ">
+                  <FormField
+                    control={form.control}
+                    name="size"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-xs font-semibold uppercase tracking-wider">
+                          Talla
+                        </FormLabel>
+                        <Select
+                          onValueChange={field.onChange}
+                          value={field.value}
+                        >
+                          <FormControl className="py-5">
+                            <SelectTrigger className="w-full">
+                              <SelectValue placeholder="Selecciona tu talla" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {CLOTHING_CONSTANTS.sizes.map((size) => (
+                              <SelectItem key={size.value} value={size.value}>
+                                {size.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
 
-                <FormField
-                  control={form.control}
-                  name="season"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Temporada</FormLabel>
-                      <Select
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
-                      >
-                        <FormControl>
-                          <SelectTrigger className="w-full">
-                            <SelectValue placeholder="Selecciona una temporada" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {CLOTHING_CONSTANTS.seasons.map((season) => (
-                            <SelectItem key={season.value} value={season.value}>
-                              {season.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                  <FormField
+                    control={form.control}
+                    name="season"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-xs font-semibold uppercase tracking-wider">
+                          Temporada
+                        </FormLabel>
+                        <Select
+                          onValueChange={field.onChange}
+                          value={field.value}
+                        >
+                          <FormControl className="py-5">
+                            <SelectTrigger className="w-full">
+                              <SelectValue placeholder="¿Cuándo la usas más?" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {CLOTHING_CONSTANTS.seasons.map((season) => (
+                              <SelectItem
+                                key={season.value}
+                                value={season.value}
+                              >
+                                {season.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
 
                 <FormField
                   control={form.control}
                   name="material"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Material</FormLabel>
+                      <FormLabel className="text-xs font-semibold uppercase tracking-wider">
+                        Material
+                      </FormLabel>
                       <FormControl>
                         <Input
-                          placeholder="Ej: Algodón, Poliéster, Cuero"
+                          className="py-5"
+                          placeholder="Ej: 100% algodón, Mezclilla, Cuero genuino"
                           {...field}
                         />
                       </FormControl>
@@ -295,10 +314,13 @@ const NewClothing = () => {
                   name="style"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Estilo</FormLabel>
+                      <FormLabel className="text-xs font-semibold uppercase tracking-wider">
+                        Estilo
+                      </FormLabel>
                       <FormControl>
                         <Input
-                          placeholder="Ej: Casual, Formal, Sporty"
+                          className="py-5"
+                          placeholder="Ej: Casual elegante, Deportivo, Bohemio"
                           {...field}
                         />
                       </FormControl>
@@ -312,10 +334,13 @@ const NewClothing = () => {
                   name="primaryColor"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Color Principal</FormLabel>
+                      <FormLabel className="text-xs font-semibold uppercase tracking-wider">
+                        Color principal
+                      </FormLabel>
                       <FormControl>
                         <Input
-                          placeholder="Color principal de la prenda"
+                          className="py-5"
+                          placeholder="Ej: Negro, Azul marino, Beige"
                           {...field}
                         />
                       </FormControl>
@@ -329,9 +354,15 @@ const NewClothing = () => {
                   name="secondaryColor"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Color Secundario (opcional)</FormLabel>
+                      <FormLabel className="text-xs font-semibold uppercase tracking-wider">
+                        Color secundario (opcional)
+                      </FormLabel>
                       <FormControl>
-                        <Input placeholder="Color secundario" {...field} />
+                        <Input
+                          className="py-5"
+                          placeholder="Ej: Rayas blancas, Detalles dorados"
+                          {...field}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -344,31 +375,39 @@ const NewClothing = () => {
                 name="description"
                 render={({ field }) => (
                   <FormItem className="-mt-4">
-                    <FormLabel className="">Descripción de la prenda</FormLabel>
+                    <FormLabel className="text-xs font-semibold uppercase tracking-wider">
+                      Descripción de la prenda
+                    </FormLabel>
                     <FormControl>
                       <Textarea
-                        placeholder="Ej: Camiseta de algodón color blanco, ideal para verano"
+                        className="resize-none min-h-[100px]"
+                        placeholder="Ej: Blusa de seda con mangas largas, perfecta para ocasiones formales. Tiene detalles de encaje en el cuello..."
+                        maxLength={1000}
                         {...field}
                       />
                     </FormControl>
+                    <FormMessage />
                     <FormDescription>
-                      Proporciona una descripcion sobre la prenda (máximo 1000
+                      Describe características especiales, estado, combinaciones
+                      sugeridas o cualquier detalle relevante (máximo 1000
                       caracteres).
                     </FormDescription>
-                    <FormMessage />
                   </FormItem>
                 )}
               />
 
               <Button
-                className="font-semibold w-full md:w-max order-1 md:order-3"
+                className="font-semibold w-full md:w-max ml-auto cursor-pointer"
                 type="submit"
+                aria-label="Guardar prenda"
                 disabled={isPending || isUploadingImages}
               >
                 {(isPending || isUploadingImages) && (
                   <LoaderCircle className="animate-spin w-4 h-4 mr-1" />
                 )}
-                {isPending || isUploadingImages ? 'Guardando...' : 'Guardar'}
+                {isPending || isUploadingImages
+                  ? 'Guardando...'
+                  : 'Guardar prenda'}
               </Button>
             </form>
           </Form>

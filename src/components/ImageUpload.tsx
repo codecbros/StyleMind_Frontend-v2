@@ -1,162 +1,98 @@
 import { UploadCloud, X } from 'lucide-react';
-import React, { useCallback, useEffect } from 'react';
-import { type FileRejection, useDropzone } from 'react-dropzone';
-import { ErrorToast, WarningToast } from '../lib/toast';
+import { useDropzone, type FileRejection } from 'react-dropzone';
+import {
+  MAX_FILE_SIZE,
+  MAX_FILES,
+  type ImageFile,
+} from '../hooks/useImageUpload';
 import { cn } from '../lib/utils';
 import { ImageUploadSkeleton } from './skeletons/ImageUploadSkeleton';
 
-export type FilesType = File & {
-  path: string;
-  relativePath: string;
-  preview: string;
-};
-
 type ImageUploaderProps = {
-  fileObjects: FilesType[];
-  setFileObjects: React.Dispatch<React.SetStateAction<FilesType[]>>;
-  originalFiles: File[];
-  setOriginalFiles: React.Dispatch<React.SetStateAction<File[]>>;
-  isImagesUploading?: boolean;
+  images: ImageFile[];
+  onAddImages: (acceptedFiles: File[], rejectedFiles: FileRejection[]) => void;
+  onRemoveImage: (id: string) => void;
+  isUploading?: boolean;
+  maxFiles?: number;
+  maxSize?: number;
 };
 
 export default function ImageUploader({
-  fileObjects: files,
-  setFileObjects: setFiles,
-  originalFiles,
-  setOriginalFiles,
-  isImagesUploading,
+  images,
+  onAddImages,
+  onRemoveImage,
+  isUploading = false,
+  maxFiles = MAX_FILES,
+  maxSize = MAX_FILE_SIZE, // 5MB
 }: ImageUploaderProps) {
-  useEffect(() => {
-    return () => files.forEach((file) => URL.revokeObjectURL(file.preview));
-  }, [files]);
-
-  const onDrop = useCallback(
-    (acceptedFiles: File[], rejectedFiles: FileRejection[]) => {
-      if (acceptedFiles?.length) {
-        const totalFiles = files.length + acceptedFiles.length;
-        if (totalFiles > 4) {
-          WarningToast({
-            description:
-              'Se ha excedido el límite de 4 archivos. Solo se aceptarán los primeros archivos hasta completar el límite.',
-          });
-
-          const remainingSlots = Math.max(0, 4 - files.length);
-          const allowedFiles = acceptedFiles.slice(0, remainingSlots);
-
-          if (remainingSlots > 0) {
-            const mappedFiles: FilesType[] = allowedFiles.map((file) => ({
-              ...file,
-              path: file.name,
-              relativePath: file.name,
-              preview: URL.createObjectURL(file),
-            }));
-            setFiles((prev) => [...prev, ...mappedFiles]);
-            setOriginalFiles((prev) => [...prev, ...allowedFiles]);
-          }
-        } else {
-          const mappedFiles: FilesType[] = acceptedFiles.map((file) => ({
-            ...file,
-            path: file.name,
-            relativePath: file.name,
-            preview: URL.createObjectURL(file),
-          }));
-          setFiles((prev) => [...prev, ...mappedFiles]);
-          setOriginalFiles((prev) => [...prev, ...acceptedFiles]);
-        }
-      }
-
-      if (rejectedFiles?.length) {
-        try {
-          rejectedFiles.forEach((file) => {
-            const errorMessage =
-              file.errors?.map((error) => error.message)?.join(', ') ??
-              'Error desconocido';
-            ErrorToast({
-              title: `El archivo "${file.file.name}" fue rechazado.`,
-              description: errorMessage,
-            });
-          });
-        } catch {
-          ErrorToast({
-            description: 'Error al procesar los archivos rechazados',
-          });
-        }
-      }
-    },
-    [files, setFiles, setOriginalFiles]
-  );
-
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     accept: { 'image/*': [] },
-    onDrop,
-    maxSize: 5242880, // 5MB
+    onDrop: onAddImages,
+    maxSize,
+    disabled: images.length >= maxFiles,
   });
 
-  const removeFile = (path: string) => {
-    setFiles((prev) => prev.filter((file) => file.path !== path));
-    setOriginalFiles((prev) => prev.filter((file) => file.name !== path));
-  };
+  const hasMaxFiles = images.length >= maxFiles;
 
   return (
     <section>
       <div
         {...getRootProps()}
         className={cn(
-          'border-2 border-dashed rounded-lg p-6 transition-colors duration-200 hover:border-blue-500 hover:bg-blue-100 mt-1',
-          isDragActive ? 'border-blue-500 bg-blue-50' : 'border-gray-300',
-          files.length >= 4 ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
+          'border-2 border-dashed rounded-lg p-6 transition-colors duration-200',
+          'hover:border-primary/50 hover:bg-primary/5',
+          isDragActive && 'border-primary bg-primary/10',
+          !isDragActive && !hasMaxFiles && 'border-muted-foreground/25',
+          hasMaxFiles && 'opacity-50 cursor-not-allowed'
         )}
       >
         <input {...getInputProps()} />
         <div className="flex flex-col items-center justify-center gap-2">
-          <UploadCloud className="h-10 w-10 text-gray-400" />
-          <p className="text-sm text-gray-600 text-center">
+          <UploadCloud className="h-10 w-10 text-muted-foreground" />
+          <p className="text-sm text-foreground/80 text-center">
             {isDragActive
               ? 'Suelta las imágenes aquí'
-              : files.length >= 4
-              ? 'Límite de imágenes alcanzado'
-              : 'Arrastra y suelta imágenes aquí, o haz click para seleccionar - máximo 4 imágenes'}
+              : hasMaxFiles
+              ? `Límite de ${maxFiles} imágenes alcanzado`
+              : `Arrastra imágenes o haz clic para seleccionar (máx. ${maxFiles})`}
           </p>
-          <p className="text-xs text-gray-500 text-center">
-            PNG, JPG, WEBP, AVIF, SVG - Máx 5MB
+          <p className="text-xs text-muted-foreground text-center">
+            PNG, JPG, WEBP - Máx {maxSize / 1048576}MB por imagen
           </p>
         </div>
       </div>
 
-      {isImagesUploading && (
-        <ImageUploadSkeleton count={originalFiles.length} />
-      )}
-      {!isImagesUploading && (
-        <ul
-          className={
-            files.length
-              ? 'my-10 grid grid-cols-2 sm:gap-y-20 lg:grid-cols-4 gap-10'
-              : 'hidden'
-          }
-        >
-          {files.map((file) => (
+      {isUploading && <ImageUploadSkeleton count={images.length} />}
+
+      {!isUploading && images.length > 0 && (
+        <ul className="my-10 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
+          {images.map((image) => (
             <li
-              key={file.preview}
-              className="relative h-32 rounded-md shadow-lg hover:dark:bg-slate-100 hover:bg-slate-200"
+              key={image.id}
+              className="relative aspect-square rounded-lg shadow-md hover:shadow-lg transition-shadow overflow-hidden group"
             >
               <img
-                src={file.preview}
-                alt={file.path}
-                width={100}
-                height={100}
-                onLoad={() => URL.revokeObjectURL(file.preview)}
-                className="h-full w-full object-scale-down rounded-md"
+                src={image.preview}
+                alt={image.file.name}
+                className="h-full w-full object-cover"
+                onLoad={() => URL.revokeObjectURL(image.preview)}
               />
               <button
                 type="button"
-                className="w-7 h-7 border border-secondary-400 bg-secondary-400 rounded-full flex justify-center items-center absolute -top-3 -right-3 hover:bg-red-400 transition-colors"
-                onClick={() => removeFile(file.path)}
+                className="absolute top-0.5 right-0.5 size-6 bg-destructive rounded-full flex items-center justify-center hover:bg-destructive/90 transition-colors shadow-md cursor-pointer"
+                onClick={() => onRemoveImage(image.id)}
+                aria-label={`Eliminar ${image.file.name}`}
               >
-                <X className="w-5 h-5 fill-white dark:fill-black hover:fill-secondary-400 transition-colors" />
+                <X className="w-4 h-4 text-destructive-foreground" />
               </button>
-              <p className="mt-2 text-neutral-500 text-[12px] font-medium">
-                {file.path}
-              </p>
+              <div className="absolute bottom-0 left-0 right-0 bg-black/60 p-2 translate-y-full group-hover:translate-y-0 transition-transform">
+                <p
+                  className="text-xs text-white truncate"
+                  title={image.file.name}
+                >
+                  {image.file.name}
+                </p>
+              </div>
             </li>
           ))}
         </ul>
