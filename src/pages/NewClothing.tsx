@@ -196,10 +196,12 @@ const NewClothing = () => {
                             isLoading={isLoading}
                             className="react-select"
                             isMulti
-                            options={categories.map((category) => ({
-                              value: category.id,
-                              label: category.name,
-                            }))}
+                            options={categories.map(
+                              (category: { id: any; name: any }) => ({
+                                value: category.id,
+                                label: category.name,
+                              })
+                            )}
                             onChange={(selectedOptions) => {
                               field.onChange(
                                 selectedOptions.map((option) => option.value)
@@ -209,7 +211,8 @@ const NewClothing = () => {
                               value,
                               label:
                                 categories.find(
-                                  (category) => category.id === value
+                                  (category: { id: string }) =>
+                                    category.id === value
                                 )?.name || '',
                             }))}
                             placeholder="Selecciona una o varias categorías"
