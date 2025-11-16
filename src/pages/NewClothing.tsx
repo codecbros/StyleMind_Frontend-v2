@@ -76,7 +76,7 @@ const NewClothing = () => {
   const onSubmit = async (formData: any) => {
     const files = getFiles();
 
-    if (files.length === 0) {
+    if (files.length <= 0) {
       WarningToast({
         title: 'Imagen requerida',
         description: 'Debes agregar al menos una foto de la prenda',
@@ -235,7 +235,7 @@ const NewClothing = () => {
                         </FormLabel>
                         <Select
                           onValueChange={field.onChange}
-                          defaultValue={field.value}
+                          value={field.value}
                         >
                           <FormControl className="py-5">
                             <SelectTrigger className="w-full">
@@ -265,7 +265,7 @@ const NewClothing = () => {
                         </FormLabel>
                         <Select
                           onValueChange={field.onChange}
-                          defaultValue={field.value}
+                          value={field.value}
                         >
                           <FormControl className="py-5">
                             <SelectTrigger className="w-full">
