@@ -1,10 +1,9 @@
-import { Plus, Search } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useGetMyWardrobe } from '../api/generated/wardrobe/wardrobe';
 import { Button } from '../components/ui/button';
 import { Card, CardContent } from '../components/ui/card';
-import { Input } from '../components/ui/input';
 import { COOKIE_KEYS } from '../constants/cookies';
 import { PATHS } from '../constants/paths';
 import { QUERY_KEYS } from '../constants/querys';
@@ -12,24 +11,40 @@ import { getCookie } from '../lib/auth-cookies';
 
 const Wardrobe = () => {
   const token = getCookie(COOKIE_KEYS.AUTH_TOKEN);
-  const [addDialogOpen, setAddDialogOpen] = useState(false);
-  const [selectedItem, setSelectedItem] = useState(null);
+  // const [addDialogOpen, setAddDialogOpen] = useState(false);
+  // const [selectedItem, setSelectedItem] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
 
-  const { data } = useGetMyWardrobe(
+  const { data, isError, isLoading } = useGetMyWardrobe(
     {},
     { query: { queryKey: [QUERY_KEYS.WARDROBE], enabled: !!token } }
   );
-  console.log(data);
 
-  const filteredItems = data?.data?.filter(
-    (item) =>
-      item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.categories.some((cat) =>
-        cat.toLowerCase().includes(searchQuery.toLowerCase())
-      )
-  );
+  // const filteredItems = data?.data?.filter(
+  //   (item) =>
+  //     item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+  //     item.categories.some((cat) =>
+  //       cat.toLowerCase().includes(searchQuery.toLowerCase())
+  //     )
+  // );
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        Loading...
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        Error loading wardrobe.
+      </div>
+    );
+  }
+  console.log(data.data.length);
 
   return (
     <div className="min-h-screen bg-background">
@@ -60,10 +75,10 @@ const Wardrobe = () => {
       </div>
 
       {/* Search and Filters */}
-      <div className="container mx-auto px-4 py-6">
+      {/* <div className="container mx-auto px-4 py-6">
         <div className="flex flex-col gap-4 md:flex-row md:items-center">
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+            <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground cursor-pointer" />
             <Input
               type="search"
               placeholder="Buscar por nombre o categoría..."
@@ -73,11 +88,11 @@ const Wardrobe = () => {
             />
           </div>
         </div>
-      </div>
+      </div> */}
 
       {/* Clothing Grid */}
       <div className="container mx-auto px-4 pb-24 md:pb-12">
-        {filteredItems?.length === 0 ? (
+        {data.data?.length === 0 ? (
           <Card>
             <CardContent className="flex flex-col items-center justify-center py-12">
               <p className="text-muted-foreground text-center">
