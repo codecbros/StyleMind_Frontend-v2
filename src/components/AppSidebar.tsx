@@ -24,7 +24,7 @@ const items = [
   },
   {
     title: 'Armario',
-    url: '',
+    url: PATHS.Wardrobe,
     icon: Shirt,
   },
   {

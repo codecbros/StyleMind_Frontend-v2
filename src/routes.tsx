@@ -8,6 +8,7 @@ import Login from './pages/auth/Login';
 import RegisterPage from './pages/auth/Register';
 import NewClothing from './pages/NewClothing';
 import Profile from './pages/Profile';
+import Wardrobe from './pages/Wardrobe';
 
 export const router = createBrowserRouter([
   {
@@ -36,6 +37,10 @@ export const router = createBrowserRouter([
           {
             path: PATHS.Profile,
             element: <Profile />,
+          },
+          {
+            path: PATHS.Wardrobe,
+            element: <Wardrobe />,
           },
           {
             path: PATHS.NewClothing,
