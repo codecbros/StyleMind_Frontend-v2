@@ -6,7 +6,7 @@ export default function DashboardLayout() {
   return (
     <SidebarProvider>
       <AppSidebar />
-      <div className="flex flex-1 flex-col gap-2 md:gap-4 p-5">
+      <div className="flex flex-1 flex-col gap-2 md:gap-4">
         <SidebarTrigger />
         <Outlet />
       </div>

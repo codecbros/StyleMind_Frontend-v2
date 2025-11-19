@@ -1,5 +1,5 @@
 import { Card, CardContent } from '@/components/ui/card';
-import { ImageIcon } from 'lucide-react';
+import { ImageIcon, Shirt } from 'lucide-react';
 import { Badge } from './ui/badge';
 
 interface ClothingCardProps {
@@ -10,21 +10,26 @@ interface ClothingCardProps {
 export function ClothingCard({ item, onSelect }: ClothingCardProps) {
   const hasMultipleImages = item.images.length > 1;
 
-  console.log(item);
   return (
     <Card
       className="group cursor-pointer overflow-hidden transition-all hover:shadow-lg"
       onClick={onSelect}
     >
       <div className="relative aspect-square overflow-hidden bg-muted">
-        {item?.images.map((image: { id: string; url: string }) => (
-          <img
-            key={image.id}
-            src={image.url || '/placeholder.svg'}
-            alt={item.name}
-            className="object-cover transition-transform group-hover:scale-105"
-          />
-        ))}
+        {item?.images?.length ? (
+          item.images.map((image: { id: string; url: string }) => (
+            <img
+              key={image.id}
+              src={image.url || '/placeholder.svg'}
+              alt={item.name}
+              className="object-cover transition-transform group-hover:scale-105"
+            />
+          ))
+        ) : (
+          <div className="flex h-full w-full items-center justify-center bg-muted">
+            <Shirt className="size-12 text-muted-foreground" />
+          </div>
+        )}
 
         {/* Image Counter Badge */}
         {hasMultipleImages && (
@@ -33,7 +38,6 @@ export function ClothingCard({ item, onSelect }: ClothingCardProps) {
             <span>{item.images.length}</span>
           </div>
         )}
-
         {/* Color Indicators */}
         <div className="absolute bottom-2 left-2 flex gap-1.5">
           <div

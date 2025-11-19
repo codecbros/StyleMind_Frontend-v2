@@ -140,7 +140,7 @@ const NewClothing = () => {
       <h1 className="text-center text-2xl lg:text-3xl uppercase font-extrabold">
         Nueva Prenda
       </h1>
-      <CenteredContainer>
+      <CenteredContainer className="px-5">
         <Card className="w-full px-4 sm:px-6 md:px-8 lg:px-10 py-6 md:py-8">
           <h4 className="mb-3 text-lg font-semibold">
             Cuanta más información proporciones, mejores serán las combinaciones
