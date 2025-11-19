@@ -18,7 +18,7 @@ const Wardrobe = () => {
   const token = getCookie(COOKIE_KEYS.AUTH_TOKEN);
 
   const { data, isError, isLoading } = useGetMyWardrobe(
-    {},
+    { limit: 1000 },
     { query: { queryKey: [QUERY_KEYS.WARDROBE], enabled: !!token } }
   );
 

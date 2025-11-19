@@ -23,15 +23,18 @@ export const wardrobeItemSchema = z.object({
 
   primaryColor: z
     .string()
-    .min(1, { message: 'Ingresa el color principal' })
-    .max(50, { message: 'El color es demasiado largo' })
-    .trim(),
+    .regex(/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/, 'Color inválido')
+    .default('#000000'),
 
+  // Color secundario (opcional - acepta string vacío)
   secondaryColor: z
     .string()
-    .max(50, { message: 'El color secundario es demasiado largo' })
+    .refine(
+      (val) => val === '' || /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/.test(val),
+      { message: 'Color inválido (formato: #RRGGBB)' }
+    )
     .optional()
-    .or(z.literal('')),
+    .default(''),
 
   style: z
     .string()

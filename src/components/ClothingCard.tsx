@@ -22,7 +22,7 @@ export function ClothingCard({ item, onSelect }: ClothingCardProps) {
             src={item.images[0].url || '/placeholder.svg'}
             alt={item.name}
             loading="lazy"
-            className="object-cover transition-transform group-hover:scale-105"
+            className="object-cover transition-transform group-hover:scale-105 w-full h-full"
           />
         ) : (
           <div className="flex h-full w-full items-center justify-center bg-muted">

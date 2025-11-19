@@ -1,4 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useQueryClient } from '@tanstack/react-query';
 import { LoaderCircle } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import RSelect from 'react-select';
@@ -47,6 +48,7 @@ const NewClothing = () => {
     useUploadClothesImages();
   const { images, addImages, removeImage, getFiles, clearImages } =
     useImageUploader();
+  const queryClient = useQueryClient();
 
   const { data, isError, isLoading } = useGetMyCategories(
     {},
@@ -105,6 +107,9 @@ const NewClothing = () => {
               },
               {
                 onSuccess: () => {
+                  queryClient.invalidateQueries({
+                    queryKey: [QUERY_KEYS.WARDROBE],
+                  });
                   SuccessToast({
                     title: '¡Imágenes subidas!',
                     description: 'Las imágenes se han subido correctamente.',
