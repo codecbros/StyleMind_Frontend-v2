@@ -1,21 +1,21 @@
 import { Plus } from 'lucide-react';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useGetMyWardrobe } from '../api/generated/wardrobe/wardrobe';
 import { ClothingCard } from '../components/ClothingCard';
 import { ErrorFallback } from '../components/ErrorFallback';
 import { WardrobeSkeleton } from '../components/skeletons/WardrobeSkeleton';
-import { Button } from '../components/ui/button';
+import { buttonVariants } from '../components/ui/button';
 import { Card, CardContent } from '../components/ui/card';
 import { COOKIE_KEYS } from '../constants/cookies';
 import { PATHS } from '../constants/paths';
 import { QUERY_KEYS } from '../constants/querys';
 import { getCookie } from '../lib/auth-cookies';
+import { cn } from '../lib/utils';
 
 const Wardrobe = () => {
   const token = getCookie(COOKIE_KEYS.AUTH_TOKEN);
   const [searchQuery, setSearchQuery] = useState('');
-  const navigate = useNavigate();
 
   const { data, isError, isLoading } = useGetMyWardrobe(
     {},
@@ -50,14 +50,16 @@ const Wardrobe = () => {
               </p>
             </div>
             {/* Desktop button - hidden on mobile */}
-            <Button
-              onClick={() => navigate(PATHS.NewClothing)}
-              size="lg"
-              className="hidden md:flex cursor-pointer"
+            <Link
+              to={PATHS.NewClothing}
+              className={cn(
+                buttonVariants({ variant: 'default', size: 'lg' }),
+                'hidden md:flex cursor-pointer'
+              )}
             >
               <Plus className="mr-2 size-2" />
               Agregar Prenda
-            </Button>
+            </Link>
           </div>
         </div>
       </div>
@@ -80,8 +82,8 @@ const Wardrobe = () => {
 
       {/* Clothing Grid */}
       <div className="container mx-auto px-8 pb-24 md:pb-12">
-        {data?.data?.length === 0 ? (
-          <Card>
+        {data?.data?.length !== 0 ? (
+          <Card className="mt-5">
             <CardContent className="flex flex-col items-center justify-center py-12">
               <p className="text-muted-foreground text-center">
                 {searchQuery
@@ -89,14 +91,16 @@ const Wardrobe = () => {
                   : 'No tienes prendas en tu guardaropa aún'}
               </p>
               {!searchQuery && (
-                <Button
-                  onClick={() => navigate(PATHS.NewClothing)}
-                  variant="outline"
-                  className="mt-4"
+                <Link
+                  to={PATHS.NewClothing}
+                  className={cn(
+                    buttonVariants({ variant: 'outline', size: 'default' }),
+                    'mt-4'
+                  )}
                 >
                   <Plus className="mr-2 size-4" />
-                  Agregar tu primera prenda
-                </Button>
+                  Agregar primera prenda
+                </Link>
               )}
             </CardContent>
           </Card>
@@ -109,14 +113,16 @@ const Wardrobe = () => {
         )}
       </div>
 
-      <Button
-        onClick={() => navigate(PATHS.NewClothing)}
-        size="lg"
-        className="fixed bottom-6 right-6 z-50 size-14 rounded-full p-0 shadow-lg md:hidden cursor-pointer"
+      <Link
+        to={PATHS.NewClothing}
         aria-label="Agregar prenda"
+        className={cn(
+          buttonVariants({ size: 'lg' }),
+          'fixed bottom-6 right-6 z-50 size-14 rounded-full p-0 shadow-lg md:hidden cursor-pointer'
+        )}
       >
-        <Plus className="size-6" />
-      </Button>
+        <Plus className="size-4" />
+      </Link>
     </div>
   );
 };
