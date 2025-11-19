@@ -36,10 +36,10 @@ const Wardrobe = () => {
 
   return (
     <div className="md:px-5">
-      <div className="min-h-screen bg-background px-5">
+      <div className="min-h-screen bg-background px-2 md:px-5">
         {/* Header */}
-        <div className="border-b bg-card">
-          <div className="container mx-auto px-4 py-6">
+        <div className="border-b bg-card ">
+          <div className="container mx-auto px-2 md:px-5 py-6">
             <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
               <div>
                 <h1 className="text-3xl font-bold text-foreground">
@@ -58,7 +58,7 @@ const Wardrobe = () => {
                   'hidden md:flex cursor-pointer'
                 )}
               >
-                <Plus className="mr-2 size-2" />
+                <Plus className="mr-1 size-4" />
                 Agregar Prenda
               </Link>
             </div>
@@ -82,7 +82,7 @@ const Wardrobe = () => {
       </div> */}
 
         {/* Clothing Grid */}
-        <div className="container mx-auto px-8 pb-24 md:pb-12">
+        <div className="container mx-auto px-2 md:px-5 pb-24 md:pb-12">
           {data?.data?.length === 0 ? (
             <Card className="mt-5">
               <CardContent className="flex flex-col items-center justify-center py-12">
@@ -119,7 +119,7 @@ const Wardrobe = () => {
           aria-label="Agregar prenda"
           className={cn(
             buttonVariants({ size: 'lg' }),
-            'fixed bottom-6 right-6 z-50 size-14 rounded-full p-0 shadow-lg md:hidden cursor-pointer'
+            'fixed bottom-6 right-6 z-50 size-9 rounded-full p-0 shadow-lg md:hidden cursor-pointer'
           )}
         >
           <Plus className="size-4" />

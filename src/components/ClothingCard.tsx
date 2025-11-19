@@ -17,14 +17,12 @@ export function ClothingCard({ item, onSelect }: ClothingCardProps) {
     >
       <div className="relative aspect-square overflow-hidden bg-muted">
         {item?.images?.length ? (
-          item.images.map((image: { id: string; url: string }) => (
-            <img
-              key={image.id}
-              src={image.url || '/placeholder.svg'}
-              alt={item.name}
-              className="object-cover transition-transform group-hover:scale-105"
-            />
-          ))
+          <img
+            src={item.images[0].url || '/placeholder.svg'}
+            alt={item.name}
+            loading="lazy"
+            className="object-cover transition-transform group-hover:scale-105"
+          />
         ) : (
           <div className="flex h-full w-full items-center justify-center bg-muted">
             <Shirt className="size-12 text-muted-foreground" />
@@ -56,7 +54,6 @@ export function ClothingCard({ item, onSelect }: ClothingCardProps) {
       </div>
 
       <CardContent className="p-4">
-        {/* Name */}
         <h3
           className="font-semibold text-foreground line-clamp-1"
           title={item.name}
@@ -82,11 +79,24 @@ export function ClothingCard({ item, onSelect }: ClothingCardProps) {
           )}
         </div>
 
-        {/* Quick Info */}
-        <div className="mt-3 flex items-center justify-between text-xs text-muted-foreground">
-          <span>{item.size}</span>
-          <span>{item.season}</span>
-          <span className="line-clamp-1">{item.style}</span>
+        <div className="mt-3 grid grid-cols-3 place-items-center gap-2 text-xs">
+          <div className="flex flex-col items-center">
+            <p className="font-medium text-foreground">{item.size}</p>
+            <p className="text-muted-foreground/75">Talla</p>
+          </div>
+          <div className="flex flex-col items-center">
+            <p className="font-medium text-foreground">{item.season}</p>
+            <p className="text-muted-foreground/75">Temporada</p>
+          </div>
+          <div className="flex flex-col items-center">
+            <p
+              className="font-medium text-foreground line-clamp-1"
+              title={item.style}
+            >
+              {item.style}
+            </p>
+            <p className="text-muted-foreground/75">Estilo</p>
+          </div>
         </div>
       </CardContent>
     </Card>
