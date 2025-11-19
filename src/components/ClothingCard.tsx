@@ -1,5 +1,6 @@
 import { Card, CardContent } from '@/components/ui/card';
 import { ImageIcon, Shirt } from 'lucide-react';
+import { getSeasonLabel } from '../helpers/season-helper';
 import { Badge } from './ui/badge';
 
 interface ClothingCardProps {
@@ -85,7 +86,9 @@ export function ClothingCard({ item, onSelect }: ClothingCardProps) {
             <p className="text-muted-foreground/75">Talla</p>
           </div>
           <div className="flex flex-col items-center">
-            <p className="font-medium text-foreground">{item.season}</p>
+            <p className="font-medium text-foreground">
+              {getSeasonLabel(item.season)}
+            </p>
             <p className="text-muted-foreground/75">Temporada</p>
           </div>
           <div className="flex flex-col items-center">

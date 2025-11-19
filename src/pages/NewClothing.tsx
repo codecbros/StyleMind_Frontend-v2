@@ -33,6 +33,7 @@ import { Textarea } from '../components/ui/textarea';
 import { CLOTHING_CONSTANTS } from '../constants/clothing';
 import { COOKIE_KEYS } from '../constants/cookies';
 import { QUERY_KEYS } from '../constants/querys';
+import { SEASON_OPTIONS } from '../helpers/season-helper';
 import { useImageUploader } from '../hooks/useImageUpload';
 import { getCookie } from '../lib/auth-cookies';
 import { ErrorToast, SuccessToast, WarningToast } from '../lib/toast';
@@ -273,7 +274,7 @@ const NewClothing = () => {
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            {CLOTHING_CONSTANTS.seasons.map((season) => (
+                            {SEASON_OPTIONS.map((season) => (
                               <SelectItem
                                 key={season.value}
                                 value={season.value}
