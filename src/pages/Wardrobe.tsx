@@ -14,8 +14,8 @@ import { getCookie } from '../lib/auth-cookies';
 import { cn } from '../lib/utils';
 
 const Wardrobe = () => {
-  const token = getCookie(COOKIE_KEYS.AUTH_TOKEN);
   const [searchQuery, setSearchQuery] = useState('');
+  const token = getCookie(COOKIE_KEYS.AUTH_TOKEN);
 
   const { data, isError, isLoading } = useGetMyWardrobe(
     {},
@@ -106,7 +106,7 @@ const Wardrobe = () => {
               </CardContent>
             </Card>
           ) : (
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            <div className="grid grid-auto-fit gap-6">
               {data.data.map((item) => (
                 <ClothingCard key={item.id} item={item} />
               ))}
