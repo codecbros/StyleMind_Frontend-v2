@@ -9,6 +9,7 @@ import {
   useUploadClothesImages,
 } from '../api/generated/wardrobe/wardrobe';
 import CenteredContainer from '../components/CenteredContainer';
+import { ColorPicker } from '../components/ColorPicker';
 import ImageUploader from '../components/ImageUpload';
 import { Button } from '../components/ui/button';
 import { Card } from '../components/ui/card';
@@ -339,10 +340,10 @@ const NewClothing = () => {
                         Color principal
                       </FormLabel>
                       <FormControl>
-                        <Input
-                          className="py-5"
-                          placeholder="Ej: Negro, Azul marino, Beige"
-                          {...field}
+                        <ColorPicker
+                          value={field.value}
+                          onValueChange={field.onChange}
+                          allowEmpty={false}
                         />
                       </FormControl>
                       <FormMessage />
@@ -359,10 +360,10 @@ const NewClothing = () => {
                         Color secundario (opcional)
                       </FormLabel>
                       <FormControl>
-                        <Input
-                          className="py-5"
-                          placeholder="Ej: Rayas blancas, Detalles dorados"
-                          {...field}
+                        <ColorPicker
+                          value={field.value}
+                          onValueChange={field.onChange}
+                          allowEmpty={true}
                         />
                       </FormControl>
                       <FormMessage />
