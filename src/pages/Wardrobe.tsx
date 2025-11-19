@@ -2,6 +2,9 @@ import { Plus } from 'lucide-react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useGetMyWardrobe } from '../api/generated/wardrobe/wardrobe';
+import { ClothingCard } from '../components/ClothingCard';
+import { ErrorFallback } from '../components/ErrorFallback';
+import { WardrobeSkeleton } from '../components/skeletons/WardrobeSkeleton';
 import { Button } from '../components/ui/button';
 import { Card, CardContent } from '../components/ui/card';
 import { COOKIE_KEYS } from '../constants/cookies';
@@ -11,8 +14,6 @@ import { getCookie } from '../lib/auth-cookies';
 
 const Wardrobe = () => {
   const token = getCookie(COOKIE_KEYS.AUTH_TOKEN);
-  // const [addDialogOpen, setAddDialogOpen] = useState(false);
-  // const [selectedItem, setSelectedItem] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
 
@@ -21,30 +22,17 @@ const Wardrobe = () => {
     { query: { queryKey: [QUERY_KEYS.WARDROBE], enabled: !!token } }
   );
 
-  // const filteredItems = data?.data?.filter(
-  //   (item) =>
-  //     item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-  //     item.categories.some((cat) =>
-  //       cat.toLowerCase().includes(searchQuery.toLowerCase())
-  //     )
-  // );
-
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        Loading...
+      <div className="min-h-screen bg-background">
+        <WardrobeSkeleton />
       </div>
     );
   }
 
   if (isError) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        Error loading wardrobe.
-      </div>
-    );
+    return <ErrorFallback />;
   }
-  console.log(data.data.length);
 
   return (
     <div className="min-h-screen bg-background">
@@ -91,8 +79,8 @@ const Wardrobe = () => {
       </div> */}
 
       {/* Clothing Grid */}
-      <div className="container mx-auto px-4 pb-24 md:pb-12">
-        {data.data?.length === 0 ? (
+      <div className="container mx-auto px-8 pb-24 md:pb-12">
+        {data?.data?.length === 0 ? (
           <Card>
             <CardContent className="flex flex-col items-center justify-center py-12">
               <p className="text-muted-foreground text-center">
@@ -114,13 +102,9 @@ const Wardrobe = () => {
           </Card>
         ) : (
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {/* {filteredItems.map((item) => (
-              <ClothingCard
-                key={item.id}
-                item={item}
-                onSelect={() => setSelectedItem(item)}
-              />
-            ))} */}
+            {data.data.map((item) => (
+              <ClothingCard key={item.id} item={item} />
+            ))}
           </div>
         )}
       </div>
@@ -133,13 +117,6 @@ const Wardrobe = () => {
       >
         <Plus className="size-6" />
       </Button>
-
-      {/* Details Dialog
-      <ClothingDetailsDialog
-        item={selectedItem}
-        open={!!selectedItem}
-        onOpenChange={(open) => !open && setSelectedItem(null)}
-      /> */}
     </div>
   );
 };
