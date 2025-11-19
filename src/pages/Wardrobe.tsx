@@ -24,7 +24,7 @@ const Wardrobe = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="pt-2 sm:pb-6 md:px-5">
         <WardrobeSkeleton />
       </div>
     );
@@ -35,11 +35,11 @@ const Wardrobe = () => {
   }
 
   return (
-    <div className="md:px-5">
-      <div className="min-h-screen bg-background px-2 md:px-5">
+    <div className="sm:px-3 2xl:px-0">
+      <div className="container mx-auto min-h-screen bg-background px-5 md:px-8 xl:px-10 rounded-md">
         {/* Header */}
-        <div className="border-b bg-card ">
-          <div className="container mx-auto px-2 md:px-5 py-6">
+        <div className="border-b bg-card">
+          <div className="container mx-auto py-6">
             <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
               <div>
                 <h1 className="text-3xl font-bold text-foreground">
@@ -82,7 +82,7 @@ const Wardrobe = () => {
       </div> */}
 
         {/* Clothing Grid */}
-        <div className="container mx-auto px-2 md:px-5 pb-24 md:pb-12">
+        <div className="container mx-auto pb-12">
           {data?.data?.length === 0 ? (
             <Card className="mt-5">
               <CardContent className="flex flex-col items-center justify-center py-12">

@@ -3,8 +3,8 @@ import { Skeleton } from '@/components/ui/skeleton';
 
 export function WardrobeSkeleton() {
   return (
-    <div className="container mx-auto px-8 py-24 md:py-12">
-      <div className="w-full  mx-auto">
+    <div className="container mx-auto">
+      <div className="w-full mx-auto">
         <Card className="w-full px-4 sm:px-6 md:px-8 lg:px-10 py-6 md:py-8">
           {/* Header Section */}
           <section className="space-y-4 mb-8">
