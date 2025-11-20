@@ -18,26 +18,34 @@ import { getCookie } from '../lib/auth-cookies';
 import { cn } from '../lib/utils';
 
 const Wardrobe = () => {
-  const [searchQuery, setSearchQuery] = useState('');
   const [selectedItemId, setSelectedItemId] = useState<number | null>(null);
   const [addDialogOpen, setAddDialogOpen] = useState(false);
 
   const token = getCookie(COOKIE_KEYS.AUTH_TOKEN);
 
   const {
-    search,
-    setSearch,
+    searchQuery,
+    setSearchQuery,
     categoryId,
     setCategoryId,
     resetFilters,
     hasActiveFilters,
   } = useWardrobeFilters();
 
-  const debouncedSearch = useDebounce(search, 500);
+  const debouncedSearch = useDebounce(searchQuery, 500);
 
   const { data, isError, isLoading } = useGetMyWardrobe(
-    { limit: 1000 },
-    { query: { queryKey: [QUERY_KEYS.WARDROBE], enabled: !!token } }
+    {
+      limit: 1000,
+      search: debouncedSearch || undefined,
+      categoryId: categoryId || undefined,
+    },
+    {
+      query: {
+        queryKey: [QUERY_KEYS.WARDROBE, debouncedSearch, categoryId],
+        enabled: !!token,
+      },
+    }
   );
 
   if (isLoading) {
@@ -86,8 +94,8 @@ const Wardrobe = () => {
         {/* Search and Filters */}
         <div className="container mx-auto px-4 py-6">
           <WardrobeFilters
-            search={search}
-            onSearchChange={setSearch}
+            search={searchQuery}
+            onSearchChange={setSearchQuery}
             categoryId={categoryId}
             onCategoryChange={setCategoryId}
             onReset={resetFilters}

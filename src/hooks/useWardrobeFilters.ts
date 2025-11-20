@@ -1,19 +1,19 @@
 import { useState } from 'react';
 
 export const useWardrobeFilters = () => {
-  const [search, setSearch] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
   const [categoryId, setCategoryId] = useState<string | undefined>(undefined);
 
   const resetFilters = () => {
-    setSearch('');
+    setSearchQuery('');
     setCategoryId(undefined);
   };
 
-  const hasActiveFilters = search !== '' || categoryId !== undefined;
+  const hasActiveFilters = searchQuery !== '' || categoryId !== undefined;
 
   return {
-    search,
-    setSearch,
+    searchQuery,
+    setSearchQuery,
     categoryId,
     setCategoryId,
     resetFilters,
