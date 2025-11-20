@@ -86,7 +86,12 @@ const Wardrobe = () => {
         </div>
 
         {/* Search and Filters */}
-        <div className="container mx-auto px-4 py-6">
+        <div className="space-y-4 my-8">
+          <div className="flex items-center gap-3">
+            <h3 className="text-base md:text-lg font-semibold uppercase tracking-wide text-foreground whitespace-nowrap">
+              Filtros
+            </h3>
+          </div>
           <WardrobeFilters
             search={searchQuery}
             onSearchChange={setSearchQuery}

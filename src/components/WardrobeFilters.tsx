@@ -57,7 +57,7 @@ export function WardrobeFilters({
           placeholder="Buscar por nombre..."
           value={search}
           onChange={(e) => onSearchChange(e.target.value)}
-          className="pl-10"
+          className="pl-10 py-5"
         />
       </div>
 
