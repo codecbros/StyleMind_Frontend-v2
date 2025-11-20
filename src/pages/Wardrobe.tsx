@@ -5,9 +5,10 @@ import { useGetMyWardrobe } from '../api/generated/wardrobe/wardrobe';
 import { ClothingCard } from '../components/ClothingCard';
 import { ClothingDetailsDialog } from '../components/ClothingDetailsDialog';
 import { ErrorFallback } from '../components/ErrorFallback';
-import { WardrobeSkeleton } from '../components/skeletons/WardrobeSkeleton';
+import { ClothingGridSkeleton } from '../components/skeletons/WardrobeSkeleton';
 import { buttonVariants } from '../components/ui/button';
 import { Card, CardContent } from '../components/ui/card';
+import { Skeleton } from '../components/ui/skeleton';
 import { WardrobeFilters } from '../components/WardrobeFilters';
 import { COOKIE_KEYS } from '../constants/cookies';
 import { PATHS } from '../constants/paths';
@@ -18,11 +19,8 @@ import { getCookie } from '../lib/auth-cookies';
 import { cn } from '../lib/utils';
 
 const Wardrobe = () => {
-  const [selectedItemId, setSelectedItemId] = useState<number | null>(null);
+  const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
   const [addDialogOpen, setAddDialogOpen] = useState(false);
-
-  const token = getCookie(COOKIE_KEYS.AUTH_TOKEN);
-
   const {
     searchQuery,
     setSearchQuery,
@@ -31,7 +29,7 @@ const Wardrobe = () => {
     resetFilters,
     hasActiveFilters,
   } = useWardrobeFilters();
-
+  const token = getCookie(COOKIE_KEYS.AUTH_TOKEN);
   const debouncedSearch = useDebounce(searchQuery, 500);
 
   const { data, isError, isLoading } = useGetMyWardrobe(
@@ -48,14 +46,6 @@ const Wardrobe = () => {
     }
   );
 
-  if (isLoading) {
-    return (
-      <div className="pt-2 sm:pb-6 md:px-5">
-        <WardrobeSkeleton />
-      </div>
-    );
-  }
-
   if (isError) {
     return <ErrorFallback />;
   }
@@ -71,10 +61,14 @@ const Wardrobe = () => {
                 <h1 className="text-3xl font-bold text-foreground">
                   Mi Guardaropa
                 </h1>
-                <p className="text-muted-foreground mt-1">
-                  {data?.data?.length}{' '}
-                  {data?.data?.length === 1 ? 'prenda' : 'prendas'}
-                </p>
+                {isLoading ? (
+                  <Skeleton className="h-4 w-32 mt-3" />
+                ) : (
+                  <p className="text-muted-foreground mt-1">
+                    {data?.data?.length}{' '}
+                    {data?.data?.length === 1 ? 'prenda' : 'prendas'}
+                  </p>
+                )}
               </div>
               {/* Desktop button - hidden on mobile */}
               <Link
@@ -105,15 +99,17 @@ const Wardrobe = () => {
 
         {/* Clothing Grid */}
         <div className="container mx-auto pb-12">
-          {data?.data?.length === 0 ? (
+          {isLoading ? (
+            <ClothingGridSkeleton />
+          ) : data?.data?.length === 0 ? (
             <Card className="mt-5">
               <CardContent className="flex flex-col items-center justify-center py-12">
                 <p className="text-muted-foreground text-center">
-                  {searchQuery
-                    ? 'No se encontraron prendas con esa búsqueda'
+                  {hasActiveFilters
+                    ? 'No se encontraron prendas con los filtros aplicados'
                     : 'No tienes prendas en tu guardaropa aún'}
                 </p>
-                {!searchQuery && (
+                {!hasActiveFilters && (
                   <Link
                     to={PATHS.NewClothing}
                     className={cn(
