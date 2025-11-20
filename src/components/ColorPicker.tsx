@@ -41,7 +41,7 @@ export function ColorPicker({
   };
 
   return (
-    <div className="flex items-center gap-3">
+    <div className="flex items-center gap-2">
       {/* Color preview + picker */}
       <div className="relative shrink-0">
         <input
@@ -49,7 +49,7 @@ export function ColorPicker({
           value={displayValue}
           onChange={handleColorChange}
           className={cn(
-            'size-12 cursor-pointer rounded-md border-2 transition-all',
+            'size-10 cursor-pointer rounded-md border-2 transition-all',
             hasValue
               ? 'border-input'
               : 'border-dashed border-muted-foreground/50',
