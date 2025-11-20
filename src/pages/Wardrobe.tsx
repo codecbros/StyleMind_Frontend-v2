@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useGetMyWardrobe } from '../api/generated/wardrobe/wardrobe';
 import { ClothingCard } from '../components/ClothingCard';
+import { ClothingDetailsDialog } from '../components/ClothingDetailsDialog';
 import { ErrorFallback } from '../components/ErrorFallback';
 import { WardrobeSkeleton } from '../components/skeletons/WardrobeSkeleton';
 import { buttonVariants } from '../components/ui/button';
@@ -15,6 +16,9 @@ import { cn } from '../lib/utils';
 
 const Wardrobe = () => {
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedItemId, setSelectedItemId] = useState<number | null>(null);
+  const [addDialogOpen, setAddDialogOpen] = useState(false);
+
   const token = getCookie(COOKIE_KEYS.AUTH_TOKEN);
 
   const { data, isError, isLoading } = useGetMyWardrobe(
@@ -108,7 +112,14 @@ const Wardrobe = () => {
           ) : (
             <div className="grid grid-auto-fit gap-6">
               {data.data.map((item) => (
-                <ClothingCard key={item.id} item={item} />
+                <ClothingCard
+                  key={item.id}
+                  item={item}
+                  onSelect={() => {
+                    setSelectedItemId(item.id);
+                    setAddDialogOpen(true);
+                  }}
+                />
               ))}
             </div>
           )}
@@ -125,6 +136,11 @@ const Wardrobe = () => {
           <Plus className="size-4" />
         </Link>
       </div>
+      <ClothingDetailsDialog
+        itemId={selectedItemId}
+        open={addDialogOpen}
+        onOpenChange={setAddDialogOpen}
+      />
     </div>
   );
 };

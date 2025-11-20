@@ -26,7 +26,7 @@ export function ClothingCard({ item, onSelect }: ClothingCardProps) {
           />
         ) : (
           <div className="flex h-full w-full items-center justify-center bg-muted">
-            <Shirt className="size-12 text-muted-foreground" />
+            <Shirt className="size-20 text-muted-foreground" />
           </div>
         )}
 

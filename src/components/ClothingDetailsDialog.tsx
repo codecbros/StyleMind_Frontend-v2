@@ -1,29 +1,46 @@
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
-import { cn } from '@/lib/utils';
-import { ChevronLeft, ChevronRight, Edit, Trash2, X } from 'lucide-react';
+  ChevronLeft,
+  ChevronRight,
+  Edit,
+  Shirt,
+  Trash2,
+  X,
+} from 'lucide-react';
 import { useState } from 'react';
+import { useGetClothesById } from '../api/generated/wardrobe/wardrobe';
+import { cn } from '../lib/utils';
+import { Badge } from './ui/badge';
+import { Button } from './ui/button';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from './ui/dialog';
 
 interface ClothingDetailsDialogProps {
-  item: any | null;
+  itemId: string | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
 
 export function ClothingDetailsDialog({
-  item,
+  itemId,
   open,
   onOpenChange,
 }: ClothingDetailsDialogProps) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
-  if (!item) return null;
+  const { data, isLoading, isError } = useGetClothesById(itemId || '', {
+    query: { enabled: !!itemId && open },
+  });
+
+  if (!itemId) return null;
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (isError) {
+    return <div>Error loading item details.</div>;
+  }
+
+  const item = data?.data;
 
   const nextImage = () => {
     setCurrentImageIndex((prev) => (prev + 1) % item.images.length);
@@ -60,11 +77,20 @@ export function ClothingDetailsDialog({
             {/* Image Carousel */}
             <div className="space-y-4">
               <div className="relative aspect-square overflow-hidden rounded-lg bg-muted">
-                <img
-                  src={item.images[currentImageIndex] || '/placeholder.svg'}
-                  alt={`${item.name} - imagen ${currentImageIndex + 1}`}
-                  className="object-cover w-full h-full"
-                />
+                {item.images.length === 0 || null ? (
+                  <div className="flex h-full w-full items-center justify-center bg-muted">
+                    <Shirt className="size-20 text-muted-foreground" />
+                  </div>
+                ) : (
+                  <img
+                    src={
+                      item.images[currentImageIndex]?.url || '/placeholder.svg'
+                    }
+                    alt={`${item.name} - imagen ${currentImageIndex + 1}`}
+                    className="object-cover w-full h-full"
+                    loading="lazy"
+                  />
+                )}
 
                 {/* Navigation Arrows */}
                 {item.images.length > 1 && (
@@ -97,15 +123,16 @@ export function ClothingDetailsDialog({
                       key={index}
                       onClick={() => setCurrentImageIndex(index)}
                       className={cn(
-                        'relative size-16 sm:size-20 flex-shrink-0 overflow-hidden rounded-md border-2 transition-all',
+                        'relative size-16 sm:size-20 shrink-0 overflow-hidden rounded-md border-2 transition-all',
                         currentImageIndex === index
                           ? 'border-primary'
                           : 'border-transparent opacity-60 hover:opacity-100'
                       )}
                     >
                       <img
-                        src={image || '/placeholder.svg'}
+                        src={image?.url || '/placeholder.svg'}
                         alt={`Miniatura ${index + 1}`}
+                        loading="lazy"
                         className="object-cover w-full h-full"
                       />
                     </button>
@@ -122,9 +149,9 @@ export function ClothingDetailsDialog({
                   Categorías
                 </p>
                 <div className="flex flex-wrap gap-2">
-                  {item.categories.map((category) => (
-                    <Badge key={category} variant="secondary">
-                      {category}
+                  {item.categories.map((category: any) => (
+                    <Badge key={category.category.name} variant="secondary">
+                      {category.category.name}
                     </Badge>
                   ))}
                 </div>
