@@ -1,4 +1,4 @@
-import { Plus } from 'lucide-react';
+import { Plus, Search } from 'lucide-react';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useGetMyWardrobe } from '../api/generated/wardrobe/wardrobe';
@@ -8,6 +8,7 @@ import { ErrorFallback } from '../components/ErrorFallback';
 import { WardrobeSkeleton } from '../components/skeletons/WardrobeSkeleton';
 import { buttonVariants } from '../components/ui/button';
 import { Card, CardContent } from '../components/ui/card';
+import { Input } from '../components/ui/input';
 import { COOKIE_KEYS } from '../constants/cookies';
 import { PATHS } from '../constants/paths';
 import { QUERY_KEYS } from '../constants/querys';
@@ -39,7 +40,7 @@ const Wardrobe = () => {
   }
 
   return (
-    <div className="sm:px-3 2xl:px-0">
+    <div className="sm:px-3">
       <div className="container mx-auto min-h-screen bg-background px-5 md:px-8 xl:px-10 rounded-md">
         {/* Header */}
         <div className="border-b bg-card">
@@ -70,20 +71,20 @@ const Wardrobe = () => {
         </div>
 
         {/* Search and Filters */}
-        {/* <div className="container mx-auto px-4 py-6">
-        <div className="flex flex-col gap-4 md:flex-row md:items-center">
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground cursor-pointer" />
-            <Input
-              type="search"
-              placeholder="Buscar por nombre o categoría..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10"
-            />
+        <div className="container mx-auto px-4 py-6">
+          <div className="flex flex-col gap-4 md:flex-row md:items-center">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground cursor-pointer" />
+              <Input
+                type="search"
+                placeholder="Buscar por nombre o categoría..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10"
+              />
+            </div>
           </div>
         </div>
-      </div> */}
 
         {/* Clothing Grid */}
         <div className="container mx-auto pb-12">
