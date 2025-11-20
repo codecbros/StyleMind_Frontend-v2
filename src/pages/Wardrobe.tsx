@@ -129,7 +129,7 @@ const Wardrobe = () => {
               </CardContent>
             </Card>
           ) : (
-            <div className="grid grid-auto-fit gap-6">
+            <div className="grid grid-auto-fill gap-6">
               {data.data.map((item) => (
                 <ClothingCard
                   key={item.id}
