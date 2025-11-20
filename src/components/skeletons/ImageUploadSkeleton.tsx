@@ -8,7 +8,7 @@ export function ImageUploadSkeleton({ count }: ImageUploadSkeletonProps) {
       {Array.from({ length: count }).map((_, i) => (
         <li
           key={i}
-          className="relative overflow-hidden aspect-square rounded-lg bg-gray-200"
+          className="relative overflow-hidden aspect-2/2 lg:aspect-square rounded-lg bg-gray-200"
         >
           <div className="absolute inset-0 animate-pulse bg-gray-300" />
           <div className="absolute inset-0 shimmer" />

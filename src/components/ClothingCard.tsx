@@ -16,7 +16,7 @@ export function ClothingCard({ item, onSelect }: ClothingCardProps) {
       className="group cursor-pointer overflow-hidden transition-all hover:shadow-lg"
       onClick={onSelect}
     >
-      <div className="relative aspect-square overflow-hidden bg-muted">
+      <div className="relative aspect-2/2 lg:aspect-square overflow-hidden bg-muted">
         {item?.images?.length ? (
           <img
             src={item.images[0].url || '/placeholder.svg'}

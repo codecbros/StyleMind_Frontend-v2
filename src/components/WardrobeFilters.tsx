@@ -25,8 +25,11 @@ export function WardrobeFilters({
   hasActiveFilters,
 }: WardrobeFiltersProps) {
   const token = getCookie(COOKIE_KEYS.AUTH_TOKEN);
+  type Category = { id: string; name: string };
+  type CategoriesResponse = { data: Category[] };
+
   const { data: categoriesData, isLoading: isCategoriesLoading } =
-    useGetMyCategories(
+    useGetMyCategories<CategoriesResponse>(
       {},
       {
         query: {
@@ -44,12 +47,11 @@ export function WardrobeFilters({
   }));
 
   const selectedCategory = categoryId
-    ? categoryOptions.find((opt) => opt.value === categoryId)
+    ? categoryOptions.find((opt: any) => opt.value === categoryId)
     : null;
 
   return (
     <div className="flex flex-col gap-4 md:flex-row md:items-center">
-      {/* Search */}
       <div className="relative flex-1">
         <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
         <Input
@@ -61,7 +63,6 @@ export function WardrobeFilters({
         />
       </div>
 
-      {/* Category Select */}
       <div className="flex-1">
         <RSelect
           isClearable
@@ -75,7 +76,6 @@ export function WardrobeFilters({
         />
       </div>
 
-      {/* Reset Button */}
       {hasActiveFilters && (
         <Button variant="outline" onClick={onReset} className="shrink-0">
           <X className="mr-2 size-4" />
