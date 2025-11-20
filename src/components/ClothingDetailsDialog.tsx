@@ -1,0 +1,224 @@
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import { cn } from '@/lib/utils';
+import { ChevronLeft, ChevronRight, Edit, Trash2, X } from 'lucide-react';
+import { useState } from 'react';
+
+interface ClothingDetailsDialogProps {
+  item: any | null;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}
+
+export function ClothingDetailsDialog({
+  item,
+  open,
+  onOpenChange,
+}: ClothingDetailsDialogProps) {
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+  if (!item) return null;
+
+  const nextImage = () => {
+    setCurrentImageIndex((prev) => (prev + 1) % item.images.length);
+  };
+
+  const previousImage = () => {
+    setCurrentImageIndex(
+      (prev) => (prev - 1 + item.images.length) % item.images.length
+    );
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-w-3xl max-h-[95vh] overflow-y-auto p-0 gap-0">
+        <DialogHeader className="sticky top-0 z-10 bg-background border-b px-4 sm:px-6 py-4 space-y-0">
+          <div className="flex items-center justify-between gap-4">
+            <DialogTitle className="text-xl sm:text-2xl pr-8">
+              {item.name}
+            </DialogTitle>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="absolute right-4 top-4 size-8 rounded-full hover:bg-muted"
+              onClick={() => onOpenChange(false)}
+            >
+              <X className="size-5" />
+              <span className="sr-only">Cerrar</span>
+            </Button>
+          </div>
+        </DialogHeader>
+
+        <div className="px-4 sm:px-6 py-6">
+          <div className="grid gap-6 md:grid-cols-2">
+            {/* Image Carousel */}
+            <div className="space-y-4">
+              <div className="relative aspect-square overflow-hidden rounded-lg bg-muted">
+                <img
+                  src={item.images[currentImageIndex] || '/placeholder.svg'}
+                  alt={`${item.name} - imagen ${currentImageIndex + 1}`}
+                  className="object-cover w-full h-full"
+                />
+
+                {/* Navigation Arrows */}
+                {item.images.length > 1 && (
+                  <>
+                    <Button
+                      variant="secondary"
+                      size="icon"
+                      className="absolute left-2 top-1/2 -translate-y-1/2 size-10 sm:size-9 shadow-lg"
+                      onClick={previousImage}
+                    >
+                      <ChevronLeft className="size-5 sm:size-4" />
+                    </Button>
+                    <Button
+                      variant="secondary"
+                      size="icon"
+                      className="absolute right-2 top-1/2 -translate-y-1/2 size-10 sm:size-9 shadow-lg"
+                      onClick={nextImage}
+                    >
+                      <ChevronRight className="size-5 sm:size-4" />
+                    </Button>
+                  </>
+                )}
+              </div>
+
+              {/* Image Thumbnails */}
+              {item.images.length > 1 && (
+                <div className="flex gap-2 overflow-x-auto pb-2">
+                  {item.images.map((image, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setCurrentImageIndex(index)}
+                      className={cn(
+                        'relative size-16 sm:size-20 flex-shrink-0 overflow-hidden rounded-md border-2 transition-all',
+                        currentImageIndex === index
+                          ? 'border-primary'
+                          : 'border-transparent opacity-60 hover:opacity-100'
+                      )}
+                    >
+                      <img
+                        src={image || '/placeholder.svg'}
+                        alt={`Miniatura ${index + 1}`}
+                        className="object-cover w-full h-full"
+                      />
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Details */}
+            <div className="space-y-6">
+              {/* Categories */}
+              <div className="space-y-2">
+                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                  Categorías
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {item.categories.map((category) => (
+                    <Badge key={category} variant="secondary">
+                      {category}
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+
+              {/* Colors */}
+              <div className="space-y-2">
+                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                  Colores
+                </p>
+                <div className="flex gap-3">
+                  <div className="flex items-center gap-2">
+                    <div
+                      className="size-8 rounded-full border-2 border-border shadow-sm"
+                      style={{ backgroundColor: item.primaryColor }}
+                    />
+                    <span className="text-sm">Principal</span>
+                  </div>
+                  {item.secondaryColor && (
+                    <div className="flex items-center gap-2">
+                      <div
+                        className="size-8 rounded-full border-2 border-border shadow-sm"
+                        style={{ backgroundColor: item.secondaryColor }}
+                      />
+                      <span className="text-sm">Secundario</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Info Grid */}
+              <div className="grid grid-cols-2 gap-x-6 md:gap-x-8 gap-y-4 md:gap-y-5">
+                <div>
+                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                    Talla
+                  </p>
+                  <p className="mt-1.5 text-sm text-foreground">{item.size}</p>
+                </div>
+                <div>
+                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                    Temporada
+                  </p>
+                  <p className="mt-1.5 text-sm text-foreground">
+                    {item.season}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                    Material
+                  </p>
+                  <p className="mt-1.5 text-sm text-foreground">
+                    {item.material}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                    Estilo
+                  </p>
+                  <p className="mt-1.5 text-sm text-foreground">{item.style}</p>
+                </div>
+              </div>
+
+              {/* Description */}
+              <div>
+                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
+                  Descripción
+                </p>
+                <div className="bg-muted/30 rounded-lg p-4 border border-border/40">
+                  <p className="text-sm text-foreground leading-relaxed whitespace-pre-line">
+                    {item.description}
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex flex-col sm:flex-row gap-2 pt-4 border-t border-border/40">
+                <Button
+                  variant="outline"
+                  className="flex-1 font-semibold uppercase tracking-wide text-xs md:text-sm"
+                >
+                  <Edit className="mr-2 size-4" />
+                  Editar
+                </Button>
+                <Button
+                  variant="destructive"
+                  className="flex-1 font-semibold uppercase tracking-wide text-xs md:text-sm"
+                >
+                  <Trash2 className="mr-2 size-4" />
+                  Eliminar
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+}
