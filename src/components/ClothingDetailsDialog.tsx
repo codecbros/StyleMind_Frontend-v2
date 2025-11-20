@@ -28,12 +28,13 @@ export function ClothingDetailsDialog({
   onOpenChange,
 }: ClothingDetailsDialogProps) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-
-  const { data, isLoading } = useGetClothesById(itemId || '', {
+  const { data, isLoading, isError } = useGetClothesById(itemId || '', {
     query: { enabled: !!itemId && open },
   });
 
   if (!itemId) return null;
+
+  if (isError) return null;
 
   const item = data?.data;
 
