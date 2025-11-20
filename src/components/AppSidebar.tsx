@@ -10,7 +10,8 @@ import {
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import { useIsMobile } from '@/hooks/use-mobile';
-import { LogOut, Shirt, SquarePlus, User } from 'lucide-react';
+import { wardrobe } from '@lucide/lab';
+import { Icon, LogOut, SquarePlus, User } from 'lucide-react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { PATHS } from '../constants/paths';
 import { ErrorToast, SuccessToast } from '../lib/toast';
@@ -24,8 +25,8 @@ const items = [
   },
   {
     title: 'Armario',
-    url: '',
-    icon: Shirt,
+    url: PATHS.Wardrobe,
+    icon: (props: any) => <Icon iconNode={wardrobe} {...props} />,
   },
   {
     title: 'Nueva Prenda',

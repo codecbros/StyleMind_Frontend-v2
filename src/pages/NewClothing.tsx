@@ -1,4 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useQueryClient } from '@tanstack/react-query';
 import { LoaderCircle } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import RSelect from 'react-select';
@@ -9,6 +10,7 @@ import {
   useUploadClothesImages,
 } from '../api/generated/wardrobe/wardrobe';
 import CenteredContainer from '../components/CenteredContainer';
+import { ColorPicker } from '../components/ColorPicker';
 import ImageUploader from '../components/ImageUpload';
 import { Button } from '../components/ui/button';
 import { Card } from '../components/ui/card';
@@ -33,6 +35,7 @@ import { Textarea } from '../components/ui/textarea';
 import { CLOTHING_CONSTANTS } from '../constants/clothing';
 import { COOKIE_KEYS } from '../constants/cookies';
 import { QUERY_KEYS } from '../constants/querys';
+import { SEASON_OPTIONS } from '../helpers/season-helper';
 import { useImageUploader } from '../hooks/useImageUpload';
 import { getCookie } from '../lib/auth-cookies';
 import { ErrorToast, SuccessToast, WarningToast } from '../lib/toast';
@@ -45,6 +48,7 @@ const NewClothing = () => {
     useUploadClothesImages();
   const { images, addImages, removeImage, getFiles, clearImages } =
     useImageUploader();
+  const queryClient = useQueryClient();
 
   const { data, isError, isLoading } = useGetMyCategories(
     {},
@@ -103,6 +107,9 @@ const NewClothing = () => {
               },
               {
                 onSuccess: () => {
+                  queryClient.invalidateQueries({
+                    queryKey: [QUERY_KEYS.WARDROBE],
+                  });
                   SuccessToast({
                     title: '¡Imágenes subidas!',
                     description: 'Las imágenes se han subido correctamente.',
@@ -140,7 +147,7 @@ const NewClothing = () => {
       <h1 className="text-center text-2xl lg:text-3xl uppercase font-extrabold">
         Nueva Prenda
       </h1>
-      <CenteredContainer>
+      <CenteredContainer className="px-5">
         <Card className="w-full px-4 sm:px-6 md:px-8 lg:px-10 py-6 md:py-8">
           <h4 className="mb-3 text-lg font-semibold">
             Cuanta más información proporciones, mejores serán las combinaciones
@@ -273,7 +280,7 @@ const NewClothing = () => {
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            {CLOTHING_CONSTANTS.seasons.map((season) => (
+                            {SEASON_OPTIONS.map((season) => (
                               <SelectItem
                                 key={season.value}
                                 value={season.value}
@@ -338,10 +345,10 @@ const NewClothing = () => {
                         Color principal
                       </FormLabel>
                       <FormControl>
-                        <Input
-                          className="py-5"
-                          placeholder="Ej: Negro, Azul marino, Beige"
-                          {...field}
+                        <ColorPicker
+                          value={field.value}
+                          onValueChange={field.onChange}
+                          allowEmpty={false}
                         />
                       </FormControl>
                       <FormMessage />
@@ -358,10 +365,10 @@ const NewClothing = () => {
                         Color secundario (opcional)
                       </FormLabel>
                       <FormControl>
-                        <Input
-                          className="py-5"
-                          placeholder="Ej: Rayas blancas, Detalles dorados"
-                          {...field}
+                        <ColorPicker
+                          value={field.value}
+                          onValueChange={field.onChange}
+                          allowEmpty={true}
                         />
                       </FormControl>
                       <FormMessage />

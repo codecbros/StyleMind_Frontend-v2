@@ -5,7 +5,7 @@ import CenteredContainer from './CenteredContainer';
 
 interface ErrorFallbackProps {
   title?: string;
-  description: string;
+  description?: string;
 }
 
 export const ErrorFallback = ({
