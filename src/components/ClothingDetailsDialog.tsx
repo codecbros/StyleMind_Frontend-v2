@@ -1,3 +1,4 @@
+import { DialogDescription } from '@radix-ui/react-dialog';
 import {
   ChevronLeft,
   ChevronRight,
@@ -8,6 +9,7 @@ import {
 } from 'lucide-react';
 import { useState } from 'react';
 import { useGetClothesById } from '../api/generated/wardrobe/wardrobe';
+import { getSeasonLabel } from '../helpers/season-helper';
 import { cn } from '../lib/utils';
 import { ClothingDetailsSkeleton } from './skeletons/ClothingDetailsSkeleton';
 import { Badge } from './ui/badge';
@@ -27,7 +29,7 @@ export function ClothingDetailsDialog({
 }: ClothingDetailsDialogProps) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
-  const { data, isLoading, isError } = useGetClothesById(itemId || '', {
+  const { data, isLoading } = useGetClothesById(itemId || '', {
     query: { enabled: !!itemId && open },
   });
 
@@ -48,25 +50,28 @@ export function ClothingDetailsDialog({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-3xl md:max-w-4xl lg:max-w-5xl max-h-[95vh] overflow-y-auto p-0 gap-0">
-        <DialogHeader className="sticky top-0 z-10 bg-background border-b px-4 sm:px-6 py-4 space-y-0">
-          <div className="flex items-center justify-between gap-4">
-            {isLoading ? (
-              <div className="h-7 w-48 bg-muted animate-pulse rounded" />
-            ) : (
-              <>
-                <DialogTitle className="text-xl sm:text-2xl pr-8">
-                  {item?.name}
-                </DialogTitle>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="absolute right-4 top-4 size-8 rounded-full hover:bg-muted cursor-pointer"
-                  onClick={() => onOpenChange(false)}
-                >
-                  <X className="size-5" />
-                  <span className="sr-only">Cerrar</span>
-                </Button>
-              </>
+        <DialogHeader className="sticky top-0 z-10 bg-background border-b px-4 sm:px-6 py-4">
+          <div className="flex items-start justify-between gap-4">
+            <div className="flex-1 pr-8">
+              <DialogTitle className="text-xl sm:text-2xl">
+                {isLoading ? (
+                  <div className="h-7 w-48 bg-muted animate-pulse rounded" />
+                ) : (
+                  item.name
+                )}
+              </DialogTitle>
+              <DialogDescription>{''}</DialogDescription>
+            </div>
+            {isLoading ? null : (
+              <Button
+                variant="ghost"
+                size="icon"
+                className="size-8 rounded-full hover:bg-muted cursor-pointer shrink-0"
+                onClick={() => onOpenChange(false)}
+              >
+                <X className="size-5" />
+                <span className="sr-only">Cerrar</span>
+              </Button>
             )}
           </div>
         </DialogHeader>
@@ -79,7 +84,7 @@ export function ClothingDetailsDialog({
               {/* Image Carousel */}
               <div className="space-y-4">
                 <div className="relative aspect-square overflow-hidden rounded-lg bg-muted">
-                  {item.images.length === 0 || null ? (
+                  {item.images.length === 0 ? (
                     <div className="flex h-full w-full items-center justify-center bg-muted">
                       <Shirt className="size-20 text-muted-foreground" />
                     </div>
@@ -103,6 +108,7 @@ export function ClothingDetailsDialog({
                         size="icon"
                         className="absolute left-2 top-1/2 -translate-y-1/2 size-10 sm:size-9 shadow-lg cursor-pointer"
                         onClick={previousImage}
+                        aria-label="Imagen anterior"
                       >
                         <ChevronLeft className="size-5 sm:size-4" />
                       </Button>
@@ -111,19 +117,27 @@ export function ClothingDetailsDialog({
                         size="icon"
                         className="absolute right-2 top-1/2 -translate-y-1/2 size-10 sm:size-9 shadow-lg cursor-pointer"
                         onClick={nextImage}
+                        aria-label="Imagen siguiente"
                       >
                         <ChevronRight className="size-5 sm:size-4" />
                       </Button>
                     </>
+                  )}
+
+                  {/* Image counter indicator */}
+                  {item.images.length > 1 && (
+                    <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/60 text-white text-xs px-3 py-1 rounded-full backdrop-blur-sm">
+                      {currentImageIndex + 1} / {item.images.length}
+                    </div>
                   )}
                 </div>
 
                 {/* Image Thumbnails */}
                 {item.images.length > 1 && (
                   <div className="flex gap-2 overflow-x-auto pb-2">
-                    {item.images.map((image, index) => (
+                    {item.images.map((image: any, index: number) => (
                       <button
-                        key={index}
+                        key={image.id}
                         onClick={() => setCurrentImageIndex(index)}
                         className={cn(
                           'relative size-16 sm:size-20 shrink-0 overflow-hidden rounded-md border-2 transition-all',
@@ -131,6 +145,7 @@ export function ClothingDetailsDialog({
                             ? 'border-primary'
                             : 'border-transparent opacity-60 hover:opacity-100'
                         )}
+                        aria-label={`Ver imagen ${index + 1}`}
                       >
                         <img
                           src={image?.url || '/placeholder.svg'}
@@ -170,6 +185,7 @@ export function ClothingDetailsDialog({
                       <div
                         className="size-8 rounded-full border-2 border-border shadow-sm"
                         style={{ backgroundColor: item.primaryColor }}
+                        aria-label={`Color principal: ${item.primaryColor}`}
                       />
                       <span className="text-sm">Principal</span>
                     </div>
@@ -178,6 +194,7 @@ export function ClothingDetailsDialog({
                         <div
                           className="size-8 rounded-full border-2 border-border shadow-sm"
                           style={{ backgroundColor: item.secondaryColor }}
+                          aria-label={`Color secundario: ${item.secondaryColor}`}
                         />
                         <span className="text-sm">Secundario</span>
                       </div>
@@ -200,7 +217,7 @@ export function ClothingDetailsDialog({
                       Temporada
                     </p>
                     <p className="mt-1.5 text-sm text-foreground">
-                      {item.season}
+                      {getSeasonLabel(item.season)}
                     </p>
                   </div>
                   <div>
@@ -228,11 +245,12 @@ export function ClothingDetailsDialog({
                   </p>
                   <div className="bg-muted/30 rounded-lg p-4 border border-border/40">
                     <p className="text-sm text-foreground leading-relaxed whitespace-pre-line">
-                      {item.description}
+                      {item.description || 'Sin descripción'}
                     </p>
                   </div>
                 </div>
 
+                {/* Action Buttons */}
                 <div className="flex flex-col sm:flex-row gap-2 pt-4 border-t border-border/40">
                   <Button
                     variant="outline"
