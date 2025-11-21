@@ -4,6 +4,7 @@ import { useGetMyCategories } from '../api/generated/categories/categories';
 import { COOKIE_KEYS } from '../constants/cookies';
 import { QUERY_KEYS } from '../constants/querys';
 import { getCookie } from '../lib/auth-cookies';
+import type { Category } from '../types/category';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 
@@ -25,29 +26,27 @@ export function WardrobeFilters({
   hasActiveFilters,
 }: WardrobeFiltersProps) {
   const token = getCookie(COOKIE_KEYS.AUTH_TOKEN);
-  type Category = { id: string; name: string };
-  type CategoriesResponse = { data: Category[] };
 
-  const { data: categoriesData, isLoading: isCategoriesLoading } =
-    useGetMyCategories<CategoriesResponse>(
+  const { data: categories, isLoading: isCategoriesLoading } =
+    useGetMyCategories(
       {},
       {
         query: {
           queryKey: [QUERY_KEYS.MY_CATEGORIES],
           enabled: !!token,
+          select: (response: any) => (response?.data as Category[]) || [],
         },
       }
     );
 
-  const categories = categoriesData?.data || [];
-
-  const categoryOptions = categories.map((cat: any) => ({
-    value: cat.id,
-    label: cat.name,
-  }));
+  const categoryOptions =
+    categories?.map((cat) => ({
+      value: cat.id,
+      label: cat.name,
+    })) || [];
 
   const selectedCategory = categoryId
-    ? categoryOptions.find((opt: any) => opt.value === categoryId)
+    ? categoryOptions.find((opt) => opt.value === categoryId)
     : null;
 
   return (
