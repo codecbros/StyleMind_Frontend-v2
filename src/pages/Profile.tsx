@@ -32,13 +32,14 @@ export default function Profile() {
   const token = getCookie(COOKIE_KEYS.AUTH_TOKEN);
 
   const {
-    data,
+    data: profile,
     isLoading: isProfileLoading,
     isError,
   } = useGetMyProfile({
     query: {
       queryKey: [QUERY_KEYS.USER_PROFILE],
       enabled: !!token,
+      select: (response: any) => response?.data as UserProfile | undefined,
     },
   }) as {
     data: UserProfile | undefined;
@@ -46,9 +47,7 @@ export default function Profile() {
     isError: boolean;
   };
 
-  const profile = data?.data as UserProfile;
-
-  if (data instanceof Error || isError) {
+  if (profile instanceof Error || isError) {
     return (
       <>
         <h1 className="text-center text-2xl md:text-3xl lg:text-4xl uppercase font-extrabold tracking-wide px-4">

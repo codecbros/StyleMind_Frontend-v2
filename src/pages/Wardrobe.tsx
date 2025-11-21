@@ -52,7 +52,7 @@ const Wardrobe = () => {
     }
   );
 
-  if ((isError || !wardrobeItems) && !isLoading) {
+  if (isError || wardrobeItems instanceof Error) {
     return <ErrorFallback />;
   }
 
