@@ -40,15 +40,15 @@ export function ClothingDetailsDialog({
     },
   });
 
-  if (!itemId) return null;
-
-  if (isError || !item) return null;
+  if (!itemId || isError) return null;
 
   const nextImage = () => {
-    setCurrentImageIndex((prev) => (prev + 1) % item?.images?.length);
+    if (!item?.images?.length) return;
+    setCurrentImageIndex((prev) => (prev + 1) % item.images.length);
   };
 
   const previousImage = () => {
+    if (!item?.images?.length) return;
     setCurrentImageIndex(
       (prev) => (prev - 1 + item.images.length) % item.images.length
     );
@@ -64,7 +64,7 @@ export function ClothingDetailsDialog({
                 {isLoading ? (
                   <div className="h-7 w-48 bg-muted animate-pulse rounded" />
                 ) : (
-                  item.name
+                  item?.name
                 )}
               </DialogTitle>
               <DialogDescription>{''}</DialogDescription>
@@ -91,24 +91,24 @@ export function ClothingDetailsDialog({
               {/* Image Carousel */}
               <div className="space-y-4">
                 <div className="relative aspect-square overflow-hidden rounded-lg bg-muted">
-                  {item.images.length === 0 ? (
+                  {item?.images.length === 0 ? (
                     <div className="flex h-full w-full items-center justify-center bg-muted">
                       <Shirt className="size-20 text-muted-foreground" />
                     </div>
                   ) : (
                     <img
                       src={
-                        item.images[currentImageIndex]?.url ||
+                        item?.images[currentImageIndex]?.url ||
                         '/placeholder.svg'
                       }
-                      alt={`${item.name} - imagen ${currentImageIndex + 1}`}
+                      alt={`${item?.name} - imagen ${currentImageIndex + 1}`}
                       className="object-cover w-full h-full"
                       loading="lazy"
                     />
                   )}
 
                   {/* Navigation Arrows */}
-                  {item.images.length > 1 && (
+                  {item && item.images.length > 1 && (
                     <>
                       <Button
                         variant="secondary"
@@ -132,17 +132,17 @@ export function ClothingDetailsDialog({
                   )}
 
                   {/* Image counter indicator */}
-                  {item.images.length > 1 && (
+                  {item && item.images.length > 1 && (
                     <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/60 text-white text-xs px-3 py-1 rounded-full backdrop-blur-sm">
-                      {currentImageIndex + 1} / {item.images.length}
+                      {currentImageIndex + 1} / {item?.images.length}
                     </div>
                   )}
                 </div>
 
                 {/* Image Thumbnails */}
-                {item.images.length > 1 && (
+                {item && item.images.length > 1 && (
                   <div className="flex gap-2 overflow-x-auto pb-2">
-                    {item.images.map((image, index) => (
+                    {item?.images.map((image, index) => (
                       <button
                         key={image.id}
                         onClick={() => setCurrentImageIndex(index)}
@@ -172,7 +172,7 @@ export function ClothingDetailsDialog({
                     Categorías
                   </p>
                   <div className="flex flex-wrap gap-2">
-                    {item.categories.map((category) => (
+                    {item?.categories.map((category) => (
                       <Badge key={category.category.name} variant="secondary">
                         {category.category.name}
                       </Badge>
@@ -188,12 +188,12 @@ export function ClothingDetailsDialog({
                     <div className="flex items-center gap-2">
                       <div
                         className="size-8 rounded-full border-2 border-border shadow-sm"
-                        style={{ backgroundColor: item.primaryColor }}
-                        aria-label={`Color principal: ${item.primaryColor}`}
+                        style={{ backgroundColor: item?.primaryColor }}
+                        aria-label={`Color principal: ${item?.primaryColor}`}
                       />
                       <span className="text-sm">Principal</span>
                     </div>
-                    {item.secondaryColor && (
+                    {item?.secondaryColor && (
                       <div className="flex items-center gap-2">
                         <div
                           className="size-8 rounded-full border-2 border-border shadow-sm"
@@ -212,7 +212,7 @@ export function ClothingDetailsDialog({
                       Talla
                     </p>
                     <p className="mt-1.5 text-sm text-foreground">
-                      {item.size}
+                      {item?.size}
                     </p>
                   </div>
                   <div>
@@ -220,7 +220,7 @@ export function ClothingDetailsDialog({
                       Temporada
                     </p>
                     <p className="mt-1.5 text-sm text-foreground">
-                      {getSeasonLabel(item.season)}
+                      {getSeasonLabel(item?.season)}
                     </p>
                   </div>
                   <div>
@@ -228,7 +228,7 @@ export function ClothingDetailsDialog({
                       Material
                     </p>
                     <p className="mt-1.5 text-sm text-foreground">
-                      {item.material}
+                      {item?.material}
                     </p>
                   </div>
                   <div>
@@ -236,7 +236,7 @@ export function ClothingDetailsDialog({
                       Estilo
                     </p>
                     <p className="mt-1.5 text-sm text-foreground">
-                      {item.style}
+                      {item?.style}
                     </p>
                   </div>
                 </div>
@@ -247,7 +247,7 @@ export function ClothingDetailsDialog({
                   </p>
                   <div className="bg-muted/30 rounded-lg p-4 border border-border/40">
                     <p className="text-sm text-foreground leading-relaxed whitespace-pre-line">
-                      {item.description || 'Sin descripción'}
+                      {item?.description || 'Sin descripción'}
                     </p>
                   </div>
                 </div>
