@@ -1,3 +1,3 @@
-export const getSelectData = <T>(data: T | undefined): T | null => {
-  return data || null;
+export const selectData = <T>(response: { data: T } | undefined) => {
+  return response?.data;
 };
