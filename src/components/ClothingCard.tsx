@@ -1,10 +1,11 @@
 import { Card, CardContent } from '@/components/ui/card';
 import { ImageIcon, Shirt } from 'lucide-react';
 import { getSeasonLabel } from '../helpers/season-helper';
+import type { WardrobeItem } from '../types/clothing';
 import { Badge } from './ui/badge';
 
 interface ClothingCardProps {
-  item: any;
+  item: WardrobeItem;
   onSelect?: () => void;
 }
 
@@ -64,7 +65,7 @@ export function ClothingCard({ item, onSelect }: ClothingCardProps) {
 
         {/* Categories */}
         <div className="mt-2 flex flex-wrap gap-1">
-          {item.categories.slice(0, 3).map((category: any) => (
+          {item.categories.slice(0, 3).map((category) => (
             <Badge
               key={category.category.name}
               variant="secondary"

@@ -1,6 +1,5 @@
 import type { CreateClothesDto } from '../api/generated/schemas';
 
-// types/clothing.ts
 export interface ClothingItem extends CreateClothesDto {
   id: string;
   images: Array<{
@@ -15,4 +14,23 @@ export interface ClothingItem extends CreateClothesDto {
   }>;
   createdAt?: string;
   updatedAt?: string;
+}
+
+export interface WardrobeItem {
+  id: string;
+  name: string;
+  season: string;
+  primaryColor: string;
+  secondaryColor?: string;
+  style: string;
+  size: string;
+  images: Array<{
+    id: string;
+    url: string;
+  }>;
+  categories: Array<{
+    category: {
+      name: string;
+    };
+  }>;
 }

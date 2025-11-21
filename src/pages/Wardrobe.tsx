@@ -17,6 +17,7 @@ import { useDebounce } from '../hooks/useDebounce';
 import { useWardrobeFilters } from '../hooks/useWardrobeFilters';
 import { getCookie } from '../lib/auth-cookies';
 import { cn } from '../lib/utils';
+import type { WardrobeItem } from '../types/clothing';
 
 const Wardrobe = () => {
   const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
@@ -32,7 +33,11 @@ const Wardrobe = () => {
   const token = getCookie(COOKIE_KEYS.AUTH_TOKEN);
   const debouncedSearch = useDebounce(searchQuery, 500);
 
-  const { data, isError, isLoading } = useGetMyWardrobe(
+  const {
+    data: wardrobeItems,
+    isError,
+    isLoading,
+  } = useGetMyWardrobe(
     {
       limit: 1000,
       search: debouncedSearch || undefined,
@@ -42,11 +47,12 @@ const Wardrobe = () => {
       query: {
         queryKey: [QUERY_KEYS.WARDROBE, debouncedSearch, categoryId],
         enabled: !!token,
+        select: (response: any) => response?.data as WardrobeItem[] | undefined,
       },
     }
   );
 
-  if (isError) {
+  if ((isError || !wardrobeItems) && !isLoading) {
     return <ErrorFallback />;
   }
 
@@ -65,8 +71,8 @@ const Wardrobe = () => {
                   <Skeleton className="h-4 w-32 mt-3" />
                 ) : (
                   <p className="text-muted-foreground mt-1">
-                    {data?.data?.length}{' '}
-                    {data?.data?.length === 1 ? 'prenda' : 'prendas'}
+                    {wardrobeItems?.length}{' '}
+                    {wardrobeItems?.length === 1 ? 'prenda' : 'prendas'}
                   </p>
                 )}
               </div>
@@ -106,7 +112,7 @@ const Wardrobe = () => {
         <div className="container mx-auto pb-12">
           {isLoading ? (
             <ClothingGridSkeleton />
-          ) : data?.data?.length === 0 ? (
+          ) : wardrobeItems?.length === 0 ? (
             <Card className="mt-5">
               <CardContent className="flex flex-col items-center justify-center py-12">
                 <p className="text-muted-foreground text-center">
@@ -130,7 +136,7 @@ const Wardrobe = () => {
             </Card>
           ) : (
             <div className="grid grid-auto-fill gap-6">
-              {data.data.map((item) => (
+              {wardrobeItems?.map((item) => (
                 <ClothingCard
                   key={item.id}
                   item={item}
