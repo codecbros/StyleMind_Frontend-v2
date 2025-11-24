@@ -1,49 +1,31 @@
 import { Search, X } from 'lucide-react';
+import { useMemo } from 'react';
 import RSelect from 'react-select';
-import { useGetMyCategories } from '../api/generated/categories/categories';
-import { COOKIE_KEYS } from '../constants/cookies';
-import { QUERY_KEYS } from '../constants/querys';
-import { getCookie } from '../lib/auth-cookies';
-import type { Category } from '../types/category';
+import type { useWardrobeFilters } from '../hooks/useWardrobeFilters';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 
 interface WardrobeFiltersProps {
-  search: string;
-  onSearchChange: (value: string) => void;
-  categoryId?: string;
-  onCategoryChange: (value?: string) => void;
-  onReset: () => void;
-  hasActiveFilters: boolean;
+  filters: ReturnType<typeof useWardrobeFilters>;
+  hasItems?: boolean;
 }
 
-export function WardrobeFilters({
-  search,
-  onSearchChange,
-  categoryId,
-  onCategoryChange,
-  onReset,
-  hasActiveFilters,
-}: WardrobeFiltersProps) {
-  const token = getCookie(COOKIE_KEYS.AUTH_TOKEN);
+export function WardrobeFilters({ filters }: WardrobeFiltersProps) {
+  const {
+    searchQuery,
+    setSearchQuery,
+    categoryId,
+    setCategoryId,
+    categories,
+    isCategoriesLoading,
+    resetFilters,
+    hasActiveFilters,
+  } = filters;
 
-  const { data: categories, isLoading: isCategoriesLoading } =
-    useGetMyCategories(
-      {},
-      {
-        query: {
-          queryKey: [QUERY_KEYS.MY_CATEGORIES],
-          enabled: !!token,
-          select: (response: any) => (response?.data as Category[]) || [],
-        },
-      }
-    );
-
-  const categoryOptions =
-    categories?.map((cat) => ({
-      value: cat.id,
-      label: cat.name,
-    })) || [];
+  const categoryOptions = useMemo(
+    () => categories?.map((cat) => ({ value: cat.id, label: cat.name })) || [],
+    [categories]
+  );
 
   const selectedCategory = categoryId
     ? categoryOptions.find((opt) => opt.value === categoryId)
@@ -56,8 +38,8 @@ export function WardrobeFilters({
         <Input
           type="search"
           placeholder="Buscar por nombre..."
-          value={search}
-          onChange={(e) => onSearchChange(e.target.value)}
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
           className="pl-10 py-5"
         />
       </div>
@@ -70,13 +52,13 @@ export function WardrobeFilters({
           classNamePrefix="react-select"
           options={categoryOptions}
           value={selectedCategory}
-          onChange={(option) => onCategoryChange(option?.value)}
+          onChange={(option) => setCategoryId(option?.value)}
           placeholder="Filtrar por categoría"
         />
       </div>
 
       {hasActiveFilters && (
-        <Button variant="outline" onClick={onReset} className="shrink-0">
+        <Button variant="outline" onClick={resetFilters} className="shrink-0">
           <X className="mr-2 size-4" />
           Limpiar
         </Button>

@@ -22,14 +22,9 @@ import type { WardrobeItem } from '../types/clothing';
 const Wardrobe = () => {
   const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
   const [addDialogOpen, setAddDialogOpen] = useState(false);
-  const {
-    searchQuery,
-    setSearchQuery,
-    categoryId,
-    setCategoryId,
-    resetFilters,
-    hasActiveFilters,
-  } = useWardrobeFilters();
+  const filters = useWardrobeFilters();
+  const { searchQuery, categoryId, hasActiveFilters } = filters;
+
   const token = getCookie(COOKIE_KEYS.AUTH_TOKEN);
   const debouncedSearch = useDebounce(searchQuery, 500);
 
@@ -42,6 +37,7 @@ const Wardrobe = () => {
       limit: 1000,
       search: debouncedSearch || undefined,
       categoryId: categoryId || undefined,
+      status: true,
     },
     {
       query: {
@@ -98,14 +94,7 @@ const Wardrobe = () => {
               Filtros
             </h3>
           </div>
-          <WardrobeFilters
-            search={searchQuery}
-            onSearchChange={setSearchQuery}
-            categoryId={categoryId}
-            onCategoryChange={setCategoryId}
-            onReset={resetFilters}
-            hasActiveFilters={hasActiveFilters}
-          />
+          <WardrobeFilters filters={filters} />
         </div>
 
         {/* Clothing Grid */}
