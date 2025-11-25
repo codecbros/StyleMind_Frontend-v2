@@ -1,4 +1,5 @@
 import { DialogDescription } from '@radix-ui/react-dialog';
+import { useQueryClient } from '@tanstack/react-query';
 import {
   ChevronLeft,
   ChevronRight,
@@ -8,7 +9,11 @@ import {
   X,
 } from 'lucide-react';
 import { useState } from 'react';
-import { useGetClothesById } from '../api/generated/wardrobe/wardrobe';
+import {
+  useGetClothesById,
+  useUpdateClothesStatus,
+} from '../api/generated/wardrobe/wardrobe';
+import { QUERY_KEYS } from '../constants/querys';
 import { getSeasonLabel } from '../helpers/season-helper';
 import { cn } from '../lib/utils';
 import type { ClothingItem } from '../types/clothing';
@@ -29,9 +34,13 @@ export function ClothingDetailsDialog({
   onOpenChange,
 }: ClothingDetailsDialogProps) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const { mutate: deleteClothing, isPending: isDeletingClothing } =
+    useUpdateClothesStatus();
+  const queryClient = useQueryClient();
+
   const {
     data: item,
-    isLoading,
+    isLoading: isClothingLoading,
     isError,
   } = useGetClothesById(itemId || '', {
     query: {
@@ -54,6 +63,27 @@ export function ClothingDetailsDialog({
     );
   };
 
+  const handleDeleteClothingItem = () => {
+    if (!itemId) return;
+
+    deleteClothing(
+      { id: itemId },
+      {
+        onSuccess: (response) => {
+          queryClient.invalidateQueries({
+            queryKey: [QUERY_KEYS.WARDROBE],
+          });
+          console.log(response);
+          onOpenChange(false);
+        },
+        onError: (error) => {
+          console.error('Error deleting clothing item:', error);
+        },
+      }
+    );
+  };
+
+  const isLoading = isClothingLoading || isDeletingClothing;
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-3xl md:max-w-4xl lg:max-w-5xl max-h-[95vh] overflow-y-auto p-0 gap-0">
@@ -255,14 +285,15 @@ export function ClothingDetailsDialog({
                 <div className="flex flex-col sm:flex-row gap-2 pt-4 border-t border-border/40">
                   <Button
                     variant="outline"
-                    className="flex-1 font-semibold uppercase tracking-wide text-xs md:text-sm"
+                    className="flex-1 font-semibold uppercase tracking-wide text-xs md:text-sm cursor-pointer"
                   >
                     <Edit className="mr-2 size-4" />
                     Editar
                   </Button>
                   <Button
                     variant="destructive"
-                    className="flex-1 font-semibold uppercase tracking-wide text-xs md:text-sm"
+                    className="flex-1 font-semibold uppercase tracking-wide text-xs md:text-sm cursor-pointer"
+                    onClick={handleDeleteClothingItem}
                   >
                     <Trash2 className="mr-2 size-4" />
                     Eliminar
