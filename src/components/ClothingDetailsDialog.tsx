@@ -10,6 +10,7 @@ import { QUERY_KEYS } from '../constants/querys';
 import { getSeasonLabel } from '../helpers/season-helper';
 import { ErrorToast, SuccessToast } from '../lib/toast';
 import type { ClothingItem } from '../types/clothing';
+import { DetailItem } from './DetailItem';
 import { ClothingDetailsSkeleton } from './skeletons/ClothingDetailsSkeleton';
 import {
   AlertDialog,
@@ -111,9 +112,7 @@ export function ClothingDetailsDialog({
           ) : (
             <div className="px-4 sm:px-6 py-6">
               <div className="grid gap-6 md:grid-cols-2">
-                {/* Image Carousel */}
                 <ImageCarousel images={item?.images || []} />
-
                 <div className="space-y-6">
                   <div className="space-y-2">
                     <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
@@ -155,38 +154,13 @@ export function ClothingDetailsDialog({
                   </div>
 
                   <div className="grid grid-cols-2 gap-x-6 md:gap-x-8 gap-y-4 md:gap-y-5">
-                    <div>
-                      <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                        Talla
-                      </p>
-                      <p className="mt-1.5 text-sm text-foreground">
-                        {item?.size}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                        Temporada
-                      </p>
-                      <p className="mt-1.5 text-sm text-foreground">
-                        {getSeasonLabel(item?.season)}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                        Material
-                      </p>
-                      <p className="mt-1.5 text-sm text-foreground">
-                        {item?.material}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                        Estilo
-                      </p>
-                      <p className="mt-1.5 text-sm text-foreground">
-                        {item?.style}
-                      </p>
-                    </div>
+                    <DetailItem label="Talla" value={item?.size} />
+                    <DetailItem
+                      label="Temporada"
+                      value={getSeasonLabel(item?.season)}
+                    />
+                    <DetailItem label="Material" value={item?.material} />
+                    <DetailItem label="Estilo" value={item?.style} />
                   </div>
 
                   <div>
