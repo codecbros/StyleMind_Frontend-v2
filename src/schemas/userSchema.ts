@@ -157,17 +157,17 @@ const updateProfileSchema = z.object({
   skinColor: z.string().optional(),
 
   weight: z.preprocess((val) => {
-    if (val === '' || val === null || val === undefined) return null;
+    if (val === '' || val === null || val === undefined) return undefined;
     const num = Number(val);
-    return isNaN(num) ? null : num;
+    return isNaN(num) ? undefined : num;
   }, z.number().int().nonnegative().nullable().optional()) as z.ZodType<
     number | null | undefined
   >,
 
   height: z.preprocess((val) => {
-    if (val === '' || val === null || val === undefined) return null;
+    if (val === '' || val === null || val === undefined) return undefined;
     const num = Number(val);
-    return isNaN(num) ? null : num;
+    return isNaN(num) ? undefined : num;
   }, z.number().int().nonnegative().nullable().optional()) as z.ZodType<
     number | null | undefined
   >,

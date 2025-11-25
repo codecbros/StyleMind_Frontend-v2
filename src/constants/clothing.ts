@@ -1,10 +1,10 @@
 export const CLOTHING_CONSTANTS = {
   sizes: [
-    { value: 'xs', label: 'XS - Extra Pequeña' },
-    { value: 's', label: 'S - Pequeña' },
-    { value: 'm', label: 'M - Mediana' },
-    { value: 'l', label: 'L - Grande' },
-    { value: 'xl', label: 'XL - Extra Grande' },
-    { value: 'xxl', label: 'XXL - Doble Extra Grande' },
+    { value: 'XS', label: 'XS - Extra Pequeña' },
+    { value: 'S', label: 'S - Pequeña' },
+    { value: 'M', label: 'M - Mediana' },
+    { value: 'L', label: 'L - Grande' },
+    { value: 'XL', label: 'XL - Extra Grande' },
+    { value: 'XXL', label: 'XXL - Doble Extra Grande' },
   ],
 };

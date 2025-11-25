@@ -13,8 +13,8 @@ export const SEASON_OPTIONS = Object.entries(SEASONS).map(([value, label]) => ({
  * @param seasonValue - El valor de la temporada en inglés
  * @returns El nombre de la temporada en español
  */
-export const getSeasonLabel = (seasonValue: string): string => {
-  return SEASONS[seasonValue as SeasonKey] || seasonValue;
+export const getSeasonLabel = (seasonValue: string | undefined): string => {
+  return SEASONS[seasonValue as SeasonKey] || seasonValue || '';
 };
 
 export const isValidSeason = (season: string): season is SeasonKey => {

@@ -3,8 +3,8 @@ import { Skeleton } from '@/components/ui/skeleton';
 
 export function ClothingGridSkeleton() {
   return (
-    <div className="grid grid-auto-fit gap-6">
-      {Array.from({ length: 6 }).map((_, index) => (
+    <div className="grid grid-auto-fill gap-6">
+      {Array.from({ length: 8 }).map((_, index) => (
         <Card key={index} className="overflow-hidden">
           {/* Image skeleton */}
           <Skeleton className="aspect-square w-full" />
