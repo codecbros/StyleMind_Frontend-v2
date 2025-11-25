@@ -11,7 +11,8 @@ type ImageCarouselProps = {
 const ImageCarousel = ({ images }: ImageCarouselProps) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
-  if (!images) return null;
+  if (!images || images.length <= 0) return null;
+
   const nextImage = () => {
     if (!images?.length) return;
     setCurrentImageIndex((prev) => (prev + 1) % images.length);
