@@ -34,7 +34,7 @@ const Wardrobe = () => {
     isLoading,
   } = useGetMyWardrobe(
     {
-      limit: 1000,
+      limit: 20,
       search: debouncedSearch || undefined,
       categoryId: categoryId || undefined,
       status: true,
