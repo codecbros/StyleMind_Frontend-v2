@@ -1,13 +1,6 @@
 import { DialogDescription } from '@radix-ui/react-dialog';
 import { useQueryClient } from '@tanstack/react-query';
-import {
-  ChevronLeft,
-  ChevronRight,
-  Edit,
-  Shirt,
-  Trash2,
-  X,
-} from 'lucide-react';
+import { Edit, Trash2, X } from 'lucide-react';
 import { useState } from 'react';
 import {
   useGetClothesById,
@@ -16,7 +9,6 @@ import {
 import { QUERY_KEYS } from '../constants/querys';
 import { getSeasonLabel } from '../helpers/season-helper';
 import { ErrorToast, SuccessToast } from '../lib/toast';
-import { cn } from '../lib/utils';
 import type { ClothingItem } from '../types/clothing';
 import { ClothingDetailsSkeleton } from './skeletons/ClothingDetailsSkeleton';
 import {
@@ -32,6 +24,7 @@ import {
 import { Badge } from './ui/badge';
 import { Button } from './ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from './ui/dialog';
+import ImageCarousel from './wardrobe/ImageCarousel';
 
 interface ClothingDetailsDialogProps {
   itemId: string | null;
@@ -44,7 +37,6 @@ export function ClothingDetailsDialog({
   open,
   onOpenChange,
 }: ClothingDetailsDialogProps) {
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const { mutate: deleteClothing, isPending: isDeletingClothing } =
     useUpdateClothesStatus();
@@ -62,18 +54,6 @@ export function ClothingDetailsDialog({
   });
 
   if (!itemId || isError) return null;
-
-  const nextImage = () => {
-    if (!item?.images?.length) return;
-    setCurrentImageIndex((prev) => (prev + 1) % item.images.length);
-  };
-
-  const previousImage = () => {
-    if (!item?.images?.length) return;
-    setCurrentImageIndex(
-      (prev) => (prev - 1 + item.images.length) % item.images.length
-    );
-  };
 
   const handleDelete = () => {
     if (!itemId && !deleteDialogOpen) return;
@@ -132,82 +112,7 @@ export function ClothingDetailsDialog({
             <div className="px-4 sm:px-6 py-6">
               <div className="grid gap-6 md:grid-cols-2">
                 {/* Image Carousel */}
-                <div className="space-y-4">
-                  <div className="relative aspect-square overflow-hidden rounded-lg bg-muted">
-                    {item?.images.length === 0 ? (
-                      <div className="flex h-full w-full items-center justify-center bg-muted">
-                        <Shirt className="size-20 text-muted-foreground" />
-                      </div>
-                    ) : (
-                      <img
-                        src={
-                          item?.images[currentImageIndex]?.url ||
-                          '/placeholder.svg'
-                        }
-                        alt={`${item?.name} - imagen ${currentImageIndex + 1}`}
-                        className="object-cover w-full h-full"
-                        loading="lazy"
-                      />
-                    )}
-
-                    {/* Navigation Arrows */}
-                    {item && item.images.length > 1 && (
-                      <>
-                        <Button
-                          variant="secondary"
-                          size="icon"
-                          className="absolute left-2 top-1/2 -translate-y-1/2 size-10 sm:size-9 shadow-lg cursor-pointer"
-                          onClick={previousImage}
-                          aria-label="Imagen anterior"
-                        >
-                          <ChevronLeft className="size-5 sm:size-4" />
-                        </Button>
-                        <Button
-                          variant="secondary"
-                          size="icon"
-                          className="absolute right-2 top-1/2 -translate-y-1/2 size-10 sm:size-9 shadow-lg cursor-pointer"
-                          onClick={nextImage}
-                          aria-label="Imagen siguiente"
-                        >
-                          <ChevronRight className="size-5 sm:size-4" />
-                        </Button>
-                      </>
-                    )}
-
-                    {/* Image counter indicator */}
-                    {item && item.images.length > 1 && (
-                      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/60 text-white text-xs px-3 py-1 rounded-full backdrop-blur-sm">
-                        {currentImageIndex + 1} / {item?.images.length}
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Image Thumbnails */}
-                  {item && item.images.length > 1 && (
-                    <div className="flex gap-2 overflow-x-auto pb-2">
-                      {item?.images.map((image, index) => (
-                        <button
-                          key={image.id}
-                          onClick={() => setCurrentImageIndex(index)}
-                          className={cn(
-                            'relative size-16 sm:size-20 shrink-0 overflow-hidden rounded-md border-2 transition-all',
-                            currentImageIndex === index
-                              ? 'border-primary'
-                              : 'border-transparent opacity-60 hover:opacity-100'
-                          )}
-                          aria-label={`Ver imagen ${index + 1}`}
-                        >
-                          <img
-                            src={image?.url || '/placeholder.svg'}
-                            alt={`Miniatura ${index + 1}`}
-                            loading="lazy"
-                            className="object-cover w-full h-full"
-                          />
-                        </button>
-                      ))}
-                    </div>
-                  )}
-                </div>
+                <ImageCarousel images={item?.images || []} />
 
                 <div className="space-y-6">
                   <div className="space-y-2">
