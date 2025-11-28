@@ -37,7 +37,6 @@ const Wardrobe = () => {
       limit: 20,
       search: debouncedSearch || undefined,
       categoryId: categoryId || undefined,
-      status: true,
     },
     {
       query: {
