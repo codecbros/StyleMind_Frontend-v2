@@ -7,6 +7,7 @@ import RootLayout from './layouts/RootLayout';
 import Login from './pages/auth/Login';
 import RegisterPage from './pages/auth/Register';
 import NewClothing from './pages/NewClothing';
+import Outfits from './pages/Outfits';
 import Profile from './pages/Profile';
 import Wardrobe from './pages/Wardrobe';
 
@@ -45,6 +46,10 @@ export const router = createBrowserRouter([
           {
             path: PATHS.NewClothing,
             element: <NewClothing />,
+          },
+          {
+            path: PATHS.Outfits,
+            element: <Outfits />,
           },
         ],
       },
