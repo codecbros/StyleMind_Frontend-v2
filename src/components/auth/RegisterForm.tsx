@@ -1,8 +1,13 @@
+import { zodResolver } from '@hookform/resolvers/zod';
 import { LoaderCircle } from 'lucide-react';
+import { useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
 import { useGetAllGenders } from '../../api/generated/genders/genders';
+import type { CreateUserDto } from '../../api/generated/schemas';
+import { useCreateUser } from '../../api/generated/users/users';
 import { PATHS } from '../../constants/paths';
 import { QUERY_KEYS } from '../../constants/querys';
+import { registerSchema } from '../../schemas/userSchema';
 import { Button } from '../ui/button';
 import {
   Form,
@@ -28,6 +33,8 @@ export type genderItems = {
 }[];
 
 const RegisterForm = () => {
+  const { mutate, isPending } = useCreateUser();
+
   const {
     data: genders,
     isLoading: isGendersLoading,
@@ -38,6 +45,22 @@ const RegisterForm = () => {
       select: (response: any) => response?.data as genderItems | undefined,
     },
   });
+
+  const form = useForm<CreateUserDto>({
+    resolver: zodResolver(registerSchema),
+    defaultValues: {
+      firstName: '',
+      lastName: '',
+      email: '',
+      password: '',
+      genderId: '',
+    },
+  });
+
+  const onSubmit = (data: CreateUserDto) => {
+    console.log(data);
+    z;
+  };
 
   return (
     <Form {...form}>
@@ -55,12 +78,19 @@ const RegisterForm = () => {
               >
                 <FormControl className="hover:border-primary/50 border border-muted-foreground">
                   <SelectTrigger>
-                    <SelectValue placeholder="Selecciona tu género" />
+                    {isGendersLoading ? (
+                      <div className="flex items-center gap-2">
+                        <LoaderCircle className="animate-spin w-4 h-4" />{' '}
+                        Cargando...
+                      </div>
+                    ) : (
+                      <SelectValue placeholder="Selecciona tu género" />
+                    )}
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
                   {isGendersLoading ? (
-                    <SelectItem value="">
+                    <SelectItem value="Cargando...">
                       <LoaderCircle className="animate-spin w-4 h-4 mx-auto" />
                     </SelectItem>
                   ) : (
@@ -155,10 +185,10 @@ const RegisterForm = () => {
           <Button
             className="font-semibold flex items-center gap-2"
             type="submit"
-            disabled={isLoading}
+            disabled={isPending}
           >
-            {isLoading && <LoaderCircle className="animate-spin w-4 h-4" />}
-            {isLoading ? 'Creando tu cuenta...' : 'Únete a la comunidad'}
+            {isPending && <LoaderCircle className="animate-spin w-4 h-4" />}
+            {isPending ? 'Creando tu cuenta...' : 'Únete a la comunidad'}
           </Button>
           <p className="text-center text-sm text-muted-foreground font-semibold">
             ¿Ya tienes una cuenta?{' '}
