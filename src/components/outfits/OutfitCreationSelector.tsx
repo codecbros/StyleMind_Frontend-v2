@@ -1,4 +1,5 @@
 import { Clock, PenTool, Sparkles, Zap } from 'lucide-react';
+import { useOutfitStore } from '../../store/outfits.store';
 import { Badge } from '../ui/badge';
 import {
   Card,
@@ -9,7 +10,8 @@ import {
 } from '../ui/card';
 
 const OutfitCreationSelector = () => {
-  //TODO: Añadir navegación al hacer click en cada tarjeta (junto a zustand).
+  const setMode = useOutfitStore((state) => state.setMode);
+
   return (
     <>
       <div className="mb-8 sm:mb-10">
@@ -23,7 +25,10 @@ const OutfitCreationSelector = () => {
 
       <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-5">
         {/* IA Personalizada - Recomendado */}
-        <Card className="relative group cursor-pointer border-2 border-primary/60 hover:border-primary hover:shadow-lg transition-all sm:col-span-2 xl:col-span-1">
+        <Card
+          className="relative group cursor-pointer border-2 border-primary/60 hover:border-primary hover:shadow-lg transition-all sm:col-span-2 xl:col-span-1"
+          onClick={() => setMode('ai')}
+        >
           <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary">
             Recomendado
           </Badge>
