@@ -54,7 +54,10 @@ const OutfitCreationSelector = () => {
         </Card>
 
         {/* Generación Rápida */}
-        <Card className="group hover:border-primary/40 hover:shadow-md transition-all">
+        <Card
+          className="group hover:border-primary/40 hover:shadow-md transition-all cursor-pointer"
+          onClick={() => setMode('quick')}
+        >
           <CardHeader className="pb-4">
             <div className="mb-3 size-12 sm:size-14 rounded-xl bg-green-100 dark:bg-green-950/50 flex items-center justify-center">
               <Zap className="size-6 sm:size-7 text-green-600 dark:text-green-500" />
@@ -76,7 +79,10 @@ const OutfitCreationSelector = () => {
         </Card>
 
         {/* Creación Manual */}
-        <Card className="group hover:border-primary/40 hover:shadow-md transition-all">
+        <Card
+          className="group hover:border-primary/40 hover:shadow-md transition-all cursor-pointer"
+          onClick={() => setMode('manual')}
+        >
           <CardHeader className="pb-4">
             <div className="mb-3 size-12 sm:size-14 rounded-xl bg-blue-100 dark:bg-blue-950/50 flex items-center justify-center">
               <PenTool className="size-6 sm:size-7 text-blue-600 dark:text-blue-400" />
