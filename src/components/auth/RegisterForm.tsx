@@ -1,12 +1,13 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { LoaderCircle } from 'lucide-react';
 import { useForm } from 'react-hook-form';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useGetAllGenders } from '../../api/generated/genders/genders';
 import type { CreateUserDto } from '../../api/generated/schemas';
 import { useCreateUser } from '../../api/generated/users/users';
 import { PATHS } from '../../constants/paths';
 import { QUERY_KEYS } from '../../constants/querys';
+import { ErrorToast, SuccessToast } from '../../lib/toast';
 import { registerSchema } from '../../schemas/userSchema';
 import { Button } from '../ui/button';
 import {
@@ -34,6 +35,7 @@ export type genderItems = {
 
 const RegisterForm = () => {
   const { mutate, isPending } = useCreateUser();
+  const navigate = useNavigate();
 
   const {
     data: genders,
@@ -58,8 +60,23 @@ const RegisterForm = () => {
   });
 
   const onSubmit = (data: CreateUserDto) => {
-    console.log(data);
-    z;
+    mutate(
+      { data },
+      {
+        onSuccess: () => {
+          SuccessToast({ title: 'Usuario registrado correctamente' });
+          form.reset();
+          navigate(PATHS.Login);
+        },
+        onError: (error: any) => {
+          console.log(error);
+          ErrorToast({
+            title:
+              error?.response?.data?.message || 'Error al registrar usuario',
+          });
+        },
+      }
+    );
   };
 
   return (
@@ -76,7 +93,7 @@ const RegisterForm = () => {
                 defaultValue={field.value}
                 disabled={isError}
               >
-                <FormControl className="hover:border-primary/50 border border-muted-foreground">
+                <FormControl className="hover:border-primary/50 border border-muted-foreground w-full">
                   <SelectTrigger>
                     {isGendersLoading ? (
                       <div className="flex items-center gap-2">
@@ -169,6 +186,7 @@ const RegisterForm = () => {
               <FormControl>
                 <Input
                   type="password"
+                  placeholder="********"
                   className="hover:border-primary/50 focus:ring-primary/20  border border-muted-foreground"
                   {...field}
                 />
