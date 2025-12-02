@@ -7,10 +7,12 @@ import { useOutfitStore } from '../store/outfits.store';
 
 const Outfits = () => {
   const mode = useOutfitStore((state) => state.mode);
+  const defaultMode =
+    mode === 'selection' || mode === undefined || mode === null;
 
   return (
     <OutfitLayout>
-      {mode === 'selection' && <OutfitCreationSelector />}
+      {defaultMode && <OutfitCreationSelector />}
       {mode === 'ai' && <AiOutfit />}
       {mode === 'quick' && <QuickOutfit />}
       {mode === 'manual' && <ManualOutfit />}
