@@ -3,12 +3,10 @@ import ManualOutfit from '../components/outfits/ManualOutfit';
 import OutfitCreationSelector from '../components/outfits/OutfitCreationSelector';
 import QuickOutfit from '../components/outfits/QuickOutfit';
 import OutfitLayout from '../layouts/OutfitLayout';
-
-type OutfitMode = 'selection' | 'ai' | 'quick' | 'manual';
+import { useOutfitStore } from '../store/outfits.store';
 
 const Outfits = () => {
-  // TODO: Reemplazar con Zustand store
-  const mode = 'selection' as OutfitMode;
+  const mode = useOutfitStore((state) => state.mode);
 
   return (
     <OutfitLayout>

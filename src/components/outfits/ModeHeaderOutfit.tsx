@@ -1,26 +1,41 @@
 import { ArrowLeft } from 'lucide-react';
+import { useOutfitStore } from '../../store/outfits.store';
+import { Button } from '../ui/button';
 
 type ModeHeaderOutfitProps = {
   icon: React.ReactNode;
   title: string;
   description: string;
+  iconBackgroundClass?: string;
 };
 
 const ModeHeaderOutfit = ({
   icon,
   title,
   description,
+  iconBackgroundClass,
 }: ModeHeaderOutfitProps) => {
-  //TODO: Añadir funcionalidad al botón de volver.(junto a  zustand)
+  const setMode = useOutfitStore((state) => state.setMode);
+
   return (
     <div className="mb-6">
-      <button className="flex items-center mb-4">
+      <Button
+        type="button"
+        variant="link"
+        className="flex items-center mb-4 cursor-pointer"
+        aria-label="Volver a la selección de modo"
+        onClick={() => setMode('selection')}
+      >
         <ArrowLeft className="mr-2" />
         Volver
-      </button>
+      </Button>
 
       <div className="flex items-start gap-4">
-        <div className="size-12 rounded-xl bg-primary/10 flex items-center justify-center">
+        <div
+          className={`size-12 md:size-14 rounded-xl ${
+            iconBackgroundClass ?? 'bg-primary/10'
+          } flex items-center justify-center`}
+        >
           {icon}
         </div>
 
