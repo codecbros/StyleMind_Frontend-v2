@@ -11,14 +11,10 @@ const ModeHeaderOutfit = ({
   title,
   description,
 }: ModeHeaderOutfitProps) => {
-  // const setMode = useOutfitStore((s) => s.setMode);
-
+  //TODO: Añadir funcionalidad al botón de volver.(junto a  zustand)
   return (
     <div className="mb-6">
-      <button
-        // onClick={() => setMode('selection')}
-        className="flex items-center mb-4"
-      >
+      <button className="flex items-center mb-4">
         <ArrowLeft className="mr-2" />
         Volver
       </button>

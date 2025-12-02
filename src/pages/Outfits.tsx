@@ -2,7 +2,7 @@ import AiOutfit from '../components/outfits/AiOutfit';
 import ManualOutfit from '../components/outfits/ManualOutfit';
 import OutfitCreationSelector from '../components/outfits/OutfitCreationSelector';
 import QuickOutfit from '../components/outfits/QuickOutfit';
-import { OutfitLayout } from '../layouts/OutfitLayout';
+import OutfitLayout from '../layouts/OutfitLayout';
 
 type OutfitMode = 'selection' | 'ai' | 'quick' | 'manual';
 

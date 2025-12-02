@@ -9,6 +9,7 @@ import {
 } from '../ui/card';
 
 const OutfitCreationSelector = () => {
+  //TODO: Añadir navegación al hacer click en cada tarjeta (junto a zustand).
   return (
     <>
       <div className="mb-8 sm:mb-10">
@@ -22,10 +23,7 @@ const OutfitCreationSelector = () => {
 
       <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-5">
         {/* IA Personalizada - Recomendado */}
-        <Card
-          className="relative group cursor-pointer border-2 border-primary/60 hover:border-primary hover:shadow-lg transition-all sm:col-span-2 xl:col-span-1"
-          // onClick={() => setMode('ai')}
-        >
+        <Card className="relative group cursor-pointer border-2 border-primary/60 hover:border-primary hover:shadow-lg transition-all sm:col-span-2 xl:col-span-1">
           <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary">
             Recomendado
           </Badge>
@@ -51,10 +49,7 @@ const OutfitCreationSelector = () => {
         </Card>
 
         {/* Generación Rápida */}
-        <Card
-          className="group cursor-pointer hover:border-primary/40 hover:shadow-md transition-all"
-          // onClick={() => setMode('quick')}
-        >
+        <Card className="group hover:border-primary/40 hover:shadow-md transition-all">
           <CardHeader className="pb-4">
             <div className="mb-3 size-12 sm:size-14 rounded-xl bg-green-100 dark:bg-green-950/50 flex items-center justify-center">
               <Zap className="size-6 sm:size-7 text-green-600 dark:text-green-500" />
@@ -76,10 +71,7 @@ const OutfitCreationSelector = () => {
         </Card>
 
         {/* Creación Manual */}
-        <Card
-          className="group cursor-pointer hover:border-primary/40 hover:shadow-md transition-all"
-          // onClick={() => setMode('manual')}
-        >
+        <Card className="group hover:border-primary/40 hover:shadow-md transition-all">
           <CardHeader className="pb-4">
             <div className="mb-3 size-12 sm:size-14 rounded-xl bg-blue-100 dark:bg-blue-950/50 flex items-center justify-center">
               <PenTool className="size-6 sm:size-7 text-blue-600 dark:text-blue-400" />
