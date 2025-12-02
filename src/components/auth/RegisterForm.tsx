@@ -1,6 +1,8 @@
 import { LoaderCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useGetAllGenders } from '../../api/generated/genders/genders';
 import { PATHS } from '../../constants/paths';
+import { QUERY_KEYS } from '../../constants/querys';
 import { Button } from '../ui/button';
 import {
   Form,
@@ -20,7 +22,23 @@ import {
   SelectValue,
 } from '../ui/select';
 
+export type genderItems = {
+  id: string;
+  name: string;
+}[];
+
 const RegisterForm = () => {
+  const {
+    data: genders,
+    isLoading: isGendersLoading,
+    isError,
+  } = useGetAllGenders({
+    query: {
+      queryKey: [QUERY_KEYS.GENDERS],
+      select: (response: any) => response?.data as genderItems | undefined,
+    },
+  });
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -30,18 +48,28 @@ const RegisterForm = () => {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Género</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <Select
+                onValueChange={field.onChange}
+                defaultValue={field.value}
+                disabled={isError}
+              >
                 <FormControl className="hover:border-primary/50 border border-muted-foreground">
                   <SelectTrigger>
                     <SelectValue placeholder="Selecciona tu género" />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  {genders.map((gender) => (
-                    <SelectItem key={gender.id} value={gender.id}>
-                      {gender.name}
+                  {isGendersLoading ? (
+                    <SelectItem value="">
+                      <LoaderCircle className="animate-spin w-4 h-4 mx-auto" />
                     </SelectItem>
-                  ))}
+                  ) : (
+                    genders?.map((gender) => (
+                      <SelectItem key={gender.id} value={gender.id}>
+                        {gender.name}
+                      </SelectItem>
+                    ))
+                  )}
                 </SelectContent>
               </Select>
               <FormMessage />
