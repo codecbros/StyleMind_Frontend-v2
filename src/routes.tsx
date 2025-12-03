@@ -1,6 +1,8 @@
 import App from '@/App';
 import { PATHS } from '@/constants/paths';
 import { createBrowserRouter } from 'react-router-dom';
+import GuestRoute from './components/auth/GuestRoute';
+import ProtectedRoute from './components/auth/ProtectedRoute';
 import AuthLayout from './layouts/AuthLayout';
 import DashboardLayout from './layouts/dashboardLayout';
 import RootLayout from './layouts/RootLayout';
@@ -20,36 +22,46 @@ export const router = createBrowserRouter([
         element: <App />,
       },
       {
-        element: <AuthLayout />,
+        element: <GuestRoute />,
         children: [
           {
-            path: PATHS.Login,
-            element: <Login />,
-          },
-          {
-            path: PATHS.Register,
-            element: <RegisterPage />,
+            element: <AuthLayout />,
+            children: [
+              {
+                path: PATHS.Login,
+                element: <Login />,
+              },
+              {
+                path: PATHS.Register,
+                element: <RegisterPage />,
+              },
+            ],
           },
         ],
       },
       {
-        element: <DashboardLayout />,
+        element: <ProtectedRoute />,
         children: [
           {
-            path: PATHS.Profile,
-            element: <Profile />,
-          },
-          {
-            path: PATHS.Wardrobe,
-            element: <Wardrobe />,
-          },
-          {
-            path: PATHS.NewClothing,
-            element: <NewClothing />,
-          },
-          {
-            path: PATHS.Outfits,
-            element: <Outfits />,
+            element: <DashboardLayout />,
+            children: [
+              {
+                path: PATHS.Profile,
+                element: <Profile />,
+              },
+              {
+                path: PATHS.Wardrobe,
+                element: <Wardrobe />,
+              },
+              {
+                path: PATHS.NewClothing,
+                element: <NewClothing />,
+              },
+              {
+                path: PATHS.Outfits,
+                element: <Outfits />,
+              },
+            ],
           },
         ],
       },
