@@ -201,7 +201,7 @@ const RegisterForm = () => {
         />
         <div className="flex flex-col gap-6 md:flex-row justify-between items-center">
           <Button
-            className="font-semibold flex items-center gap-2"
+            className="font-semibold flex items-center gap-2 cursor-pointer"
             type="submit"
             disabled={isPending}
           >
