@@ -93,7 +93,7 @@ const RegisterForm = () => {
                 defaultValue={field.value}
                 disabled={isError}
               >
-                <FormControl className="hover:border-primary/50 border border-muted-foreground w-full">
+                <FormControl className="hover:border-primary/50 border border-muted-foreground w-full cursor-pointer">
                   <SelectTrigger>
                     {isGendersLoading ? (
                       <div className="flex items-center gap-2">
@@ -112,7 +112,11 @@ const RegisterForm = () => {
                     </SelectItem>
                   ) : (
                     genders?.map((gender) => (
-                      <SelectItem key={gender.id} value={gender.id}>
+                      <SelectItem
+                        className="cursor-pointer"
+                        key={gender.id}
+                        value={gender.id}
+                      >
                         {gender.name}
                       </SelectItem>
                     ))
@@ -193,7 +197,7 @@ const RegisterForm = () => {
               </FormControl>
               <FormDescription>
                 {' '}
-                Usa al menos 6 caracteres, incluyendo números y símbolos
+                Usa al menos 8 caracteres, incluyendo números y símbolos
               </FormDescription>
               <FormMessage />
             </FormItem>
