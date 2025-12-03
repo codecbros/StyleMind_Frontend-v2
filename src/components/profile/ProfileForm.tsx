@@ -1,4 +1,5 @@
-import { LoaderCircle } from 'lucide-react';
+import { ChevronDownIcon, LoaderCircle } from 'lucide-react';
+import { useState } from 'react';
 import { useProfileForm } from '../../hooks/form/useProfileForm';
 import type { profileProps } from '../../pages/Profile';
 import { SkinTonePicker } from '../SkinTonePicker';
@@ -9,6 +10,7 @@ import {
   AccordionTrigger,
 } from '../ui/accordion';
 import { Button } from '../ui/button';
+import { Calendar } from '../ui/calendar';
 import {
   Form,
   FormControl,
@@ -19,6 +21,8 @@ import {
   FormMessage,
 } from '../ui/form';
 import { Input } from '../ui/input';
+import { Label } from '../ui/label';
+import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
 import {
   Select,
   SelectContent,
@@ -38,6 +42,9 @@ export default function ProfileForm({
     isEditing,
     profile,
   });
+
+  const [open, setOpen] = useState(false);
+  const [date, setDate] = useState<Date | undefined>(undefined);
 
   return (
     <Form {...form}>
@@ -71,7 +78,7 @@ export default function ProfileForm({
               )}
             />
             <FormField
-              control={form.control as any}
+              control={form.control}
               name="lastName"
               render={({ field }) => (
                 <FormItem>
@@ -93,7 +100,7 @@ export default function ProfileForm({
           </div>
 
           <FormField
-            control={form.control as any}
+            control={form.control}
             name="genderId"
             render={() => (
               <FormItem>
@@ -152,6 +159,38 @@ export default function ProfileForm({
                   </FormItem>
                 )}
               />
+
+              <div className="flex flex-col gap-3">
+                <Label htmlFor="date" className="px-1">
+                  Fecha de Nacimiento
+                </Label>
+                <Popover open={open} onOpenChange={setOpen}>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      id="date"
+                      className="w-48 justify-between font-normal"
+                    >
+                      {date ? date.toLocaleDateString() : 'Select date'}
+                      <ChevronDownIcon />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent
+                    className="w-auto overflow-hidden p-0"
+                    align="start"
+                  >
+                    <Calendar
+                      mode="single"
+                      selected={date}
+                      captionLayout="dropdown"
+                      onSelect={(date) => {
+                        setDate(date);
+                        setOpen(false);
+                      }}
+                    />
+                  </PopoverContent>
+                </Popover>
+              </div>
 
               <div className="grid grid-cols-2 gap-6">
                 <FormField
