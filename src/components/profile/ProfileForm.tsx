@@ -1,7 +1,8 @@
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
-import { ChevronDownIcon, LoaderCircle } from 'lucide-react';
+import { CalendarIcon, LoaderCircle } from 'lucide-react';
 import { useProfileForm } from '../../hooks/form/useProfileForm';
+import { cn } from '../../lib/utils';
 import type { profileProps } from '../../pages/Profile';
 import { SkinTonePicker } from '../SkinTonePicker';
 import {
@@ -43,6 +44,7 @@ export default function ProfileForm({
     profile,
   });
 
+  console.log(form.watch('birthDate'));
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
@@ -180,47 +182,50 @@ export default function ProfileForm({
                   )}
                 />
               </div>
-
               <FormField
                 control={form.control}
                 name="birthDate"
                 render={({ field }) => (
-                  <FormItem className="flex flex-col gap-3">
-                    <FormLabel className="px-1">Fecha de Nacimiento</FormLabel>
+                  <FormItem className="flex flex-col">
+                    <FormLabel>Date of birth</FormLabel>
                     <Popover>
                       <PopoverTrigger asChild>
                         <FormControl>
                           <Button
                             variant="outline"
-                            className="w-48 justify-between font-normal"
+                            className={cn(
+                              'w-60 pl-3 text-left font-normal',
+                              !field.value && 'text-muted-foreground'
+                            )}
                           >
-                            {field.value
-                              ? format(new Date(field.value), 'dd/MM/yyyy', {
-                                  locale: es,
-                                })
-                              : 'Selecciona una fecha'}
-                            <ChevronDownIcon className="size-4" />
+                            {field.value ? (
+                              format(field?.value, 'PPP', { locale: es })
+                            ) : (
+                              <span>Selecciona una fecha</span>
+                            )}
+                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                           </Button>
                         </FormControl>
                       </PopoverTrigger>
-                      <PopoverContent
-                        className="w-auto overflow-hidden p-0"
-                        align="start"
-                      >
+                      <PopoverContent className="w-auto p-0" align="start">
                         <Calendar
                           mode="single"
+                          captionLayout="dropdown"
                           selected={
                             field.value ? new Date(field.value) : undefined
                           }
-                          onSelect={(date) => {
-                            field.onChange(date?.toISOString());
-                          }}
-                          captionLayout="dropdown"
-                          disabled={(date) => date > new Date()}
+                          onSelect={field.onChange}
+                          disabled={(date) =>
+                            date > new Date() || date < new Date('1900-01-01')
+                          }
                           autoFocus
                         />
                       </PopoverContent>
                     </Popover>
+                    <FormDescription>
+                      Your date of birth, Morty. Try not to create a branching
+                      timeline!
+                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}

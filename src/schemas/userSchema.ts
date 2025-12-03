@@ -122,13 +122,14 @@ const updateProfileSchema = z.object({
       'La descripción del perfil debe tener un máximo de 500 caracteres.'
     )
     .optional(),
-  birthDate: z.iso
-    .datetime()
-    .refine(
-      (date) => new Date(date) <= new Date(),
-      'La fecha no puede ser en el futuro'
-    )
-    .optional(),
+  // birthDate: z.iso
+  //   .datetime()
+  //   .refine(
+  //     (date) => new Date(date) <= new Date(),
+  //     'La fecha no puede ser en el futuro'
+  //   )
+  //   .optional(),
+  birthDate: z.date().optional(),
   profilePicture: z.string().optional(),
 });
 
