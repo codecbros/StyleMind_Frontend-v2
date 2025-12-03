@@ -1,10 +1,21 @@
 import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
+import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
+  SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
@@ -12,8 +23,11 @@ import {
 import { useIsMobile } from '@/hooks/use-mobile';
 import { wardrobe } from '@lucide/lab';
 import { Icon, LogOut, Shirt, SquarePlus, User } from 'lucide-react';
+import { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { COOKIE_KEYS } from '../constants/cookies';
 import { PATHS } from '../constants/paths';
+import { removeCookie } from '../lib/auth-cookies';
 import { ErrorToast, SuccessToast } from '../lib/toast';
 
 // Menu items.
@@ -40,21 +54,22 @@ const items = [
   },
 ];
 
-//TODO: Añadir funcionalidad de cerrar sesión.
-
 export function AppSidebar() {
   const { pathname } = useLocation();
   const navigate = useNavigate();
-
+  // const { theme, setTheme } = useTheme();
   const isMobile = useIsMobile();
+  const [logoutDialogOpen, setLogoutDialogOpen] = useState(false);
 
   const handleClickLogout = () => {
     try {
+      removeCookie(COOKIE_KEYS.AUTH_TOKEN);
+
       SuccessToast({
         title: 'Sesión cerrada',
         description: 'Has cerrado sesión exitosamente.',
       });
-      navigate('/');
+      navigate(PATHS.Login, { replace: true });
     } catch {
       ErrorToast({
         title: 'Error',
@@ -63,34 +78,102 @@ export function AppSidebar() {
     }
   };
 
+  // const toggleTheme = () => {
+  //   setTheme(theme === 'dark' ? 'light' : 'dark');
+  // };
+
   return (
-    <Sidebar collapsible="icon" side={isMobile ? 'right' : 'left'}>
-      <SidebarContent>
-        <SidebarGroup>
-          <SidebarGroupLabel>StyleMind</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {items.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild isActive={pathname === item.url}>
-                    <Link to={item.url}>
-                      <item.icon />
-                      <span>{item.title}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-      </SidebarContent>
-      <SidebarFooter>
-        <SidebarMenuButton onClick={handleClickLogout}>
-          <LogOut />
-          <span>Cerrar sesión</span>
-        </SidebarMenuButton>
-        {/* Toggle theme button*/}
-      </SidebarFooter>
-    </Sidebar>
+    <>
+      <Sidebar collapsible="icon" side={isMobile ? 'right' : 'left'}>
+        <SidebarHeader className="border-b border-sidebar-border">
+          <div className="flex items-center gap-2 px-2 py-4">
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+              <Shirt className="h-5 w-5" />
+            </div>
+            <div className="flex flex-col group-data-[collapsible=icon]:hidden">
+              <span className="text-lg font-bold">StyleMind</span>
+              <span className="text-xs text-muted-foreground">
+                Tu asistente de moda
+              </span>
+            </div>
+          </div>
+        </SidebarHeader>
+
+        <SidebarContent>
+          <SidebarGroup>
+            <SidebarGroupLabel>Navegación</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {items.map((item) => (
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton asChild isActive={pathname === item.url}>
+                      <Link to={item.url}>
+                        <item.icon />
+                        <span>{item.title}</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        </SidebarContent>
+
+        <SidebarFooter className="border-t border-sidebar-border">
+          <SidebarMenu>
+            {/* <SidebarMenuItem>
+              <SidebarMenuButton
+                onClick={toggleTheme}
+                className="cursor-pointer hover:bg-sidebar-accent"
+                tooltip="Cambiar tema"
+              >
+                {theme === 'dark' ? (
+                  <Sun className="h-4 w-4" />
+                ) : (
+                  <Moon className="h-4 w-4" />
+                )}
+                <span>{theme === 'dark' ? 'Modo claro' : 'Modo oscuro'}</span>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+
+            <Separator className="my-1" /> */}
+
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                onClick={() => setLogoutDialogOpen(true)}
+                className="cursor-pointer hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950/30 dark:hover:text-red-400 transition-colors"
+                tooltip="Cerrar sesión"
+              >
+                <LogOut className="h-4 w-4" />
+                <span>Cerrar sesión</span>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        </SidebarFooter>
+      </Sidebar>
+
+      <AlertDialog open={logoutDialogOpen} onOpenChange={setLogoutDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>¿Cerrar sesión?</AlertDialogTitle>
+            <AlertDialogDescription>
+              ¿Estás seguro de que deseas cerrar sesión? Tendrás que iniciar
+              sesión nuevamente para acceder a tu cuenta.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel className="cursor-pointer">
+              Cancelar
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleClickLogout}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/80 cursor-pointer"
+            >
+              Cerrar sesión
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
   );
 }
