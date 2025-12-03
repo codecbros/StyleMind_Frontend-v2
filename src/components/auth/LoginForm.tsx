@@ -8,7 +8,7 @@ import { PATHS } from '../../constants/paths';
 import { useLoginCustom } from '../../hooks/useLoginCustom';
 import { setCookie } from '../../lib/auth-cookies';
 import { ErrorToast, SuccessToast } from '../../lib/toast';
-import { loginSchema } from '../../schemas/authSchema';
+import { loginSchema } from '../../schemas/userSchema';
 import { Button } from '../ui/button';
 import {
   Form,
@@ -90,7 +90,7 @@ export default function LoginForm() {
 
         <div className="flex flex-col gap-6 md:flex-row justify-between items-center">
           <Button
-            className="font-semibold flex items-center gap-2"
+            className="font-semibold flex items-center gap-2 cursor-pointer"
             type="submit"
             disabled={isPending}
           >
@@ -99,7 +99,10 @@ export default function LoginForm() {
           </Button>
           <p className="text-sm text-muted-foreground font-semibold">
             ¿No tienes una cuenta?{' '}
-            <Link to="" className="text-primary hover:underline font-semibold">
+            <Link
+              to={PATHS.Register}
+              className="text-primary hover:underline font-semibold"
+            >
               Regístrate aquí
             </Link>
           </p>

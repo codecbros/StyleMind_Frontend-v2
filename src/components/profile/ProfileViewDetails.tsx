@@ -32,8 +32,18 @@ export default function ProfileViewDetails({
           <div className="h-0.5 flex-1 bg-linear-to-r from-foreground/20 via-foreground/10 to-transparent" />
         </div>
         <div className="grid grid-cols-2 gap-x-6 md:gap-x-8 gap-y-4 md:gap-y-5">
-          <ProfileField label="Peso (lb)" value={profile?.weight} />
-          <ProfileField label="Altura (cm)" value={profile?.height} />
+          <ProfileField
+            label="Peso (lb)"
+            value={profile?.weight != null ? `${profile.weight} Libras` : ''}
+          />
+          <ProfileField
+            label="Altura (cm)"
+            value={
+              profile?.height != null
+                ? `${profile.height} Centímetros`
+                : undefined
+            }
+          />
           <ProfileField
             label="Fecha de Nacimiento"
             value={profile?.birthDate ? profile.birthDate.split('T')[0] : ''}
