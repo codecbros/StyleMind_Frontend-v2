@@ -28,7 +28,7 @@ import {
   SelectValue,
 } from '../ui/select';
 
-export type genderItems = {
+export type GenderItems = {
   id: string;
   name: string;
 }[];
@@ -44,7 +44,7 @@ const RegisterForm = () => {
   } = useGetAllGenders({
     query: {
       queryKey: [QUERY_KEYS.GENDERS],
-      select: (response: any) => response?.data as genderItems | undefined,
+      select: (response: any) => response?.data as GenderItems | undefined,
     },
   });
 
@@ -69,7 +69,6 @@ const RegisterForm = () => {
           navigate(PATHS.Login);
         },
         onError: (error: any) => {
-          console.log(error);
           ErrorToast({
             title:
               error?.response?.data?.message || 'Error al registrar usuario',
@@ -168,7 +167,7 @@ const RegisterForm = () => {
           name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Correo Electronico</FormLabel>
+              <FormLabel>Correo Electrónico</FormLabel>
               <FormControl>
                 <Input
                   type="email"

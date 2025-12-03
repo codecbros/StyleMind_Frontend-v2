@@ -4,7 +4,7 @@ import { z } from 'zod';
 const nameValidator = z
   .string()
   .min(2, 'Debe tener al menos 2 caracteres.')
-  .max(30, 'No puede tener más de 30 caracteres.')
+  .max(50, 'No puede tener más de 50 caracteres.')
   .regex(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/, 'Solo puede contener letras y espacios.');
 
 const emailValidator = z.email('Por favor, introduce un email válido.');
@@ -126,7 +126,7 @@ const updateProfileSchema = z.object({
     .string()
     .regex(
       /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/,
-      'La fecha no valida.'
+      'La fecha no es válida.'
     )
     .optional(),
   profilePicture: z.string().optional(),
