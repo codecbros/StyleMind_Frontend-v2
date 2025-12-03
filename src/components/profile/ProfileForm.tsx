@@ -1,5 +1,6 @@
+import { format } from 'date-fns';
+import { es } from 'date-fns/locale';
 import { ChevronDownIcon, LoaderCircle } from 'lucide-react';
-import { useState } from 'react';
 import { useProfileForm } from '../../hooks/form/useProfileForm';
 import type { profileProps } from '../../pages/Profile';
 import { SkinTonePicker } from '../SkinTonePicker';
@@ -21,7 +22,6 @@ import {
   FormMessage,
 } from '../ui/form';
 import { Input } from '../ui/input';
-import { Label } from '../ui/label';
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
 import {
   Select,
@@ -42,9 +42,6 @@ export default function ProfileForm({
     isEditing,
     profile,
   });
-
-  const [open, setOpen] = useState(false);
-  const [date, setDate] = useState<Date | undefined>(undefined);
 
   return (
     <Form {...form}>
@@ -131,67 +128,6 @@ export default function ProfileForm({
               Medidas y Edad
             </AccordionTrigger>
             <AccordionContent className="pt-6 space-y-6">
-              <FormField
-                control={form.control as any}
-                name="birthDate"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-xs font-semibold uppercase tracking-wider">
-                      Fecha de Nacimiento
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        className="py-5"
-                        type="date"
-                        max={new Date().toISOString().split('T')[0]}
-                        value={field.value ? field.value.split('T')[0] : ''}
-                        onChange={(e) => {
-                          const date = new Date(e.target.value);
-                          field.onChange(date.toISOString());
-                        }}
-                      />
-                    </FormControl>
-                    <FormDescription className="text-xs">
-                      Nos ayuda a personalizar mejor tus recomendaciones de
-                      estilo.
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <div className="flex flex-col gap-3">
-                <Label htmlFor="date" className="px-1">
-                  Fecha de Nacimiento
-                </Label>
-                <Popover open={open} onOpenChange={setOpen}>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant="outline"
-                      id="date"
-                      className="w-48 justify-between font-normal"
-                    >
-                      {date ? date.toLocaleDateString() : 'Select date'}
-                      <ChevronDownIcon />
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent
-                    className="w-auto overflow-hidden p-0"
-                    align="start"
-                  >
-                    <Calendar
-                      mode="single"
-                      selected={date}
-                      captionLayout="dropdown"
-                      onSelect={(date) => {
-                        setDate(date);
-                        setOpen(false);
-                      }}
-                    />
-                  </PopoverContent>
-                </Popover>
-              </div>
-
               <div className="grid grid-cols-2 gap-6">
                 <FormField
                   control={form.control}
@@ -244,6 +180,51 @@ export default function ProfileForm({
                   )}
                 />
               </div>
+
+              <FormField
+                control={form.control}
+                name="birthDate"
+                render={({ field }) => (
+                  <FormItem className="flex flex-col gap-3">
+                    <FormLabel className="px-1">Fecha de Nacimiento</FormLabel>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <FormControl>
+                          <Button
+                            variant="outline"
+                            className="w-48 justify-between font-normal"
+                          >
+                            {field.value
+                              ? format(new Date(field.value), 'dd/MM/yyyy', {
+                                  locale: es,
+                                })
+                              : 'Selecciona una fecha'}
+                            <ChevronDownIcon className="size-4" />
+                          </Button>
+                        </FormControl>
+                      </PopoverTrigger>
+                      <PopoverContent
+                        className="w-auto overflow-hidden p-0"
+                        align="start"
+                      >
+                        <Calendar
+                          mode="single"
+                          selected={
+                            field.value ? new Date(field.value) : undefined
+                          }
+                          onSelect={(date) => {
+                            field.onChange(date?.toISOString());
+                          }}
+                          captionLayout="dropdown"
+                          disabled={(date) => date > new Date()}
+                          autoFocus
+                        />
+                      </PopoverContent>
+                    </Popover>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             </AccordionContent>
           </AccordionItem>
         </Accordion>

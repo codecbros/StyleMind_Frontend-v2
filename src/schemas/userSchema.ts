@@ -122,11 +122,11 @@ const updateProfileSchema = z.object({
       'La descripción del perfil debe tener un máximo de 500 caracteres.'
     )
     .optional(),
-  birthDate: z
-    .string()
-    .regex(
-      /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/,
-      'La fecha no es válida.'
+  birthDate: z.iso
+    .datetime()
+    .refine(
+      (date) => new Date(date) <= new Date(),
+      'La fecha no puede ser en el futuro'
     )
     .optional(),
   profilePicture: z.string().optional(),
