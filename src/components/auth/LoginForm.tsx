@@ -99,7 +99,10 @@ export default function LoginForm() {
           </Button>
           <p className="text-sm text-muted-foreground font-semibold">
             ¿No tienes una cuenta?{' '}
-            <Link to="" className="text-primary hover:underline font-semibold">
+            <Link
+              to={PATHS.Register}
+              className="text-primary hover:underline font-semibold"
+            >
               Regístrate aquí
             </Link>
           </p>

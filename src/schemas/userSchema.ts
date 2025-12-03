@@ -23,7 +23,7 @@ const baseUserSchema = z.object({
     .regex(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/, {
       message: 'El apellido solo puede contener letras y espacios.',
     }),
-  email: z.string().email({
+  email: z.email({
     message: 'Por favor, introduce un email válido.',
   }),
   genderId: z
@@ -32,14 +32,14 @@ const baseUserSchema = z.object({
 });
 
 const loginSchema = z.object({
-  email: z.string().email({
+  email: z.email({
     message: 'Por favor, introduce un email válido.',
   }),
   password: z
     .string()
     .min(6, {
       message:
-        'La contraseña debe tener al menos 6 caracteres, 1 minúscula, 1 mayúscula, 1 número y 1 símbolo.',
+        'La contraseña debe tener al menos 6 caracteres, incluyendo números y símbolos',
     })
     .regex(/[a-z]/, {
       message: 'La contraseña debe incluir al menos una letra minúscula.',
@@ -60,7 +60,7 @@ const registerSchema = baseUserSchema.extend({
     .string()
     .min(6, {
       message:
-        'La contraseña debe tener al menos 6 caracteres, 1 minúscula, 1 mayúscula, 1 número y 1 símbolo.',
+        'La contraseña debe tener al menos 6 caracteres, minúsculas, mayúsculas, números y símbolos',
     })
     .regex(/[a-z]/, {
       message: 'La contraseña debe incluir al menos una letra minúscula.',
