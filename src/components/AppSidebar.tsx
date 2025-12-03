@@ -54,10 +54,10 @@ const items = [
   },
 ];
 
+//TODO: implementar cambio de tema
 export function AppSidebar() {
   const { pathname } = useLocation();
   const navigate = useNavigate();
-  // const { theme, setTheme } = useTheme();
   const isMobile = useIsMobile();
   const [logoutDialogOpen, setLogoutDialogOpen] = useState(false);
 
@@ -77,10 +77,6 @@ export function AppSidebar() {
       });
     }
   };
-
-  // const toggleTheme = () => {
-  //   setTheme(theme === 'dark' ? 'light' : 'dark');
-  // };
 
   return (
     <>
@@ -121,23 +117,6 @@ export function AppSidebar() {
 
         <SidebarFooter className="border-t border-sidebar-border">
           <SidebarMenu>
-            {/* <SidebarMenuItem>
-              <SidebarMenuButton
-                onClick={toggleTheme}
-                className="cursor-pointer hover:bg-sidebar-accent"
-                tooltip="Cambiar tema"
-              >
-                {theme === 'dark' ? (
-                  <Sun className="h-4 w-4" />
-                ) : (
-                  <Moon className="h-4 w-4" />
-                )}
-                <span>{theme === 'dark' ? 'Modo claro' : 'Modo oscuro'}</span>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-
-            <Separator className="my-1" /> */}
-
             <SidebarMenuItem>
               <SidebarMenuButton
                 onClick={() => setLogoutDialogOpen(true)}

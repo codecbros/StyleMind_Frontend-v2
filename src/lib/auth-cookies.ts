@@ -7,7 +7,7 @@ interface CookieOptions {
 }
 
 const DEFAULT_OPTIONS: CookieOptions = {
-  expires: 30, // 30 días de persistencia
+  expires: 30,
   secure: import.meta.env.PROD,
   sameSite: 'strict',
 };

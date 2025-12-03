@@ -22,7 +22,7 @@ export const router = createBrowserRouter([
         element: <App />,
       },
       {
-        element: <GuestRoute />, // Solo accesible si NO está autenticado
+        element: <GuestRoute />,
         children: [
           {
             element: <AuthLayout />,
@@ -40,7 +40,7 @@ export const router = createBrowserRouter([
         ],
       },
       {
-        element: <ProtectedRoute />, // Solo accesible si ESTÁ autenticado
+        element: <ProtectedRoute />,
         children: [
           {
             element: <DashboardLayout />,

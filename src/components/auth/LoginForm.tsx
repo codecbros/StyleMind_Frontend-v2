@@ -26,8 +26,6 @@ export default function LoginForm() {
   const { mutate, isPending } = useLoginCustom();
   const navigate = useNavigate();
   const location = useLocation();
-
-  // Obtener la página desde donde fue redirigido (si existe)
   const from = (location.state as any)?.from?.pathname || PATHS.Profile;
 
   const form = useForm<LoginFormValues>({
@@ -44,8 +42,8 @@ export default function LoginForm() {
         setCookie(COOKIE_KEYS.AUTH_TOKEN, response.data.token);
         SuccessToast({ title: 'Inicio de sesión exitoso' });
         form.reset();
-        // Redirige a la página que intentaba acceder o al perfil por defecto
-        navigate(from, { replace: true });
+        const isValidInternalPath = Object.values(PATHS).includes(from);
+        navigate(isValidInternalPath ? from : PATHS.Profile, { replace: true });
       },
       onError: () => {
         ErrorToast({ title: 'Correo o contraseña incorrectos' });

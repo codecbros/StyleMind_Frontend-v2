@@ -6,7 +6,6 @@ import { getCookie } from '../../lib/auth-cookies';
 const GuestRoute = () => {
   const token = getCookie(COOKIE_KEYS.AUTH_TOKEN);
 
-  // Si ya está autenticado, redirige al dashboard
   if (token) {
     return <Navigate to={PATHS.Profile} replace />;
   }

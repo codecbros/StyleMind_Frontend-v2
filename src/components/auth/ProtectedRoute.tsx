@@ -6,26 +6,18 @@ import { PATHS } from '../../constants/paths';
 import { getCookie } from '../../lib/auth-cookies';
 
 const ProtectedRoute = () => {
-  const [isChecking, setIsChecking] = useState(true);
+  const [isInitializing, setIsInitializing] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const location = useLocation();
-  const token = getCookie(COOKIE_KEYS.AUTH_TOKEN);
 
   useEffect(() => {
-    // Simula verificación del token (puedes agregar validación real aquí)
-    const checkAuth = async () => {
-      if (token) {
-        setIsAuthenticated(true);
-      } else {
-        setIsAuthenticated(false);
-      }
-      setIsChecking(false);
-    };
+    //TODO:Token verification (you can add real validation here)
+    const token = getCookie(COOKIE_KEYS.AUTH_TOKEN);
+    setIsAuthenticated(!!token);
+    setIsInitializing(false);
+  }, []);
 
-    checkAuth();
-  }, [token]);
-
-  if (isChecking) {
+  if (isInitializing) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <LoaderCircle className="w-8 h-8 animate-spin text-primary" />
@@ -34,7 +26,6 @@ const ProtectedRoute = () => {
   }
 
   if (!isAuthenticated) {
-    // Redirige al login y guarda la ubicación actual para volver después
     return <Navigate to={PATHS.Login} state={{ from: location }} replace />;
   }
 
