@@ -152,7 +152,7 @@ export default function ProfileForm({
                           value={field.value ?? ''}
                           onChange={(e) => {
                             const val = e.target.value;
-                            field.onChange(val === '' ? null : +val);
+                            field.onChange(val === '' ? null : Number(val));
                           }}
                           onBlur={field.onBlur}
                           name={field.name}
@@ -184,7 +184,7 @@ export default function ProfileForm({
                           value={field.value ?? ''}
                           onChange={(e) => {
                             const val = e.target.value;
-                            field.onChange(val === '' ? null : +val);
+                            field.onChange(val === '' ? null : Number(val));
                           }}
                           onBlur={field.onBlur}
                           name={field.name}
@@ -204,7 +204,7 @@ export default function ProfileForm({
                 name="birthDate"
                 render={({ field }) => (
                   <FormItem className="flex flex-col">
-                    <FormLabel>Date of birth</FormLabel>
+                    <FormLabel>Fecha de Nacimiento</FormLabel>
                     <Popover>
                       <PopoverTrigger asChild>
                         <FormControl>

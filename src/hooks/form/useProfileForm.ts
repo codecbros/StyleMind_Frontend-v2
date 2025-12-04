@@ -36,11 +36,11 @@ export function useProfileForm({
     lastName: profile?.lastName || '',
     genderId: profile?.gender?.id || '',
     skinColor: profile?.skinColor || undefined,
-    weight: profile?.weight || null || undefined,
-    height: profile?.height || null || undefined,
+    weight: profile?.weight ?? undefined,
+    height: profile?.height ?? undefined,
     bodyDescription: profile?.bodyDescription || undefined,
     profileDescription: profile?.profileDescription || undefined,
-    birthDate: profile?.birthDate || undefined || null,
+    birthDate: profile?.birthDate ?? undefined,
     hairColor: profile?.hairColor || undefined,
     profilePicture: profile?.profilePicture || undefined,
   };
@@ -91,7 +91,7 @@ export function useProfileForm({
       SuccessToast({
         title: 'Tu cuenta ha sido eliminada.',
       });
-      navigate('#');
+      navigate('/');
     } catch (error) {
       ErrorToast({
         title:
