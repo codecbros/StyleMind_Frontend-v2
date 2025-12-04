@@ -8,7 +8,7 @@ import {
   CardTitle,
 } from '../../components/ui/card';
 
-export default function RegisterPage() {
+export default function Register() {
   return (
     <>
       <section className="lg:col-span-1 2xl:col-span-3 mx-auto hidden lg:block ">

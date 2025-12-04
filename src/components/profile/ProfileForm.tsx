@@ -1,5 +1,12 @@
-import { LoaderCircle } from 'lucide-react';
+import { format } from 'date-fns';
+import { es } from 'date-fns/locale';
+import { CalendarIcon, LoaderCircle } from 'lucide-react';
+import {
+  formatDateToISO,
+  parseDateIgnoringTimezone,
+} from '../../helpers/dateUtils';
 import { useProfileForm } from '../../hooks/form/useProfileForm';
+import { cn } from '../../lib/utils';
 import type { profileProps } from '../../pages/Profile';
 import { SkinTonePicker } from '../SkinTonePicker';
 import {
@@ -9,6 +16,7 @@ import {
   AccordionTrigger,
 } from '../ui/accordion';
 import { Button } from '../ui/button';
+import { Calendar } from '../ui/calendar';
 import {
   Form,
   FormControl,
@@ -19,6 +27,7 @@ import {
   FormMessage,
 } from '../ui/form';
 import { Input } from '../ui/input';
+import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
 import {
   Select,
   SelectContent,
@@ -71,7 +80,7 @@ export default function ProfileForm({
               )}
             />
             <FormField
-              control={form.control as any}
+              control={form.control}
               name="lastName"
               render={({ field }) => (
                 <FormItem>
@@ -93,7 +102,7 @@ export default function ProfileForm({
           </div>
 
           <FormField
-            control={form.control as any}
+            control={form.control}
             name="genderId"
             render={() => (
               <FormItem>
@@ -124,35 +133,6 @@ export default function ProfileForm({
               Medidas y Edad
             </AccordionTrigger>
             <AccordionContent className="pt-6 space-y-6">
-              <FormField
-                control={form.control as any}
-                name="birthDate"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-xs font-semibold uppercase tracking-wider">
-                      Fecha de Nacimiento
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        className="py-5"
-                        type="date"
-                        max={new Date().toISOString().split('T')[0]}
-                        value={field.value ? field.value.split('T')[0] : ''}
-                        onChange={(e) => {
-                          const date = new Date(e.target.value);
-                          field.onChange(date.toISOString());
-                        }}
-                      />
-                    </FormControl>
-                    <FormDescription className="text-xs">
-                      Nos ayuda a personalizar mejor tus recomendaciones de
-                      estilo.
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
               <div className="grid grid-cols-2 gap-6">
                 <FormField
                   control={form.control}
@@ -166,10 +146,17 @@ export default function ProfileForm({
                         <Input
                           className="py-5"
                           type="number"
-                          step="0"
-                          placeholder="70.5"
+                          step="1"
+                          placeholder="150"
                           min="0"
-                          {...field}
+                          value={field.value ?? ''}
+                          onChange={(e) => {
+                            const val = e.target.value;
+                            field.onChange(val === '' ? null : Number(val));
+                          }}
+                          onBlur={field.onBlur}
+                          name={field.name}
+                          ref={field.ref}
                         />
                       </FormControl>
                       <FormDescription className="text-xs">
@@ -180,7 +167,7 @@ export default function ProfileForm({
                   )}
                 />
                 <FormField
-                  control={form.control as any}
+                  control={form.control}
                   name="height"
                   render={({ field }) => (
                     <FormItem>
@@ -191,10 +178,17 @@ export default function ProfileForm({
                         <Input
                           className="py-5"
                           type="number"
-                          step="0"
+                          step="1"
                           placeholder="175"
                           min="0"
-                          {...field}
+                          value={field.value ?? ''}
+                          onChange={(e) => {
+                            const val = e.target.value;
+                            field.onChange(val === '' ? null : Number(val));
+                          }}
+                          onBlur={field.onBlur}
+                          name={field.name}
+                          ref={field.ref}
                         />
                       </FormControl>
                       <FormDescription className="text-xs">
@@ -205,6 +199,58 @@ export default function ProfileForm({
                   )}
                 />
               </div>
+              <FormField
+                control={form.control}
+                name="birthDate"
+                render={({ field }) => (
+                  <FormItem className="flex flex-col">
+                    <FormLabel>Fecha de Nacimiento</FormLabel>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <FormControl>
+                          <Button
+                            variant="outline"
+                            className={cn(
+                              'w-full sm:w-60 pl-3 text-left font-normal',
+                              !field.value && 'text-muted-foreground'
+                            )}
+                          >
+                            {field.value ? (
+                              format(
+                                parseDateIgnoringTimezone(field.value),
+                                'PPP',
+                                { locale: es }
+                              )
+                            ) : (
+                              <span>Selecciona una fecha</span>
+                            )}
+                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                          </Button>
+                        </FormControl>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0" align="start">
+                        <Calendar
+                          mode="single"
+                          captionLayout="dropdown"
+                          selected={
+                            field.value
+                              ? parseDateIgnoringTimezone(field.value)
+                              : undefined
+                          }
+                          onSelect={(date) =>
+                            field.onChange(date ? formatDateToISO(date) : null)
+                          }
+                          disabled={(date) =>
+                            date > new Date() || date < new Date('1900-01-01')
+                          }
+                          autoFocus
+                        />
+                      </PopoverContent>
+                    </Popover>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             </AccordionContent>
           </AccordionItem>
         </Accordion>

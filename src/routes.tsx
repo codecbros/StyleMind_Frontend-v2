@@ -7,7 +7,7 @@ import AuthLayout from './layouts/AuthLayout';
 import DashboardLayout from './layouts/dashboardLayout';
 import RootLayout from './layouts/RootLayout';
 import Login from './pages/auth/Login';
-import RegisterPage from './pages/auth/Register';
+import Register from './pages/auth/Register';
 import NewClothing from './pages/NewClothing';
 import Outfits from './pages/Outfits';
 import Profile from './pages/Profile';
@@ -33,7 +33,7 @@ export const router = createBrowserRouter([
               },
               {
                 path: PATHS.Register,
-                element: <RegisterPage />,
+                element: <Register />,
               },
             ],
           },
