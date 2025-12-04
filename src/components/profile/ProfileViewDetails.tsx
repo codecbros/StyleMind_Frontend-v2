@@ -2,6 +2,12 @@ import type { profileProps } from '../../pages/Profile';
 import { ProfileField } from '../ProfileField';
 import { Button } from '../ui/button';
 
+const formatUnit = (
+  value: number | null | undefined,
+  singular: string,
+  plural: string
+) => (value && value > 0 ? `${value} ${value === 1 ? singular : plural}` : '');
+
 export default function ProfileViewDetails({
   setIsEditing,
   isEditing,
@@ -34,15 +40,11 @@ export default function ProfileViewDetails({
         <div className="grid grid-cols-2 gap-x-6 md:gap-x-8 gap-y-4 md:gap-y-5">
           <ProfileField
             label="Peso (lb)"
-            value={profile?.weight != null ? `${profile.weight} Libras` : ''}
+            value={formatUnit(profile?.weight, 'Libra', 'Libras')}
           />
           <ProfileField
             label="Altura (cm)"
-            value={
-              profile?.height != null
-                ? `${profile.height} Centímetros`
-                : undefined
-            }
+            value={formatUnit(profile?.height, 'Centímetro', 'Centímetros')}
           />
           <ProfileField
             label="Fecha de Nacimiento"

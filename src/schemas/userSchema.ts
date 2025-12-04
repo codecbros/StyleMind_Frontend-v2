@@ -42,25 +42,17 @@ const registerSchema = baseUserSchema.extend({
   password: passwordValidator,
 });
 
-// Validador numérico reutilizable (NO MODIFICAR - funciona correctamente)
-const numericOptionalValidator = z.preprocess((val) => {
-  if (val === '' || val === null || val === undefined) return undefined;
-  const num = Number(val);
-  return isNaN(num) ? undefined : num;
-}, z.number().int().nonnegative().optional()) as z.ZodType<number | undefined>;
-
-const numericNullableValidator = z.preprocess((val) => {
-  if (val === '' || val === null || val === undefined) return undefined;
-  const num = Number(val);
-  return isNaN(num) ? undefined : num;
-}, z.number().int().nonnegative().nullable().optional()) as z.ZodType<
-  number | null | undefined
->;
+const weightHeightValidator = z
+  .number()
+  .nonnegative('El valor no puede ser negativo.')
+  .max(800, 'El valor es demasiado alto.')
+  .optional()
+  .nullable();
 
 const physicalTraitsSchema = z.object({
   skinColor: z.string().optional(),
-  weight: numericOptionalValidator,
-  height: numericOptionalValidator,
+  weight: weightHeightValidator,
+  height: weightHeightValidator,
   hairColor: z
     .string()
     .max(50, 'El color de cabello debe tener un máximo de 50 caracteres.')
@@ -102,8 +94,8 @@ const updateProfileSchema = z.object({
 
   // Opcionales
   skinColor: z.string().optional(),
-  weight: numericNullableValidator,
-  height: numericNullableValidator,
+  weight: weightHeightValidator,
+  height: weightHeightValidator,
   hairColor: z
     .string()
     .max(50, 'El color de cabello debe tener un máximo de 50 caracteres.')
@@ -122,14 +114,7 @@ const updateProfileSchema = z.object({
       'La descripción del perfil debe tener un máximo de 500 caracteres.'
     )
     .optional(),
-  // birthDate: z.iso
-  //   .datetime()
-  //   .refine(
-  //     (date) => new Date(date) <= new Date(),
-  //     'La fecha no puede ser en el futuro'
-  //   )
-  //   .optional(),
-  birthDate: z.date().optional(),
+  birthDate: z.string().optional().nullable(),
   profilePicture: z.string().optional(),
 });
 

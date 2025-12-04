@@ -1,4 +1,5 @@
 import { format, parseISO } from 'date-fns';
+import { es } from 'date-fns/locale';
 
 type ProfileFieldProps = {
   label: string;
@@ -8,7 +9,7 @@ type ProfileFieldProps = {
 export function ProfileField({ label, value }: ProfileFieldProps) {
   const formattedValue =
     label === 'Fecha de Nacimiento' && value
-      ? format(parseISO(value as string), 'dd/MM/yyyy')
+      ? format(parseISO(value as string), 'PPP', { locale: es })
       : value;
 
   return (

@@ -22,26 +22,35 @@ export function useProfileForm({
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
-  const defaultValues: UpdateUserDto = {
+  type UpdateUserValues = Omit<
+    UpdateUserDto,
+    'birthDate' | 'weight' | 'height'
+  > & {
+    birthDate: string | null | undefined;
+    weight: number | null | undefined;
+    height: number | null | undefined;
+  };
+
+  const defaultValues: UpdateUserValues = {
     firstName: profile?.firstName || '',
     lastName: profile?.lastName || '',
     genderId: profile?.gender?.id || '',
     skinColor: profile?.skinColor || undefined,
-    weight: profile?.weight ?? undefined,
-    height: profile?.height ?? undefined,
+    weight: profile?.weight || null || undefined,
+    height: profile?.height || null || undefined,
     bodyDescription: profile?.bodyDescription || undefined,
     profileDescription: profile?.profileDescription || undefined,
-    birthDate: profile?.birthDate || undefined,
+    birthDate: profile?.birthDate || undefined || null,
     hairColor: profile?.hairColor || undefined,
     profilePicture: profile?.profilePicture || undefined,
   };
 
-  const form = useForm<UpdateUserDto>({
+  const form = useForm<UpdateUserValues>({
     resolver: zodResolver(updateProfileSchema) as any,
     defaultValues,
   });
 
-  async function onSubmit(data: UpdateUserDto) {
+  async function onSubmit(data: UpdateUserValues) {
     if (isEqual(data, defaultValues)) {
       WarningToast({
         title: 'Sin cambios',
@@ -52,7 +61,7 @@ export function useProfileForm({
     }
 
     mutate(
-      { data },
+      { data: data as unknown as UpdateUserDto },
       {
         onSuccess: async () => {
           setIsEditing(!isEditing);
@@ -82,7 +91,7 @@ export function useProfileForm({
       SuccessToast({
         title: 'Tu cuenta ha sido eliminada.',
       });
-      navigate('/');
+      navigate('#');
     } catch (error) {
       ErrorToast({
         title:

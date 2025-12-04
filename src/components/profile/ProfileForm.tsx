@@ -44,7 +44,6 @@ export default function ProfileForm({
     profile,
   });
 
-  console.log(form.watch('birthDate'));
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
@@ -143,10 +142,17 @@ export default function ProfileForm({
                         <Input
                           className="py-5"
                           type="number"
-                          step="0"
-                          placeholder="70.5"
+                          step="1"
+                          placeholder="150"
                           min="0"
-                          {...field}
+                          value={field.value ?? ''}
+                          onChange={(e) => {
+                            const val = e.target.value;
+                            field.onChange(val === '' ? null : +val);
+                          }}
+                          onBlur={field.onBlur}
+                          name={field.name}
+                          ref={field.ref}
                         />
                       </FormControl>
                       <FormDescription className="text-xs">
@@ -157,7 +163,7 @@ export default function ProfileForm({
                   )}
                 />
                 <FormField
-                  control={form.control as any}
+                  control={form.control}
                   name="height"
                   render={({ field }) => (
                     <FormItem>
@@ -168,10 +174,17 @@ export default function ProfileForm({
                         <Input
                           className="py-5"
                           type="number"
-                          step="0"
+                          step="1"
                           placeholder="175"
                           min="0"
-                          {...field}
+                          value={field.value ?? ''}
+                          onChange={(e) => {
+                            const val = e.target.value;
+                            field.onChange(val === '' ? null : +val);
+                          }}
+                          onBlur={field.onBlur}
+                          name={field.name}
+                          ref={field.ref}
                         />
                       </FormControl>
                       <FormDescription className="text-xs">
@@ -214,7 +227,9 @@ export default function ProfileForm({
                           selected={
                             field.value ? new Date(field.value) : undefined
                           }
-                          onSelect={field.onChange}
+                          onSelect={(date) => {
+                            field.onChange(date ? date.toISOString() : null);
+                          }}
                           disabled={(date) =>
                             date > new Date() || date < new Date('1900-01-01')
                           }
