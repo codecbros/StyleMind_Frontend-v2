@@ -1,6 +1,10 @@
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { CalendarIcon, LoaderCircle } from 'lucide-react';
+import {
+  formatDateToISO,
+  parseDateIgnoringTimezone,
+} from '../../helpers/dateUtils';
 import { useProfileForm } from '../../hooks/form/useProfileForm';
 import { cn } from '../../lib/utils';
 import type { profileProps } from '../../pages/Profile';
@@ -207,12 +211,16 @@ export default function ProfileForm({
                           <Button
                             variant="outline"
                             className={cn(
-                              'w-60 pl-3 text-left font-normal',
+                              'w-full sm:w-60 pl-3 text-left font-normal',
                               !field.value && 'text-muted-foreground'
                             )}
                           >
                             {field.value ? (
-                              format(field?.value, 'PPP', { locale: es })
+                              format(
+                                parseDateIgnoringTimezone(field.value),
+                                'PPP',
+                                { locale: es }
+                              )
                             ) : (
                               <span>Selecciona una fecha</span>
                             )}
@@ -225,11 +233,13 @@ export default function ProfileForm({
                           mode="single"
                           captionLayout="dropdown"
                           selected={
-                            field.value ? new Date(field.value) : undefined
+                            field.value
+                              ? parseDateIgnoringTimezone(field.value)
+                              : undefined
                           }
-                          onSelect={(date) => {
-                            field.onChange(date ? date.toISOString() : null);
-                          }}
+                          onSelect={(date) =>
+                            field.onChange(date ? formatDateToISO(date) : null)
+                          }
                           disabled={(date) =>
                             date > new Date() || date < new Date('1900-01-01')
                           }
@@ -237,10 +247,6 @@ export default function ProfileForm({
                         />
                       </PopoverContent>
                     </Popover>
-                    <FormDescription>
-                      Your date of birth, Morty. Try not to create a branching
-                      timeline!
-                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}

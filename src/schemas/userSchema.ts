@@ -76,13 +76,7 @@ const profileSchema = baseUserSchema
         'La descripción del perfil debe tener un máximo de 500 caracteres.'
       )
       .optional(),
-    birthDate: z
-      .string()
-      .regex(
-        /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/,
-        'La fecha debe tener el formato ISO 8601.'
-      )
-      .optional(),
+    birthDate: z.string().optional().nullable(),
   })
   .omit({ email: true });
 
