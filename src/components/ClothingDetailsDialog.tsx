@@ -1,7 +1,7 @@
 import { DialogDescription } from '@radix-ui/react-dialog';
 import { useQueryClient } from '@tanstack/react-query';
 import { Edit, Trash2, X } from 'lucide-react';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import {
   useGetClothesById,
   useUpdateClothesStatus,
@@ -54,18 +54,14 @@ export function ClothingDetailsDialog({
     },
   });
 
-  if (!itemId || isError) return null;
-
-  const handleDelete = () => {
-    if (!itemId && !deleteDialogOpen) return;
+  const handleDelete = useCallback(() => {
+    if (!itemId) return;
 
     deleteClothing(
       { id: itemId },
       {
         onSuccess: () => {
-          queryClient.invalidateQueries({
-            queryKey: [QUERY_KEYS.WARDROBE],
-          });
+          queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.WARDROBE] });
           onOpenChange(false);
           SuccessToast({ title: 'Prenda eliminada exitosamente' });
         },
@@ -74,7 +70,9 @@ export function ClothingDetailsDialog({
         },
       }
     );
-  };
+  }, [itemId, deleteClothing, queryClient, onOpenChange]);
+
+  if (!itemId || isError || !open) return null;
 
   const isLoading = isClothingLoading || isDeletingClothing;
   return (
