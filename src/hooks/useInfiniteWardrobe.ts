@@ -5,7 +5,6 @@ import { QUERY_KEYS } from '../constants/querys';
 import { getCookie } from '../lib/auth-cookies';
 import type { WardrobeItem } from '../types/clothing';
 
-// Hook personalizado para infinite scroll
 export const useInfiniteWardrobe = ({
   search,
   categoryId,
@@ -36,10 +35,11 @@ export const useInfiniteWardrobe = ({
       const items = data.pages.flatMap(
         (page: any) => page?.data || []
       ) as WardrobeItem[];
+      const firstPage = data.pages?.[0];
       return {
         items,
-        totalPages: data.pages[0]?.totalPages || 0,
-        total: data.pages[0]?.total || 0,
+        totalPages: firstPage?.totalPages ?? 0,
+        total: firstPage?.total ?? 0,
       };
     },
   });

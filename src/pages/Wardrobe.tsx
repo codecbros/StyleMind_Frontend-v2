@@ -11,7 +11,7 @@ import { Skeleton } from '../components/ui/skeleton';
 import { WardrobeFilters } from '../components/WardrobeFilters';
 import { PATHS } from '../constants/paths';
 import { useDebounce } from '../hooks/useDebounce';
-import { useInfiniteWardrobe } from '../hooks/useInfinityWardrobe';
+import { useInfiniteWardrobe } from '../hooks/useInfiniteWardrobe';
 import { useWardrobeFilters } from '../hooks/useWardrobeFilters';
 import { cn } from '../lib/utils';
 
@@ -44,18 +44,30 @@ const Wardrobe = () => {
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting && hasNextPage && !isFetchingNextPage) {
+        if (
+          entries.length > 0 &&
+          entries[0].isIntersecting &&
+          hasNextPage &&
+          !isFetchingNextPage
+        ) {
           fetchNextPage();
         }
       },
       { threshold: 1.0 }
     );
 
-    if (observerTarget.current) {
-      observer.observe(observerTarget.current);
+    const currentTarget = observerTarget.current;
+
+    if (currentTarget) {
+      observer.observe(currentTarget);
     }
 
-    return () => observer.disconnect();
+    return () => {
+      if (currentTarget) {
+        observer.unobserve(currentTarget);
+      }
+      observer.disconnect();
+    };
   }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   if (isError || wardrobeItems instanceof Error || data instanceof Error) {
