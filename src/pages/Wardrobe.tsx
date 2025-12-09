@@ -149,11 +149,7 @@ const Wardrobe = () => {
 
               {/* Observer target para infinite scroll */}
               <div ref={observerTarget} className="h-10 mt-6">
-                {isFetchingNextPage && (
-                  <div className="flex justify-center">
-                    <Skeleton className="h-8 w-32" />
-                  </div>
-                )}
+                {isFetchingNextPage && <ClothingGridSkeleton />}
               </div>
             </>
           )}
