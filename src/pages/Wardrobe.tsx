@@ -1,5 +1,5 @@
 import { Plus } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ClothingCard } from '../components/ClothingCard';
 import { ClothingDetailsDialog } from '../components/ClothingDetailsDialog';
@@ -20,7 +20,6 @@ const Wardrobe = () => {
   const [addDialogOpen, setAddDialogOpen] = useState(false);
   const filters = useWardrobeFilters();
   const { searchQuery, categoryId, hasActiveFilters } = filters;
-
   const debouncedSearch = useDebounce(searchQuery, 500);
 
   const {
@@ -41,34 +40,33 @@ const Wardrobe = () => {
 
   const observerTarget = useRef<HTMLDivElement>(null);
 
+  const handleIntersect = useCallback(
+    (entries: IntersectionObserverEntry[]) => {
+      const first = entries[0];
+      if (!first.isIntersecting) return;
+
+      if (hasNextPage && !isFetchingNextPage) {
+        fetchNextPage();
+      }
+    },
+    [hasNextPage, isFetchingNextPage, fetchNextPage]
+  );
+
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (
-          entries.length > 0 &&
-          entries[0].isIntersecting &&
-          hasNextPage &&
-          !isFetchingNextPage
-        ) {
-          fetchNextPage();
-        }
-      },
-      { threshold: 1.0 }
-    );
+    if (!observerTarget.current) return;
 
-    const currentTarget = observerTarget.current;
+    const observer = new IntersectionObserver(handleIntersect, {
+      threshold: 0.1,
+    });
 
-    if (currentTarget) {
-      observer.observe(currentTarget);
-    }
+    const el = observerTarget.current;
+    observer.observe(el);
 
     return () => {
-      if (currentTarget) {
-        observer.unobserve(currentTarget);
-      }
+      observer.unobserve(el);
       observer.disconnect();
     };
-  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
+  }, [handleIntersect]);
 
   if (isError || wardrobeItems instanceof Error || data instanceof Error) {
     return <ErrorFallback />;
