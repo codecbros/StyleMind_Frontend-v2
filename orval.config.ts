@@ -15,7 +15,7 @@ export default defineConfig({
       target: SWAGGER_URL,
       filters: {
         mode: 'exclude',
-        tags: ['app', 'health', 'login'],
+        tags: ['app', 'health', 'login'], // Exclude unnecessary tags (added 'login' because it does not correctly generate auth requests),
       },
     },
     output: {

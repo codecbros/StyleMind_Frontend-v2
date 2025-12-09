@@ -1,7 +1,6 @@
 import { Plus } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useGetMyWardrobe } from '../api/generated/wardrobe/wardrobe';
 import { ClothingCard } from '../components/ClothingCard';
 import { ClothingDetailsDialog } from '../components/ClothingDetailsDialog';
 import { ErrorFallback } from '../components/ErrorFallback';
@@ -10,14 +9,11 @@ import { buttonVariants } from '../components/ui/button';
 import { Card, CardContent } from '../components/ui/card';
 import { Skeleton } from '../components/ui/skeleton';
 import { WardrobeFilters } from '../components/WardrobeFilters';
-import { COOKIE_KEYS } from '../constants/cookies';
 import { PATHS } from '../constants/paths';
-import { QUERY_KEYS } from '../constants/querys';
 import { useDebounce } from '../hooks/useDebounce';
+import { useInfiniteWardrobe } from '../hooks/useInfiniteWardrobe';
 import { useWardrobeFilters } from '../hooks/useWardrobeFilters';
-import { getCookie } from '../lib/auth-cookies';
 import { cn } from '../lib/utils';
-import type { WardrobeItem } from '../types/clothing';
 
 const Wardrobe = () => {
   const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
@@ -25,30 +21,56 @@ const Wardrobe = () => {
   const filters = useWardrobeFilters();
   const { searchQuery, categoryId, hasActiveFilters } = filters;
 
-  const token = getCookie(COOKIE_KEYS.AUTH_TOKEN);
   const debouncedSearch = useDebounce(searchQuery, 500);
 
   const {
-    data: wardrobeItems,
-    isError,
+    data,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
     isLoading,
-  } = useGetMyWardrobe(
-    {
-      limit: 20,
-      search: debouncedSearch || undefined,
-      categoryId: categoryId || undefined,
-      status: true,
-    },
-    {
-      query: {
-        queryKey: [QUERY_KEYS.WARDROBE, debouncedSearch, categoryId],
-        enabled: !!token,
-        select: (response: any) => response?.data as WardrobeItem[] | undefined,
-      },
-    }
-  );
+    isError,
+  } = useInfiniteWardrobe({
+    search: debouncedSearch,
+    categoryId,
+    limit: 12,
+  });
 
-  if (isError || wardrobeItems instanceof Error) {
+  const wardrobeItems = data?.items ?? [];
+  const totalItems = data?.total ?? 0;
+
+  const observerTarget = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (
+          entries.length > 0 &&
+          entries[0].isIntersecting &&
+          hasNextPage &&
+          !isFetchingNextPage
+        ) {
+          fetchNextPage();
+        }
+      },
+      { threshold: 1.0 }
+    );
+
+    const currentTarget = observerTarget.current;
+
+    if (currentTarget) {
+      observer.observe(currentTarget);
+    }
+
+    return () => {
+      if (currentTarget) {
+        observer.unobserve(currentTarget);
+      }
+      observer.disconnect();
+    };
+  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
+
+  if (isError || wardrobeItems instanceof Error || data instanceof Error) {
     return <ErrorFallback />;
   }
 
@@ -67,8 +89,7 @@ const Wardrobe = () => {
                   <Skeleton className="h-4 w-32 mt-3" />
                 ) : (
                   <p className="text-muted-foreground mt-1">
-                    {wardrobeItems?.length}{' '}
-                    {wardrobeItems?.length === 1 ? 'prenda' : 'prendas'}
+                    {totalItems} {totalItems === 1 ? 'prenda' : 'prendas'}
                   </p>
                 )}
               </div>
@@ -101,7 +122,7 @@ const Wardrobe = () => {
         <div className="container mx-auto pb-12">
           {isLoading ? (
             <ClothingGridSkeleton />
-          ) : wardrobeItems?.length === 0 ? (
+          ) : wardrobeItems.length === 0 ? (
             <Card className="mt-5">
               <CardContent className="flex flex-col items-center justify-center py-12">
                 <p className="text-muted-foreground text-center">
@@ -124,18 +145,25 @@ const Wardrobe = () => {
               </CardContent>
             </Card>
           ) : (
-            <div className="grid grid-auto-fill gap-6">
-              {wardrobeItems?.map((item) => (
-                <ClothingCard
-                  key={item.id}
-                  item={item}
-                  onSelect={() => {
-                    setSelectedItemId(item.id);
-                    setAddDialogOpen(true);
-                  }}
-                />
-              ))}
-            </div>
+            <>
+              <div className="grid grid-auto-fill gap-6">
+                {wardrobeItems.map((item) => (
+                  <ClothingCard
+                    key={item.id}
+                    item={item}
+                    onSelect={() => {
+                      setSelectedItemId(item.id);
+                      setAddDialogOpen(true);
+                    }}
+                  />
+                ))}
+              </div>
+
+              {/* Observer target para infinite scroll */}
+              <div ref={observerTarget} className="h-10 mt-6">
+                {isFetchingNextPage && <ClothingGridSkeleton />}
+              </div>
+            </>
           )}
         </div>
 
