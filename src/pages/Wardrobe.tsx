@@ -156,11 +156,8 @@ const Wardrobe = () => {
                   />
                 ))}
               </div>
-
-              {/* Observer target para infinite scroll */}
-              <div ref={observerTarget} className="h-10 mt-6">
-                {isFetchingNextPage && <ClothingGridSkeleton />}
-              </div>
+              <div ref={observerTarget} className="h-4" />
+              {isFetchingNextPage && <ClothingGridSkeleton />}
             </>
           )}
         </div>

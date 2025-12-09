@@ -80,7 +80,10 @@ export function ClothingDetailsDialog({
   return (
     <>
       <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent className="max-w-3xl md:max-w-4xl lg:max-w-5xl max-h-[95vh] overflow-y-auto p-0 gap-0">
+        <DialogContent
+          forceMount
+          className="max-w-3xl md:max-w-4xl lg:max-w-5xl max-h-[95vh] overflow-y-auto p-0 gap-0"
+        >
           <DialogHeader className="sticky top-0 z-10 bg-background border-b px-4 sm:px-6 py-4">
             <div className="flex items-start justify-between gap-4">
               <div className="flex-1 pr-8">
