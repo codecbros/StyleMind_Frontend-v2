@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import type { ControllerRenderProps } from 'react-hook-form';
 import type { ClothingItem } from '../types/clothing';
 import { ClothingGrid } from './clothing/ClothingGrid';
 import { ClothingModal } from './clothing/ClothingModal';
@@ -7,34 +8,35 @@ import { Button } from './ui/button';
 
 type ClothingSelectorProps = {
   clothingItems: ClothingItem[] | undefined;
-  selectedIds?: string[];
+  field?: ControllerRenderProps<any, any>;
   maxSelection?: number;
-  onSelectionChange?: (selectedIds: string[]) => void;
+  previewLimit?: number;
 };
-
-const PREVIEW_LIMIT = 5;
 
 const ClothingSelector = ({
   clothingItems,
-  selectedIds = [],
+  field,
   maxSelection = 999,
-  onSelectionChange,
+  previewLimit = 5,
 }: ClothingSelectorProps) => {
   const [showAllModal, setShowAllModal] = useState(false);
+  const selectedIds = field?.value || [];
 
   const previewItems = useMemo(
-    () => clothingItems?.slice(0, PREVIEW_LIMIT),
-    [clothingItems]
+    () => clothingItems?.slice(0, previewLimit),
+    [clothingItems, previewLimit]
   );
 
   const handleToggle = (id: string) => {
-    if (!onSelectionChange) return;
+    if (!field) return;
 
     if (selectedIds.includes(id)) {
-      onSelectionChange(selectedIds.filter((selectedId) => selectedId !== id));
+      field.onChange(
+        selectedIds.filter((selectedId: string) => selectedId !== id)
+      );
     } else {
       if (selectedIds.length < maxSelection) {
-        onSelectionChange([...selectedIds, id]);
+        field.onChange([...selectedIds, id]);
       }
     }
   };
@@ -57,7 +59,7 @@ const ClothingSelector = ({
           onToggle={handleToggle}
         />
 
-        {clothingItems.length > PREVIEW_LIMIT && (
+        {clothingItems.length > previewLimit && (
           <Button
             type="button"
             variant="outline"
@@ -69,7 +71,7 @@ const ClothingSelector = ({
         )}
       </div>
 
-      {clothingItems.length > PREVIEW_LIMIT && (
+      {clothingItems.length > previewLimit && (
         <ClothingModal
           isOpen={showAllModal}
           onClose={() => setShowAllModal(false)}

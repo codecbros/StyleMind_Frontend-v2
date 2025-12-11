@@ -18,8 +18,6 @@ export function ColorPicker({
   ...props
 }: ColorPickerProps) {
   const hasValue = Boolean(value && value !== '');
-  // Solo mostrar el color si hay valor, sino mostrar gris
-  // const displayValue = hasValue ? value : '#808080';
   const displayValue = hasValue ? value! : '#000000';
 
   const handleColorChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -28,7 +26,6 @@ export function ColorPicker({
 
   const handleTextChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
-    // Si está vacío y se permite vacío, enviar string vacío
     if (!newValue && allowEmpty) {
       onValueChange?.('');
     } else {
