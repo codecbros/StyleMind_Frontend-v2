@@ -172,10 +172,24 @@ const NewClothing = () => {
                   )}
                 />
 
-                <CategoryMultiSelect
-                  form={form.control}
+                <FormField
+                  control={form.control}
                   name="categoriesId"
-                  maxSelections={3}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-xs font-semibold uppercase tracking-wider">
+                        Categorias
+                      </FormLabel>
+                      <FormControl>
+                        <CategoryMultiSelect
+                          field={field}
+                          maxSelections={3}
+                          placeholder="Selecciona hasta 3 categorías"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
                 />
 
                 <div className="grid sm:grid-cols-2 md:col-span-2 gap-6 ">

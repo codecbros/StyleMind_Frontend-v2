@@ -80,21 +80,31 @@ const QuickOutfitForm = () => {
             </div>
           )}
 
-          <div className="space-y-2 sm:space-y-3">
-            <Label className="text-base sm:text-lg font-semibold">
-              3. Categorías Complementarias
-            </Label>
-            <p className="text-sm sm:text-base text-muted-foreground mt-1 sm:mt-1.5 ">
-              Selecciona qué otras prendas quieres que la IA combine con tu base
-            </p>
-            <CategoryMultiSelect
-              form={form}
-              name="categories"
-              showLabel={false}
-              maxSelections={6}
-              placeholder="Ej: Pantalones, Zapatos, Accesorios..."
-            />
-          </div>
+          <FormField
+            control={form.control}
+            name="categories"
+            render={({ field }) => (
+              <FormItem className="space-y-2 sm:space-y-3">
+                <div>
+                  <FormLabel className="text-base sm:text-lg font-semibold">
+                    3. Categorías Complementarias
+                  </FormLabel>
+                  <FormDescription className="text-sm sm:text-base text-muted-foreground mt-1 sm:mt-1.5">
+                    Selecciona qué otras prendas quieres que la IA combine con
+                    tu base
+                  </FormDescription>
+                </div>
+                <FormControl>
+                  <CategoryMultiSelect
+                    field={field}
+                    maxSelections={6}
+                    placeholder="Ej: Pantalones, Zapatos, Accesorios..."
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
           <FormField
             control={form.control}
