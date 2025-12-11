@@ -175,21 +175,28 @@ const NewClothing = () => {
                 <FormField
                   control={form.control}
                   name="categoriesId"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-xs font-semibold uppercase tracking-wider">
-                        Categorias
-                      </FormLabel>
-                      <FormControl>
-                        <CategoryMultiSelect
-                          field={field}
-                          maxSelections={3}
-                          placeholder="Selecciona hasta 3 categorías"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
+                  render={({ field }) => {
+                    const inputId = 'categoriesId-select';
+                    return (
+                      <FormItem>
+                        <FormLabel
+                          htmlFor={inputId}
+                          className="text-xs font-semibold uppercase tracking-wider"
+                        >
+                          Categorias
+                        </FormLabel>
+                        <FormControl>
+                          <CategoryMultiSelect
+                            field={field}
+                            maxSelections={3}
+                            placeholder="Selecciona hasta 3 categorías"
+                            inputId={inputId}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    );
+                  }}
                 />
 
                 <div className="grid sm:grid-cols-2 md:col-span-2 gap-6 ">

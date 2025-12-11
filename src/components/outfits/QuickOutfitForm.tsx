@@ -29,8 +29,6 @@ const QuickOutfitForm = () => {
     clothingItemsBase: [],
     description: '',
     occasions: [],
-    page: 1,
-    take: 10,
   };
   const form = useForm({ defaultValues });
 
@@ -46,19 +44,28 @@ const QuickOutfitForm = () => {
           className="space-y-6 sm:space-y-8"
         >
           <div className="space-y-2 sm:space-y-3">
-            <Label className="text-base sm:text-lg font-semibold">
-              1. Selecciona la Categoría Base
-            </Label>
-            <p className="text-sm sm:text-base text-muted-foreground mt-1 sm:mt-1.5">
-              Elige el tipo de prenda principal que quieres usar en tu outfit
-            </p>
+            <div>
+              <Label
+                htmlFor="baseCategory-select"
+                className="text-base sm:text-lg font-semibold"
+              >
+                1. Selecciona la Categoría Base
+              </Label>
+              <p className="text-sm sm:text-base text-muted-foreground mt-1 sm:mt-1.5">
+                Elige el tipo de prenda principal que quieres usar en tu outfit
+              </p>
+            </div>
             <div className="md:w-1/2 lg:w-1/3">
               <CategorySelect
-                form={form}
-                name="baseCategory"
-                label=""
+                field={{
+                  value: baseCategoryId,
+                  onChange: setBaseCategoryId,
+                  onBlur: () => {},
+                  name: 'baseCategory',
+                  ref: () => {},
+                }}
+                inputId="baseCategory-select"
                 placeholder="Selecciona una categoría"
-                onChange={(categoryId) => setBaseCategoryId(categoryId)}
               />
             </div>
           </div>
@@ -86,7 +93,10 @@ const QuickOutfitForm = () => {
             render={({ field }) => (
               <FormItem className="space-y-2 sm:space-y-3">
                 <div>
-                  <FormLabel className="text-base sm:text-lg font-semibold">
+                  <FormLabel
+                    htmlFor="categories-outfit"
+                    className="text-base sm:text-lg font-semibold"
+                  >
                     3. Categorías Complementarias
                   </FormLabel>
                   <FormDescription className="text-sm sm:text-base text-muted-foreground mt-1 sm:mt-1.5">
@@ -96,6 +106,7 @@ const QuickOutfitForm = () => {
                 </div>
                 <FormControl>
                   <CategoryMultiSelect
+                    inputId="categories-outfit"
                     field={field}
                     maxSelections={6}
                     placeholder="Ej: Pantalones, Zapatos, Accesorios..."
