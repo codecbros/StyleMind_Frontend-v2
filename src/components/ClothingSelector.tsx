@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import type { ControllerRenderProps } from 'react-hook-form';
 import type { ClothingItem } from '../types/clothing';
 import { ClothingGrid } from './clothing/ClothingGrid';
 import { ClothingModal } from './clothing/ClothingModal';
@@ -7,20 +8,20 @@ import { Button } from './ui/button';
 
 type ClothingSelectorProps = {
   clothingItems: ClothingItem[] | undefined;
-  selectedIds?: string[];
+  field?: ControllerRenderProps<any, any>;
   maxSelection?: number;
-  onSelectionChange?: (selectedIds: string[]) => void;
 };
 
 const PREVIEW_LIMIT = 5;
 
 const ClothingSelector = ({
   clothingItems,
-  selectedIds = [],
+  field,
   maxSelection = 999,
-  onSelectionChange,
 }: ClothingSelectorProps) => {
   const [showAllModal, setShowAllModal] = useState(false);
+
+  const selectedIds = field?.value || [];
 
   const previewItems = useMemo(
     () => clothingItems?.slice(0, PREVIEW_LIMIT),
@@ -28,13 +29,15 @@ const ClothingSelector = ({
   );
 
   const handleToggle = (id: string) => {
-    if (!onSelectionChange) return;
+    if (!field) return;
 
     if (selectedIds.includes(id)) {
-      onSelectionChange(selectedIds.filter((selectedId) => selectedId !== id));
+      field.onChange(
+        selectedIds.filter((selectedId: string) => selectedId !== id)
+      );
     } else {
       if (selectedIds.length < maxSelection) {
-        onSelectionChange([...selectedIds, id]);
+        field.onChange([...selectedIds, id]);
       }
     }
   };

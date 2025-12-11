@@ -1,6 +1,7 @@
 import { Loader2, Sparkles } from 'lucide-react';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { useGenerateCombinations } from '../../api/generated/combinations/combinations';
 import type { CreateCombinationDto } from '../../api/generated/schemas';
 import { useGetMyWardrobe } from '../../api/generated/wardrobe/wardrobe';
 import type { ClothingItem } from '../../types/clothing';
@@ -23,11 +24,9 @@ import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 import { Textarea } from '../ui/textarea';
 
-const isSubmitting = false; // Placeholder for submission state
-
 const QuickOutfitForm = () => {
   const [baseCategoryId, setBaseCategoryId] = useState<string | null>(null);
-  const [selectedClothingIds, setSelectedClothingIds] = useState<string[]>([]);
+  const { mutate, isPending } = useGenerateCombinations();
 
   const { data: clothingItems, isLoading } = useGetMyWardrobe(
     { categoryId: baseCategoryId || undefined, limit: 10000 },
@@ -49,7 +48,24 @@ const QuickOutfitForm = () => {
   const form = useForm({ defaultValues });
 
   const onSubmit = (formData: CreateCombinationDto) => {
-    console.log('Form Data:', formData);
+    const data: CreateCombinationDto = {
+      ...formData,
+      occasions: formData.occasions ? [formData.occasions as any] : [],
+    };
+    console.log(data);
+    mutate(
+      { data },
+      {
+        onSuccess: (response: any) => {
+          console.log('Combination created successfully:', response);
+          form.reset();
+          setBaseCategoryId(null);
+        },
+        onError: (error: any) => {
+          console.error('Error creating combination:', error);
+        },
+      }
+    );
   };
 
   return (
@@ -87,43 +103,50 @@ const QuickOutfitForm = () => {
             </div>
           </div>
 
-          <div
-            className={`space-y-2 sm:space-y-3 transition-opacity ${
-              !baseCategoryId ? 'opacity-50 pointer-events-none' : ''
-            }`}
-          >
-            <div>
-              <h3 className="text-base sm:text-lg font-semibold">
-                2. Selecciona tus Prendas Base
-                <span className="ml-2 text-sm sm:text-base font-normal text-muted-foreground">
-                  ({selectedClothingIds.length}/5)
-                </span>
-              </h3>
-              <p className="text-sm sm:text-base text-muted-foreground mt-1 sm:mt-1.5">
-                {!baseCategoryId
-                  ? 'Primero selecciona una categoría base en el paso 1'
-                  : `Elige hasta 5 prendas que quieres considerar para tu outfit`}
-              </p>
-            </div>
-            {isLoading && baseCategoryId ? (
-              <ClothingSelectorSkeleton />
-            ) : baseCategoryId && !isLoading ? (
-              <ClothingSelector
-                clothingItems={clothingItems}
-                selectedIds={selectedClothingIds}
-                onSelectionChange={setSelectedClothingIds}
-                maxSelection={5}
-              />
-            ) : (
-              <div className="border-2 border-dashed rounded-lg p-8 sm:p-12 text-center">
-                <p className="text-sm sm:text-base text-muted-foreground">
-                  Selecciona primero una categoría para ver tus prendas
-                  disponibles
-                </p>
-              </div>
+          <FormField
+            control={form.control}
+            name="clothingItemsBase"
+            render={({ field }) => (
+              <FormItem
+                className={`space-y-2 sm:space-y-3 transition-opacity ${
+                  !baseCategoryId ? 'opacity-50 pointer-events-none' : ''
+                }`}
+              >
+                <div>
+                  <FormLabel className="text-base sm:text-lg font-semibold">
+                    2. Selecciona tus Prendas Base
+                    <span className="ml-2 text-sm sm:text-base font-normal text-muted-foreground">
+                      ({field.value?.length || 0}/5)
+                    </span>
+                  </FormLabel>
+                  <FormDescription className="text-sm sm:text-base text-muted-foreground mt-1 sm:mt-1.5">
+                    {!baseCategoryId
+                      ? 'Primero selecciona una categoría base en el paso 1'
+                      : `Elige hasta 5 prendas que quieres considerar para tu outfit`}
+                  </FormDescription>
+                </div>
+                <FormControl>
+                  {isLoading && baseCategoryId ? (
+                    <ClothingSelectorSkeleton />
+                  ) : baseCategoryId && !isLoading ? (
+                    <ClothingSelector
+                      clothingItems={clothingItems}
+                      field={field}
+                      maxSelection={5}
+                    />
+                  ) : (
+                    <div className="border-2 border-dashed rounded-lg p-8 sm:p-12 text-center">
+                      <p className="text-sm sm:text-base text-muted-foreground">
+                        Selecciona primero una categoría para ver tus prendas
+                        disponibles
+                      </p>
+                    </div>
+                  )}
+                </FormControl>
+                <FormMessage />
+              </FormItem>
             )}
-          </div>
-
+          />
           <FormField
             control={form.control}
             name="categories"
@@ -212,9 +235,9 @@ const QuickOutfitForm = () => {
               type="submit"
               size="lg"
               className="w-full sm:w-auto text-sm sm:text-base"
-              disabled={isSubmitting}
+              disabled={isPending}
             >
-              {isSubmitting ? (
+              {isPending ? (
                 <>
                   <Loader2 className="mr-1 size-4 sm:size-5 animate-spin" />
                   Generando tu outfit...
