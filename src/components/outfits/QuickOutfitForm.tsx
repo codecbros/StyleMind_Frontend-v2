@@ -2,6 +2,8 @@ import { Loader2, Sparkles } from 'lucide-react';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import type { CreateCombinationDto } from '../../api/generated/schemas';
+import { useGetMyWardrobe } from '../../api/generated/wardrobe/wardrobe';
+import type { ClothingItem } from '../../types/clothing';
 import CategoryMultiSelect from '../CategoryMultiSelect';
 import CategorySelect from '../CategorySelect';
 import { ClothingSelectorSkeleton } from '../skeletons/ClothingSelectorSkeleton';
@@ -22,10 +24,20 @@ import { Textarea } from '../ui/textarea';
 
 const isSubmitting = false; // Placeholder for submission state
 const selectedClothingIds: string[] = []; // Placeholder for selected clothing IDs
-const isLoadingClothing = false; // Placeholder for loading state
 
 const QuickOutfitForm = () => {
   const [baseCategoryId, setBaseCategoryId] = useState<string | null>(null);
+
+  const { isLoading } = useGetMyWardrobe(
+    { categoryId: baseCategoryId || undefined, limit: 10000 },
+    {
+      query: {
+        enabled: !!baseCategoryId,
+        queryKey: ['QuickOutfitForm', baseCategoryId],
+        select: (response: any) => (response?.data as ClothingItem[]) || [],
+      },
+    }
+  );
 
   const defaultValues: CreateCombinationDto = {
     categories: [],
@@ -91,9 +103,9 @@ const QuickOutfitForm = () => {
                   : `Elige hasta 5 prendas que quieres considerar para tu outfit`}
               </p>
             </div>
-            {isLoadingClothing ? (
+            {isLoading && baseCategoryId ? (
               <ClothingSelectorSkeleton />
-            ) : baseCategoryId ? (
+            ) : baseCategoryId && !isLoading ? (
               <>
                 <div className="">selector</div>
               </>
