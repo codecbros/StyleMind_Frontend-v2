@@ -16,8 +16,7 @@ export const quickOutfitSchema = z.object({
   description: z
     .string()
     .max(500, 'La descripción debe tener un máximo de 500 caracteres')
-    .optional()
-    .or(z.literal('')),
+    .optional(),
   take: z.number().optional(),
   page: z.number().optional(),
 });

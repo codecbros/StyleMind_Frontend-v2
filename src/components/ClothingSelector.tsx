@@ -10,22 +10,21 @@ type ClothingSelectorProps = {
   clothingItems: ClothingItem[] | undefined;
   field?: ControllerRenderProps<any, any>;
   maxSelection?: number;
+  previewLimit?: number;
 };
-
-const PREVIEW_LIMIT = 5;
 
 const ClothingSelector = ({
   clothingItems,
   field,
   maxSelection = 999,
+  previewLimit = 5,
 }: ClothingSelectorProps) => {
   const [showAllModal, setShowAllModal] = useState(false);
-
   const selectedIds = field?.value || [];
 
   const previewItems = useMemo(
-    () => clothingItems?.slice(0, PREVIEW_LIMIT),
-    [clothingItems]
+    () => clothingItems?.slice(0, previewLimit),
+    [clothingItems, previewLimit]
   );
 
   const handleToggle = (id: string) => {
@@ -60,7 +59,7 @@ const ClothingSelector = ({
           onToggle={handleToggle}
         />
 
-        {clothingItems.length > PREVIEW_LIMIT && (
+        {clothingItems.length > previewLimit && (
           <Button
             type="button"
             variant="outline"
@@ -72,7 +71,7 @@ const ClothingSelector = ({
         )}
       </div>
 
-      {clothingItems.length > PREVIEW_LIMIT && (
+      {clothingItems.length > previewLimit && (
         <ClothingModal
           isOpen={showAllModal}
           onClose={() => setShowAllModal(false)}

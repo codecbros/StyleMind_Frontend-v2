@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form';
 import { useGenerateCombinations } from '../../api/generated/combinations/combinations';
 import type { CreateCombinationDto } from '../../api/generated/schemas';
 import { useGetMyWardrobe } from '../../api/generated/wardrobe/wardrobe';
-import { ErrorToast } from '../../lib/toast';
+import { ErrorToast, SuccessToast } from '../../lib/toast';
 import { quickOutfitSchema } from '../../schemas/quickOutfitSchema';
 import type { ClothingItem, QuickOutfitFormValues } from '../../types/clothing';
 import CategoryMultiSelect from '../CategoryMultiSelect';
@@ -66,7 +66,9 @@ const QuickOutfitForm = () => {
       {
         onSuccess: (response: any) => {
           //TODO: Show modal with the created combination details and save option or create another, etc.
-          console.log('Combination created successfully:', response);
+          SuccessToast({
+            title: 'Outfits generados con éxito',
+          });
           form.reset();
           setBaseCategoryId(null);
         },
@@ -208,7 +210,7 @@ const QuickOutfitForm = () => {
                   <Input
                     className="py-5"
                     type="text"
-                    max={100}
+                    maxLength={100}
                     placeholder='Ej: "Para una fiesta en la noche", "Reunión de trabajo formal", "Cita casual de café"...'
                     {...field}
                   />
