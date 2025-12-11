@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form';
 import type { CreateCombinationDto } from '../../api/generated/schemas';
 import CategoryMultiSelect from '../CategoryMultiSelect';
 import CategorySelect from '../CategorySelect';
+import { ClothingSelectorSkeleton } from '../skeletons/ClothingSelectorSkeleton';
 import { Button } from '../ui/button';
 import { Card } from '../ui/card';
 import {
@@ -20,6 +21,8 @@ import { Label } from '../ui/label';
 import { Textarea } from '../ui/textarea';
 
 const isSubmitting = false; // Placeholder for submission state
+const selectedClothingIds: string[] = []; // Placeholder for selected clothing IDs
+const isLoadingClothing = false; // Placeholder for loading state
 
 const QuickOutfitForm = () => {
   const [baseCategoryId, setBaseCategoryId] = useState<string | null>(null);
@@ -70,22 +73,39 @@ const QuickOutfitForm = () => {
             </div>
           </div>
 
-          {baseCategoryId && (
-            <div className="space-y-2 sm:space-y-3">
-              <div>
-                <Label className="text-base sm:text-lg font-semibold">
-                  2. Selecciona tus Prendas Base
-                  <span className="ml-2 text-sm sm:text-base font-normal text-muted-foreground">
-                    (0/5)
-                  </span>
-                </Label>
-                <p className="text-sm sm:text-base text-muted-foreground mt-1 sm:mt-1.5">
-                  Elige hasta 5 {'camisas'} que quieres considerar para tu
-                  outfit
+          <div
+            className={`space-y-2 sm:space-y-3 transition-opacity ${
+              !baseCategoryId ? 'opacity-50 pointer-events-none' : ''
+            }`}
+          >
+            <div>
+              <Label className="text-base sm:text-lg font-semibold">
+                2. Selecciona tus Prendas Base
+                <span className="ml-2 text-sm sm:text-base font-normal text-muted-foreground">
+                  ({selectedClothingIds.length}/5)
+                </span>
+              </Label>
+              <p className="text-sm sm:text-base text-muted-foreground mt-1 sm:mt-1.5">
+                {!baseCategoryId
+                  ? 'Primero selecciona una categoría base en el paso 1'
+                  : `Elige hasta 5 prendas que quieres considerar para tu outfit`}
+              </p>
+            </div>
+            {isLoadingClothing ? (
+              <ClothingSelectorSkeleton />
+            ) : baseCategoryId ? (
+              <>
+                <div className="">selector</div>
+              </>
+            ) : (
+              <div className="border-2 border-dashed rounded-lg p-8 sm:p-12 text-center">
+                <p className="text-sm sm:text-base text-muted-foreground">
+                  Selecciona primero una categoría para ver tus prendas
+                  disponibles
                 </p>
               </div>
-            </div>
-          )}
+            )}
+          </div>
 
           <FormField
             control={form.control}
