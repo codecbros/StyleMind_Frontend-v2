@@ -6,6 +6,7 @@ import { useGetMyWardrobe } from '../../api/generated/wardrobe/wardrobe';
 import type { ClothingItem } from '../../types/clothing';
 import CategoryMultiSelect from '../CategoryMultiSelect';
 import CategorySelect from '../CategorySelect';
+import ClothingSelector from '../ClothingSelector';
 import { ClothingSelectorSkeleton } from '../skeletons/ClothingSelectorSkeleton';
 import { Button } from '../ui/button';
 import { Card } from '../ui/card';
@@ -28,7 +29,7 @@ const selectedClothingIds: string[] = []; // Placeholder for selected clothing I
 const QuickOutfitForm = () => {
   const [baseCategoryId, setBaseCategoryId] = useState<string | null>(null);
 
-  const { isLoading } = useGetMyWardrobe(
+  const { data: clothingItems, isLoading } = useGetMyWardrobe(
     { categoryId: baseCategoryId || undefined, limit: 10000 },
     {
       query: {
@@ -106,9 +107,7 @@ const QuickOutfitForm = () => {
             {isLoading && baseCategoryId ? (
               <ClothingSelectorSkeleton />
             ) : baseCategoryId && !isLoading ? (
-              <>
-                <div className="">selector</div>
-              </>
+              <ClothingSelector clothingItems={clothingItems} />
             ) : (
               <div className="border-2 border-dashed rounded-lg p-8 sm:p-12 text-center">
                 <p className="text-sm sm:text-base text-muted-foreground">
