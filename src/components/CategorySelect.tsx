@@ -11,6 +11,7 @@ type CategorySelectProps = {
   placeholder?: string;
   onChange?: (categoryId: string | null) => void;
   inputId?: string;
+  className?: string;
 };
 
 const CategorySelect = ({
@@ -18,6 +19,7 @@ const CategorySelect = ({
   placeholder = 'Selecciona una categoría',
   onChange,
   inputId,
+  className,
 }: CategorySelectProps) => {
   const token = getCookie(COOKIE_KEYS.AUTH_TOKEN);
   const {
@@ -57,7 +59,7 @@ const CategorySelect = ({
       inputId={inputId}
       isDisabled={isError}
       isLoading={isLoading}
-      className="react-select"
+      className={`react-select ${className || ''}`}
       classNamePrefix="react-select"
       isClearable
       options={categories?.map((category) => ({

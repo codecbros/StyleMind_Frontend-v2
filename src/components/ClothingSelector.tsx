@@ -1,7 +1,9 @@
-import { ShirtIcon } from 'lucide-react';
+import { Check, ShirtIcon } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { PATHS } from '../constants/paths';
+import { cn } from '../lib/utils';
 import type { ClothingItem } from '../types/clothing';
+import { Badge } from './ui/badge';
 import { Button } from './ui/button';
 
 type ClothingSelectorProps = {
@@ -41,7 +43,63 @@ const ClothingSelector = ({
     );
   }
 
-  return <div>Clothing Selector Component</div>;
+  return (
+    <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:grid-cols-4">
+      {clothingItems?.map((item) => {
+        const isSelected = false; // mocked for now
+        const isDisabled = false; // mocked for now
+
+        return (
+          <button
+            key={item.id}
+            type="button"
+            className={cn(
+              'group relative overflow-hidden rounded-lg border-2 transition-all',
+              isSelected && 'border-primary shadow-md ring-2 ring-primary/20',
+              !isSelected &&
+                !isDisabled &&
+                'border-border hover:border-primary/50 hover:shadow-md',
+              isDisabled && 'cursor-not-allowed opacity-50'
+            )}
+          >
+            {/* Checkbox indicator */}
+            <div
+              className={cn(
+                'absolute right-2 top-2 z-10 flex size-5 sm:size-6 items-center justify-center rounded-full border-2 transition-all shadow-sm',
+                isSelected
+                  ? 'border-primary bg-primary text-primary-foreground'
+                  : 'border-muted-foreground/30 bg-background/90 backdrop-blur-sm group-hover:border-primary/50'
+              )}
+            >
+              {isSelected && <Check className="size-3 sm:size-4" />}
+            </div>
+
+            {/* Image */}
+            <div className="aspect-square overflow-hidden bg-muted">
+              <img
+                src={item.images?.[0].url || '/placeholder.svg'}
+                alt={item.name}
+                className={cn(
+                  'size-full object-cover transition-transform',
+                  !isDisabled && 'group-hover:scale-105'
+                )}
+              />
+            </div>
+
+            {/* Info */}
+            <div className="space-y-1 sm:space-y-1.5 p-2 sm:p-3">
+              <p className="truncate text-xs sm:text-sm font-medium leading-tight">
+                {item.name}
+              </p>
+              <Badge variant="secondary" className="text-[10px] sm:text-xs">
+                {item.categories?.[0].category.name || 'Sin categoría'}
+              </Badge>
+            </div>
+          </button>
+        );
+      })}
+    </div>
+  );
 };
 
 export default ClothingSelector;

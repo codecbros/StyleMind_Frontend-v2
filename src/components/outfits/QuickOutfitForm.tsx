@@ -82,6 +82,7 @@ const QuickOutfitForm = () => {
                 }}
                 inputId="baseCategory-select"
                 placeholder="Selecciona una categoría"
+                className="z-20"
               />
             </div>
           </div>
