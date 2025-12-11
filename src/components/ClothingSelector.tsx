@@ -22,9 +22,14 @@ type ClothingSelectorProps = {
   onSelectionChange?: (selectedIds: string[]) => void;
 };
 
+const PREVIEW_LIMIT = 5;
+
 const ClothingSelector = ({ clothingItems }: ClothingSelectorProps) => {
   const [showAllModal, setShowAllModal] = useState(false);
-  const hasMoreItems = true;
+
+  if (clothingItems === undefined || !clothingItems) {
+    return null;
+  }
 
   if (clothingItems?.length === 0) {
     return (
@@ -116,68 +121,70 @@ const ClothingSelector = ({ clothingItems }: ClothingSelectorProps) => {
   return (
     <>
       <div className="space-y-3 sm:space-y-4">
-        <ClothingGrid itemsToShow={clothingItems} />
+        <ClothingGrid itemsToShow={clothingItems?.slice(0, PREVIEW_LIMIT)} />
 
-        {hasMoreItems && (
+        {clothingItems?.length > PREVIEW_LIMIT && (
           <Button
             type="button"
             variant="outline"
             className="w-full text-sm sm:text-base bg-transparent cursor-pointer"
             onClick={() => setShowAllModal(true)}
           >
-            Ver todas las prendas
+            Ver todas las prendas ({clothingItems?.length})
           </Button>
         )}
       </div>
 
-      <Dialog open={showAllModal} onOpenChange={setShowAllModal}>
-        <DialogContent className="max-w-5xl max-h-[90vh] flex flex-col p-0">
-          <DialogHeader className="px-4 sm:px-6 pt-4 sm:pt-6 pb-3 sm:pb-4 border-b">
-            <DialogTitle className="text-lg sm:text-xl">
-              Selecciona tus prendas
-            </DialogTitle>
-            <DialogDescription className="text-sm sm:text-base">
-              {/* Seleccionadas: {selectedIds.length} / {maxSelection} */}
-            </DialogDescription>
-          </DialogHeader>
+      {clothingItems?.length > PREVIEW_LIMIT && (
+        <Dialog open={showAllModal} onOpenChange={setShowAllModal}>
+          <DialogContent className="max-w-5xl max-h-[90vh] flex flex-col p-0">
+            <DialogHeader className="px-4 sm:px-6 pt-4 sm:pt-6 pb-3 sm:pb-4 border-b">
+              <DialogTitle className="text-lg sm:text-xl">
+                Selecciona tus prendas
+              </DialogTitle>
+              <DialogDescription className="text-sm sm:text-base">
+                {/* Seleccionadas: {selectedIds.length} / {maxSelection} */}
+              </DialogDescription>
+            </DialogHeader>
 
-          {/* Buscador */}
-          <div className="px-4 sm:px-6 py-3 sm:py-4 border-b bg-muted/30">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
-              <Input
-                type="text"
-                placeholder="Buscar por nombre de prenda..."
-                // value={searchQuery}
-                // onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-9 text-sm sm:text-base"
-              />
+            {/* Buscador */}
+            <div className="px-4 sm:px-6 py-3 sm:py-4 border-b bg-muted/30">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
+                <Input
+                  type="text"
+                  placeholder="Buscar por nombre de prenda..."
+                  // value={searchQuery}
+                  // onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-9 text-sm sm:text-base"
+                />
+              </div>
             </div>
-          </div>
 
-          {/* Grid scrolleable */}
-          <div className="overflow-y-auto flex-1 px-4 sm:px-6 py-4 sm:py-6">
-            {/* {filteredItems.length === 0 ? (
+            {/* Grid scrolleable */}
+            <div className="overflow-y-auto flex-1 px-4 sm:px-6 py-4 sm:py-6">
+              {/* {filteredItems.length === 0 ? (
               <div className="text-center py-8 sm:py-12 text-muted-foreground text-sm sm:text-base">
                 No se encontraron prendas con &quot;{searchQuery}&quot;
               </div>
             ) : (
               <ClothingGrid itemsToShow={filteredItems} />
             )} */}
-          </div>
+            </div>
 
-          {/* Footer con botón cerrar */}
-          <div className="px-4 sm:px-6 py-3 sm:py-4 border-t bg-muted/30">
-            <Button
-              type="button"
-              // onClick={() => setShowAllModal(false)}
-              className="w-full sm:w-auto text-sm sm:text-base"
-            >
-              {/* Listo ({selectedIds.length} seleccionadas) */}
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
+            {/* Footer con botón cerrar */}
+            <div className="px-4 sm:px-6 py-3 sm:py-4 border-t bg-muted/30">
+              <Button
+                type="button"
+                // onClick={() => setShowAllModal(false)}
+                className="w-full sm:w-auto text-sm sm:text-base"
+              >
+                {/* Listo ({selectedIds.length} seleccionadas) */}
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+      )}
     </>
   );
 };
