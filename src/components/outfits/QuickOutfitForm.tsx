@@ -24,10 +24,10 @@ import { Label } from '../ui/label';
 import { Textarea } from '../ui/textarea';
 
 const isSubmitting = false; // Placeholder for submission state
-const selectedClothingIds: string[] = []; // Placeholder for selected clothing IDs
 
 const QuickOutfitForm = () => {
   const [baseCategoryId, setBaseCategoryId] = useState<string | null>(null);
+  const [selectedClothingIds, setSelectedClothingIds] = useState<string[]>([]);
 
   const { data: clothingItems, isLoading } = useGetMyWardrobe(
     { categoryId: baseCategoryId || undefined, limit: 10000 },
@@ -108,7 +108,12 @@ const QuickOutfitForm = () => {
             {isLoading && baseCategoryId ? (
               <ClothingSelectorSkeleton />
             ) : baseCategoryId && !isLoading ? (
-              <ClothingSelector clothingItems={clothingItems} />
+              <ClothingSelector
+                clothingItems={clothingItems}
+                selectedIds={selectedClothingIds}
+                onSelectionChange={setSelectedClothingIds}
+                maxSelection={5}
+              />
             ) : (
               <div className="border-2 border-dashed rounded-lg p-8 sm:p-12 text-center">
                 <p className="text-sm sm:text-base text-muted-foreground">
