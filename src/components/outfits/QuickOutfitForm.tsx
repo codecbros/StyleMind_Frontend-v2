@@ -6,7 +6,16 @@ import CategoryMultiSelect from '../CategoryMultiSelect';
 import CategorySelect from '../CategorySelect';
 import { Button } from '../ui/button';
 import { Card } from '../ui/card';
-import { Form, FormField } from '../ui/form';
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '../ui/form';
+import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 import { Textarea } from '../ui/textarea';
 
@@ -87,43 +96,56 @@ const QuickOutfitForm = () => {
             />
           </div>
 
-          <div className="space-y-2 sm:space-y-3">
-            <div>
-              <Label className="text-base sm:text-lg font-semibold">
-                4. Ocasión del Outfit
-              </Label>
-              <p className="text-sm sm:text-base text-muted-foreground mt-1 sm:mt-1.5">
-                ¿Para qué evento o situación necesitas este outfit?
-              </p>
-            </div>
-          </div>
+          <FormField
+            control={form.control}
+            name="occasions"
+            render={({ field }) => (
+              <FormItem className="space-y-2 sm:space-y-3">
+                <div>
+                  <FormLabel className="text-base sm:text-lg font-semibold">
+                    4. Ocasión del Outfit
+                  </FormLabel>
+                  <FormDescription className="text-sm sm:text-base text-muted-foreground mt-1 sm:mt-1.5">
+                    Describe brevemente para qué ocasión es este outfit. Este
+                    será el nombre con el que se guardará
+                  </FormDescription>
+                </div>
+                <FormControl>
+                  <Input
+                    className="py-5"
+                    type="text"
+                    placeholder='Ej: "Para una fiesta en la noche", "Reunión de trabajo formal", "Cita casual de café"...'
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
           <FormField
             control={form.control}
             name="description"
             render={({ field }) => (
-              <div className="space-y-2 sm:space-y-3">
+              <FormItem className="space-y-2 sm:space-y-3">
                 <div>
-                  <Label
-                    htmlFor="description"
-                    className="text-base sm:text-lg font-semibold"
-                  >
+                  <FormLabel className="text-base sm:text-lg font-semibold">
                     5. Detalles Adicionales (Opcional)
-                  </Label>
-                  <p className="text-sm sm:text-base text-muted-foreground mt-1 sm:mt-1.5">
+                  </FormLabel>
+                  <FormDescription className="text-sm sm:text-base text-muted-foreground mt-1 sm:mt-1.5">
                     Describe tu estilo preferido, el clima, colores deseados o
                     cualquier preferencia especial
-                  </p>
+                  </FormDescription>
                 </div>
-                <Textarea
-                  id="description"
-                  placeholder="Ejemplo: Quiero algo elegante pero cómodo para una cena. El clima estará fresco, así que prefiero mangas largas. Me gustan los colores neutros y estilo minimalista."
-                  rows={5}
-                  maxLength={500}
-                  className="resize-none text-sm sm:text-base"
-                  {...field}
-                />
-              </div>
+                <FormControl>
+                  <Textarea
+                    placeholder="Ejemplo: Quiero algo elegante pero cómodo para una cena. El clima estará fresco, así que prefiero mangas largas. Me gustan los colores neutros y estilo minimalista."
+                    maxLength={1000}
+                    className="resize-none text-sm sm:text-base min-h-22  "
+                    {...field}
+                  />
+                </FormControl>
+              </FormItem>
             )}
           />
 
