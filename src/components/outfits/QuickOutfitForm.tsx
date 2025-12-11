@@ -2,13 +2,12 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2, Sparkles } from 'lucide-react';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import type { z } from 'zod';
 import { useGenerateCombinations } from '../../api/generated/combinations/combinations';
 import type { CreateCombinationDto } from '../../api/generated/schemas';
 import { useGetMyWardrobe } from '../../api/generated/wardrobe/wardrobe';
 import { ErrorToast } from '../../lib/toast';
 import { quickOutfitSchema } from '../../schemas/quickOutfitSchema';
-import type { ClothingItem } from '../../types/clothing';
+import type { ClothingItem, QuickOutfitFormValues } from '../../types/clothing';
 import CategoryMultiSelect from '../CategoryMultiSelect';
 import CategorySelect from '../CategorySelect';
 import ClothingSelector from '../ClothingSelector';
@@ -27,8 +26,6 @@ import {
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 import { Textarea } from '../ui/textarea';
-
-type QuickOutfitFormValues = z.infer<typeof quickOutfitSchema>;
 
 const QuickOutfitForm = () => {
   const [baseCategoryId, setBaseCategoryId] = useState<string | null>(null);

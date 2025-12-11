@@ -4,11 +4,7 @@ import { useGetMyCategories } from '../api/generated/categories/categories';
 import { COOKIE_KEYS } from '../constants/cookies';
 import { QUERY_KEYS } from '../constants/querys';
 import { getCookie } from '../lib/auth-cookies';
-import type { Category } from '../types/category';
-
-type CategoryFieldValues = {
-  [key: string]: string | null;
-};
+import type { Category, CategoryFieldValues } from '../types/category';
 
 type CategorySelectProps = {
   field: ControllerRenderProps<CategoryFieldValues, any>;

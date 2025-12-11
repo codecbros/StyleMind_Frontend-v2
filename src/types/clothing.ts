@@ -1,4 +1,6 @@
+import type z from 'zod';
 import type { CreateClothesDto } from '../api/generated/schemas';
+import type { quickOutfitSchema } from '../schemas/quickOutfitSchema';
 
 export interface ClothingItem extends CreateClothesDto {
   id: string;
@@ -34,3 +36,5 @@ export interface WardrobeItem {
     };
   }>;
 }
+
+export type QuickOutfitFormValues = z.infer<typeof quickOutfitSchema>;
