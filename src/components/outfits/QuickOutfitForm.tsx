@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form';
 import { useGenerateCombinations } from '../../api/generated/combinations/combinations';
 import type { CreateCombinationDto } from '../../api/generated/schemas';
 import { useGetMyWardrobe } from '../../api/generated/wardrobe/wardrobe';
+import { ErrorToast } from '../../lib/toast';
 import type { ClothingItem } from '../../types/clothing';
 import CategoryMultiSelect from '../CategoryMultiSelect';
 import CategorySelect from '../CategorySelect';
@@ -45,6 +46,7 @@ const QuickOutfitForm = () => {
     description: '',
     occasions: [],
   };
+
   const form = useForm({ defaultValues });
 
   const onSubmit = (formData: CreateCombinationDto) => {
@@ -52,7 +54,7 @@ const QuickOutfitForm = () => {
       ...formData,
       occasions: formData.occasions ? [formData.occasions as any] : [],
     };
-    console.log(data);
+
     mutate(
       { data },
       {
@@ -62,7 +64,11 @@ const QuickOutfitForm = () => {
           setBaseCategoryId(null);
         },
         onError: (error: any) => {
-          console.error('Error creating combination:', error);
+          ErrorToast({
+            title: 'Error al generar el outfit',
+            description:
+              error?.response?.data?.message || 'Ocurrió un error inesperado',
+          });
         },
       }
     );
