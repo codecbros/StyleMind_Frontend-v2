@@ -31,17 +31,6 @@ const QuickOutfitForm = () => {
   const [baseCategoryId, setBaseCategoryId] = useState<string | null>(null);
   const { mutate, isPending } = useGenerateCombinations();
 
-  const { data: clothingItems, isLoading } = useGetMyWardrobe(
-    { categoryId: baseCategoryId || undefined, limit: 10000 },
-    {
-      query: {
-        enabled: !!baseCategoryId,
-        queryKey: ['QuickOutfitForm', baseCategoryId],
-        select: (response: any) => (response?.data as ClothingItem[]) || [],
-      },
-    }
-  );
-
   const defaultValues: QuickOutfitFormValues = {
     categories: [],
     clothingItemsBase: [],
@@ -54,6 +43,17 @@ const QuickOutfitForm = () => {
     defaultValues,
   });
 
+  const { data: clothingItems, isLoading } = useGetMyWardrobe(
+    { categoryId: baseCategoryId || undefined, limit: 10000 },
+    {
+      query: {
+        enabled: !!baseCategoryId,
+        queryKey: ['QuickOutfitForm', baseCategoryId],
+        select: (response: any) => (response?.data as ClothingItem[]) || [],
+      },
+    }
+  );
+
   const onSubmit = (formData: QuickOutfitFormValues) => {
     const data: CreateCombinationDto = {
       ...formData,
@@ -65,6 +65,7 @@ const QuickOutfitForm = () => {
       { data },
       {
         onSuccess: (response: any) => {
+          //TODO: Show modal with the created combination details and save option or create another, etc.
           console.log('Combination created successfully:', response);
           form.reset();
           setBaseCategoryId(null);
