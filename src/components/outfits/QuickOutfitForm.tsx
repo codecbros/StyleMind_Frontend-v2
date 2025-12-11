@@ -1,10 +1,13 @@
+import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2, Sparkles } from 'lucide-react';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import type { z } from 'zod';
 import { useGenerateCombinations } from '../../api/generated/combinations/combinations';
 import type { CreateCombinationDto } from '../../api/generated/schemas';
 import { useGetMyWardrobe } from '../../api/generated/wardrobe/wardrobe';
 import { ErrorToast } from '../../lib/toast';
+import { quickOutfitSchema } from '../../schemas/quickOutfitSchema';
 import type { ClothingItem } from '../../types/clothing';
 import CategoryMultiSelect from '../CategoryMultiSelect';
 import CategorySelect from '../CategorySelect';
@@ -25,6 +28,8 @@ import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 import { Textarea } from '../ui/textarea';
 
+type QuickOutfitFormValues = z.infer<typeof quickOutfitSchema>;
+
 const QuickOutfitForm = () => {
   const [baseCategoryId, setBaseCategoryId] = useState<string | null>(null);
   const { mutate, isPending } = useGenerateCombinations();
@@ -40,19 +45,23 @@ const QuickOutfitForm = () => {
     }
   );
 
-  const defaultValues: CreateCombinationDto = {
+  const defaultValues: QuickOutfitFormValues = {
     categories: [],
     clothingItemsBase: [],
     description: '',
-    occasions: [],
+    occasions: '',
   };
 
-  const form = useForm({ defaultValues });
+  const form = useForm<QuickOutfitFormValues>({
+    resolver: zodResolver(quickOutfitSchema),
+    defaultValues,
+  });
 
-  const onSubmit = (formData: CreateCombinationDto) => {
+  const onSubmit = (formData: QuickOutfitFormValues) => {
     const data: CreateCombinationDto = {
       ...formData,
-      occasions: formData.occasions ? [formData.occasions as any] : [],
+      occasions: formData.occasions ? [formData.occasions] : [],
+      description: formData.description ?? '',
     };
 
     mutate(
@@ -201,6 +210,7 @@ const QuickOutfitForm = () => {
                   <Input
                     className="py-5"
                     type="text"
+                    max={100}
                     placeholder='Ej: "Para una fiesta en la noche", "Reunión de trabajo formal", "Cita casual de café"...'
                     {...field}
                   />
@@ -227,7 +237,7 @@ const QuickOutfitForm = () => {
                 <FormControl>
                   <Textarea
                     placeholder="Ejemplo: Quiero algo elegante pero cómodo para una cena. El clima estará fresco, así que prefiero mangas largas. Me gustan los colores neutros y estilo minimalista."
-                    maxLength={1000}
+                    maxLength={500}
                     className="resize-none text-sm sm:text-base min-h-22"
                     {...field}
                   />
