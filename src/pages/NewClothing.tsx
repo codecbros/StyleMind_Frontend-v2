@@ -183,7 +183,7 @@ const NewClothing = () => {
                           htmlFor={inputId}
                           className="text-xs font-semibold uppercase tracking-wider"
                         >
-                          Categorias
+                          Categorías
                         </FormLabel>
                         <FormControl>
                           <CategoryMultiSelect

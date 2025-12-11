@@ -39,7 +39,7 @@ const ClothingSelector = ({
     }
   };
 
-  if (clothingItems === undefined || !clothingItems) {
+  if (!clothingItems) {
     return null;
   }
 

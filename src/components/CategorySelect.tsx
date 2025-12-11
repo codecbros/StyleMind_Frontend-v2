@@ -6,8 +6,12 @@ import { QUERY_KEYS } from '../constants/querys';
 import { getCookie } from '../lib/auth-cookies';
 import type { Category } from '../types/category';
 
+type CategoryFieldValues = {
+  [key: string]: string | null;
+};
+
 type CategorySelectProps = {
-  field: ControllerRenderProps<any, any>;
+  field: ControllerRenderProps<CategoryFieldValues, any>;
   placeholder?: string;
   onChange?: (categoryId: string | null) => void;
   inputId?: string;
@@ -37,7 +41,7 @@ const CategorySelect = ({
     }
   );
 
-  const handleChange = (option: any) => {
+  const handleChange = (option: { value: string } | null) => {
     const value = option ? option.value : null;
     field.onChange(value);
     if (onChange) {

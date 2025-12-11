@@ -8,7 +8,7 @@ const QuickOutfit = () => {
       <ModeHeaderOutfit
         title="Generación Rápida"
         description="Describe lo que necesitas y lo crearemos para ti."
-        icon={<Zap className="size-6  text-green-600 dark:text-green-500" />}
+        icon={<Zap className="size-6 text-green-600 dark:text-green-500" />}
       />
       <QuickOutfitForm />
     </>

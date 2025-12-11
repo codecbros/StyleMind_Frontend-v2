@@ -93,12 +93,12 @@ const QuickOutfitForm = () => {
             }`}
           >
             <div>
-              <Label className="text-base sm:text-lg font-semibold">
+              <h3 className="text-base sm:text-lg font-semibold">
                 2. Selecciona tus Prendas Base
                 <span className="ml-2 text-sm sm:text-base font-normal text-muted-foreground">
                   ({selectedClothingIds.length}/5)
                 </span>
-              </Label>
+              </h3>
               <p className="text-sm sm:text-base text-muted-foreground mt-1 sm:mt-1.5">
                 {!baseCategoryId
                   ? 'Primero selecciona una categoría base en el paso 1'
@@ -199,7 +199,7 @@ const QuickOutfitForm = () => {
                   <Textarea
                     placeholder="Ejemplo: Quiero algo elegante pero cómodo para una cena. El clima estará fresco, así que prefiero mangas largas. Me gustan los colores neutros y estilo minimalista."
                     maxLength={1000}
-                    className="resize-none text-sm sm:text-base min-h-22  "
+                    className="resize-none text-sm sm:text-base min-h-22"
                     {...field}
                   />
                 </FormControl>
