@@ -2,13 +2,12 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useQueryClient } from '@tanstack/react-query';
 import { LoaderCircle } from 'lucide-react';
 import { useForm } from 'react-hook-form';
-import RSelect from 'react-select';
-import { useGetMyCategories } from '../api/generated/categories/categories';
 import type { CreateClothesDto } from '../api/generated/schemas';
 import {
   useAddClothes,
   useUploadClothesImages,
 } from '../api/generated/wardrobe/wardrobe';
+import CategoryMultiSelect from '../components/CategoryMultiSelect';
 import CenteredContainer from '../components/CenteredContainer';
 import { ColorPicker } from '../components/ColorPicker';
 import ImageUploader from '../components/ImageUpload';
@@ -33,32 +32,19 @@ import {
 } from '../components/ui/select';
 import { Textarea } from '../components/ui/textarea';
 import { CLOTHING_CONSTANTS } from '../constants/clothing';
-import { COOKIE_KEYS } from '../constants/cookies';
 import { QUERY_KEYS } from '../constants/querys';
 import { SEASON_OPTIONS } from '../helpers/season-helper';
 import { useImageUploader } from '../hooks/useImageUpload';
-import { getCookie } from '../lib/auth-cookies';
 import { ErrorToast, SuccessToast, WarningToast } from '../lib/toast';
 import { wardrobeItemSchema } from '../schemas/newClothingSchema';
 
 const NewClothing = () => {
-  const token = getCookie(COOKIE_KEYS.AUTH_TOKEN);
   const { mutate: addClothes, isPending } = useAddClothes();
   const { mutate: uploadImage, isPending: isUploadingImages } =
     useUploadClothesImages();
   const { images, addImages, removeImage, getFiles, clearImages } =
     useImageUploader();
   const queryClient = useQueryClient();
-
-  const { data, isError, isLoading } = useGetMyCategories(
-    {},
-    {
-      query: {
-        queryKey: [QUERY_KEYS.MY_CATEGORIES],
-        enabled: !!token,
-      },
-    }
-  );
 
   const defaultValues: CreateClothesDto = {
     name: '',
@@ -91,7 +77,7 @@ const NewClothing = () => {
     addClothes(
       { data: formData },
       {
-        onSuccess: (response) => {
+        onSuccess: (response: any) => {
           SuccessToast({
             title: `La prenda ${formData.name} ha sido guardada exitosamente`,
           });
@@ -129,7 +115,7 @@ const NewClothing = () => {
 
           form.reset();
         },
-        onError: (error) => {
+        onError: (error: any) => {
           ErrorToast({
             title: error?.response?.data?.message
               ? `${error.response.data.message}. Intenta cambiando el nombre de la prenda o la categoría`
@@ -139,8 +125,6 @@ const NewClothing = () => {
       }
     );
   };
-
-  const categories = data?.data || [];
 
   return (
     <>
@@ -191,44 +175,28 @@ const NewClothing = () => {
                 <FormField
                   control={form.control}
                   name="categoriesId"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-xs font-semibold uppercase tracking-wider">
-                        Categorías
-                      </FormLabel>
-                      <FormControl>
-                        {field && (
-                          <RSelect
-                            isDisabled={isError}
-                            isLoading={isLoading}
-                            className="react-select"
-                            isMulti
-                            options={categories.map(
-                              (category: { id: any; name: any }) => ({
-                                value: category.id,
-                                label: category.name,
-                              })
-                            )}
-                            onChange={(selectedOptions) => {
-                              field.onChange(
-                                selectedOptions.map((option) => option.value)
-                              );
-                            }}
-                            value={field.value.map((value) => ({
-                              value,
-                              label:
-                                categories.find(
-                                  (category: { id: string }) =>
-                                    category.id === value
-                                )?.name || '',
-                            }))}
-                            placeholder="Selecciona una o varias categorías"
+                  render={({ field }) => {
+                    const inputId = 'categoriesId-select';
+                    return (
+                      <FormItem>
+                        <FormLabel
+                          htmlFor={inputId}
+                          className="text-xs font-semibold uppercase tracking-wider"
+                        >
+                          Categorías
+                        </FormLabel>
+                        <FormControl>
+                          <CategoryMultiSelect
+                            field={field}
+                            maxSelections={3}
+                            placeholder="Selecciona hasta 3 categorías"
+                            inputId={inputId}
                           />
-                        )}
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    );
+                  }}
                 />
 
                 <div className="grid sm:grid-cols-2 md:col-span-2 gap-6 ">

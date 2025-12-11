@@ -32,7 +32,7 @@ const ModeHeaderOutfit = ({
 
       <div className="flex items-start gap-4">
         <div
-          className={`size-12 md:size-14 rounded-xl ${
+          className={`size-10 md:size-12 rounded-xl ${
             iconBackgroundClass ?? 'bg-primary/10'
           } flex items-center justify-center`}
         >
