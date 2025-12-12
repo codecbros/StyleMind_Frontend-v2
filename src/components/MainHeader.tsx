@@ -1,9 +1,10 @@
 import { Shirt } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { PATHS } from '../constants/paths';
 import { Button } from './ui/button';
 
 const MainHeader = () => {
+  const location = useLocation();
   const fixedHeader = ['/'].includes(location.pathname);
   return (
     <header

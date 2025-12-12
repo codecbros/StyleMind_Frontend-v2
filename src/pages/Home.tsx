@@ -270,7 +270,7 @@ export default function HomePage() {
                     />
                   </div>
                   <Link
-                    to="https://github.com/josueJouvin  "
+                    to="https://github.com/josueJouvin"
                     target="_blank"
                     rel="noopener noreferrer"
                   >
@@ -284,7 +284,7 @@ export default function HomePage() {
                   <div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center">
                     <img
                       src="https://avatars.githubusercontent.com/u/66442822"
-                      alt="Mauricio Manzaba"
+                      alt="Ivan Manzaba"
                       className="size-8 rounded-full"
                     />
                   </div>
