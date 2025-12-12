@@ -1,9 +1,5 @@
 function App() {
-  return (
-    <>
-      <h1>StyleMind</h1>
-    </>
-  )
+  return <></>;
 }
 
-export default App
+export default App;

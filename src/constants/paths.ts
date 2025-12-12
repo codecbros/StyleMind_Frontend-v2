@@ -11,3 +11,5 @@ export const PATHS = {
   NewClothing: `${DASHBOARD_PREFIX}/armario/nueva-prenda`,
   Outfits: `${DASHBOARD_PREFIX}/outfits`,
 } as const;
+
+export const GITHUB_REPO_URL = 'https://github.com/codecbros';
