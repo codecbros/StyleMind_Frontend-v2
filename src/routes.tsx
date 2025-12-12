@@ -1,17 +1,17 @@
 import { PATHS } from '@/constants/paths';
 import { createBrowserRouter } from 'react-router-dom';
-import GuestRoute from './components/auth/GuestRoute';
-import ProtectedRoute from './components/auth/ProtectedRoute';
-import AuthLayout from './layouts/AuthLayout';
-import DashboardLayout from './layouts/dashboardLayout';
-import RootLayout from './layouts/RootLayout';
-import Login from './pages/auth/Login';
-import Register from './pages/auth/Register';
-import HomePage from './pages/Home';
-import NewClothing from './pages/NewClothing';
-import Outfits from './pages/Outfits';
-import Profile from './pages/Profile';
-import Wardrobe from './pages/Wardrobe';
+import GuestRoute from './components/auth/GuestRoute.tsx';
+import ProtectedRoute from './components/auth/ProtectedRoute.tsx';
+import AuthLayout from './layouts/AuthLayout.tsx';
+import DashboardLayout from './layouts/dashboardLayout.tsx';
+import RootLayout from './layouts/RootLayout.tsx';
+import Login from './pages/auth/Login.tsx';
+import Register from './pages/auth/Register.tsx';
+import HomePage from './pages/Home.tsx';
+import NewClothing from './pages/NewClothing.tsx';
+import Outfits from './pages/Outfits.tsx';
+import Profile from './pages/Profile.tsx';
+import Wardrobe from './pages/Wardrobe.tsx';
 
 export const router = createBrowserRouter([
   {
