@@ -1,4 +1,3 @@
-import App from '@/App';
 import { PATHS } from '@/constants/paths';
 import { createBrowserRouter } from 'react-router-dom';
 import GuestRoute from './components/auth/GuestRoute';
@@ -8,6 +7,7 @@ import DashboardLayout from './layouts/dashboardLayout';
 import RootLayout from './layouts/RootLayout';
 import Login from './pages/auth/Login';
 import Register from './pages/auth/Register';
+import HomePage from './pages/Home';
 import NewClothing from './pages/NewClothing';
 import Outfits from './pages/Outfits';
 import Profile from './pages/Profile';
@@ -19,7 +19,7 @@ export const router = createBrowserRouter([
     children: [
       {
         path: PATHS.Home,
-        element: <App />,
+        element: <HomePage />,
       },
       {
         element: <GuestRoute />,

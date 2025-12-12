@@ -69,7 +69,7 @@ export function AppSidebar() {
         title: 'Sesión cerrada',
         description: 'Has cerrado sesión exitosamente.',
       });
-      navigate(PATHS.Login, { replace: true });
+      navigate(PATHS.Home, { replace: true });
     } catch {
       ErrorToast({
         title: 'Error',

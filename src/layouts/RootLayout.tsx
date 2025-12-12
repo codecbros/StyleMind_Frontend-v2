@@ -1,4 +1,5 @@
 import { Outlet, useLocation } from 'react-router-dom';
+import MainHeader from '../components/MainHeader';
 
 export default function RootLayout() {
   const location = useLocation();
@@ -6,14 +7,7 @@ export default function RootLayout() {
 
   return (
     <div className="antialiased scroll-smooth bg-[#F0F5F9] dark:bg-background min-h-screen">
-      {showMainNav && (
-        <header className="container mx-auto flex items-center justify-between p-4">
-          {/* MainNav componente irá aquí */}
-          <div className="text-xl font-bold">StyleMind</div>
-          {/* ModeToggle irá aquí */}
-          <div>{/* Toggle theme */}</div>
-        </header>
-      )}
+      {showMainNav && <MainHeader />}
       <main className={`${showMainNav ? 'container mx-auto px-4' : ''}`}>
         <Outlet />
       </main>
