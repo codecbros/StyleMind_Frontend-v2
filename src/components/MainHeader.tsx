@@ -18,12 +18,7 @@ const MainHeader = () => {
             <span className="text-xl sm:text-2xl font-bold">StyleMind</span>
           </Link>
           <nav className="flex items-center gap-2 sm:gap-4">
-            <Button
-              asChild
-              variant="ghost"
-              size="sm"
-              className="hidden sm:inline-flex"
-            >
+            <Button asChild variant="ghost" size="sm">
               <Link to={PATHS.Login}>Iniciar Sesión</Link>
             </Button>
             <Button asChild size="sm">
