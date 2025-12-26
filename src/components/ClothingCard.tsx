@@ -74,12 +74,8 @@ export const ClothingCard = memo(
           {/* Categories */}
           <div className="mt-2 flex flex-wrap gap-1">
             {item.categories.slice(0, 3).map((category) => (
-              <Badge
-                key={category.category.name}
-                variant="secondary"
-                className="text-xs"
-              >
-                {category.category.name}
+              <Badge key={category.id} variant="secondary" className="text-xs">
+                {category.name}
               </Badge>
             ))}
 

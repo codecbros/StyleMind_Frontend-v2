@@ -118,8 +118,8 @@ export function ClothingDetailsDialog({
                     </p>
                     <div className="flex flex-wrap gap-2">
                       {item?.categories.map((category) => (
-                        <Badge key={category.category.name} variant="secondary">
-                          {category.category.name}
+                        <Badge key={category.id} variant="secondary">
+                          {category.name}
                         </Badge>
                       ))}
                     </div>

@@ -9,10 +9,8 @@ export interface ClothingItem extends CreateClothesDto {
     url: string;
   }>;
   categories: Array<{
-    category: {
-      id: string;
-      name: string;
-    };
+    id: string;
+    name: string;
   }>;
   createdAt?: string;
   updatedAt?: string;
@@ -31,9 +29,8 @@ export interface WardrobeItem {
     url: string;
   }>;
   categories: Array<{
-    category: {
-      name: string;
-    };
+    id: string;
+    name: string;
   }>;
 }
 

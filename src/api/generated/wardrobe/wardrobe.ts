@@ -446,6 +446,130 @@ export const useAddCategory = <TError = unknown,
       return useMutation(mutationOptions, queryClient);
     }
     /**
+ * @summary Desactivar una imagen de la prenda
+ */
+export const deactivateImage = (
+    itemId: string,
+    imageId: string,
+ options?: SecondParameter<typeof customInstance>,) => {
+      
+      
+      return customInstance<void>(
+      {url: `/api/wardrobe/deactivate-image/${itemId}/${imageId}`, method: 'PATCH'
+    },
+      options);
+    }
+  
+
+
+export const getDeactivateImageMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deactivateImage>>, TError,{itemId: string;imageId: string}, TContext>, request?: SecondParameter<typeof customInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof deactivateImage>>, TError,{itemId: string;imageId: string}, TContext> => {
+
+const mutationKey = ['deactivateImage'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deactivateImage>>, {itemId: string;imageId: string}> = (props) => {
+          const {itemId,imageId} = props ?? {};
+
+          return  deactivateImage(itemId,imageId,requestOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DeactivateImageMutationResult = NonNullable<Awaited<ReturnType<typeof deactivateImage>>>
+    
+    export type DeactivateImageMutationError = unknown
+
+    /**
+ * @summary Desactivar una imagen de la prenda
+ */
+export const useDeactivateImage = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deactivateImage>>, TError,{itemId: string;imageId: string}, TContext>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof deactivateImage>>,
+        TError,
+        {itemId: string;imageId: string},
+        TContext
+      > => {
+
+      const mutationOptions = getDeactivateImageMutationOptions(options);
+
+      return useMutation(mutationOptions, queryClient);
+    }
+    /**
+ * @summary Activar una imagen de la prenda
+ */
+export const activateImage = (
+    itemId: string,
+    imageId: string,
+ options?: SecondParameter<typeof customInstance>,) => {
+      
+      
+      return customInstance<void>(
+      {url: `/api/wardrobe/activate-image/${itemId}/${imageId}`, method: 'PATCH'
+    },
+      options);
+    }
+  
+
+
+export const getActivateImageMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof activateImage>>, TError,{itemId: string;imageId: string}, TContext>, request?: SecondParameter<typeof customInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof activateImage>>, TError,{itemId: string;imageId: string}, TContext> => {
+
+const mutationKey = ['activateImage'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof activateImage>>, {itemId: string;imageId: string}> = (props) => {
+          const {itemId,imageId} = props ?? {};
+
+          return  activateImage(itemId,imageId,requestOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type ActivateImageMutationResult = NonNullable<Awaited<ReturnType<typeof activateImage>>>
+    
+    export type ActivateImageMutationError = unknown
+
+    /**
+ * @summary Activar una imagen de la prenda
+ */
+export const useActivateImage = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof activateImage>>, TError,{itemId: string;imageId: string}, TContext>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof activateImage>>,
+        TError,
+        {itemId: string;imageId: string},
+        TContext
+      > => {
+
+      const mutationOptions = getActivateImageMutationOptions(options);
+
+      return useMutation(mutationOptions, queryClient);
+    }
+    /**
  * @summary Obtener más detalles de una prenda
  */
 export const getClothesById = (
