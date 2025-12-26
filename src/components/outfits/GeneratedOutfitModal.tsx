@@ -1,21 +1,8 @@
 import { DialogDescription } from '@radix-ui/react-dialog';
 import { Check, Sparkles, X } from 'lucide-react';
+import { GeneratedOutfitData } from '../../types/QuickOutfit';
 import { Button } from '../ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../ui/dialog';
-
-interface ClothingItem {
-  id: string;
-  name: string;
-  images: string[];
-  primaryColor: string;
-  secondaryColor: string;
-}
-
-interface GeneratedOutfitData {
-  explanation: string;
-  items: ClothingItem[];
-  message: string;
-}
 
 interface GeneratedOutfitModalProps {
   open: boolean;

@@ -8,6 +8,7 @@ import { useGetMyWardrobe } from '../../api/generated/wardrobe/wardrobe';
 import { ErrorToast, SuccessToast } from '../../lib/toast';
 import { quickOutfitSchema } from '../../schemas/quickOutfitSchema';
 import type { ClothingItem, QuickOutfitFormValues } from '../../types/clothing';
+import { GeneratedOutfitData } from '../../types/QuickOutfit';
 import CategoryMultiSelect from '../CategoryMultiSelect';
 import CategorySelect from '../CategorySelect';
 import ClothingSelector from '../ClothingSelector';
@@ -27,12 +28,6 @@ import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 import { Textarea } from '../ui/textarea';
 import GeneratedOutfitModal from './GeneratedOutfitModal';
-
-interface GeneratedOutfitData {
-  explanation: string;
-  items: ClothingItem[];
-  message: string;
-}
 
 const QuickOutfitForm = () => {
   const [baseCategoryId, setBaseCategoryId] = useState<string | null>(null);
@@ -114,7 +109,6 @@ const QuickOutfitForm = () => {
   const handleModalClose = (open: boolean) => {
     setShowModal(open);
     if (!open) {
-      form.reset();
       setBaseCategoryId(null);
       setGeneratedOutfit(null);
     }
