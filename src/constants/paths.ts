@@ -9,6 +9,7 @@ export const PATHS = {
   Profile: `${DASHBOARD_PREFIX}/perfil`,
   Wardrobe: `${DASHBOARD_PREFIX}/armario`,
   NewClothing: `${DASHBOARD_PREFIX}/armario/nueva-prenda`,
+  NewOutfit: `${DASHBOARD_PREFIX}/outfits/nuevo-outfit`,
   Outfits: `${DASHBOARD_PREFIX}/outfits`,
 } as const;
 

@@ -22,7 +22,7 @@ import {
 } from '@/components/ui/sidebar';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { wardrobe } from '@lucide/lab';
-import { Icon, LogOut, Shirt, SquarePlus, User } from 'lucide-react';
+import { Icon, LogOut, Shirt, Sparkles, SquarePlus, User } from 'lucide-react';
 import { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { COOKIE_KEYS } from '../constants/cookies';
@@ -34,6 +34,11 @@ import { ErrorToast, SuccessToast } from '../lib/toast';
 const items = [
   {
     title: 'Crear Outfit',
+    url: PATHS.NewOutfit,
+    icon: Sparkles,
+  },
+  {
+    title: 'Outfits',
     url: PATHS.Outfits,
     icon: Shirt,
   },
