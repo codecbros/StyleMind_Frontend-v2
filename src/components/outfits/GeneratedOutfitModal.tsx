@@ -27,13 +27,18 @@ const GeneratedOutfitModal = ({
   occasion,
 }: GeneratedOutfitModalProps) => {
   const { mutate, isPending } = useSaveCombination();
-
   if (!outfitData) return null;
+
+  const transformedOccasion = Array.isArray(occasion)
+    ? occasion
+    : occasion
+    ? [occasion]
+    : [];
 
   const handleSaveOutfit = () => {
     const outfitDataSave = {
       description: description || '',
-      occasions: occasion || [],
+      occasions: transformedOccasion || [],
       name: occasion?.[0] || '',
       isAIGenerated: true,
       combinationItems: outfitData?.items?.map((item) => ({
@@ -51,7 +56,8 @@ const GeneratedOutfitModal = ({
           });
           resetForm();
         },
-        onError: () => {
+        onError: (error) => {
+          console.log(error);
           ErrorToast({
             title: 'Error al guardar el outfit',
             description:
