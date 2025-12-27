@@ -300,6 +300,8 @@ const QuickOutfitForm = () => {
         onOpenChange={handleModalClose}
         outfitData={generatedOutfit}
         resetForm={handleResetForm}
+        description={form.getValues().description}
+        occasion={form.getValues().occasions}
         onGenerateAnother={handleGenerateAnother}
       />
     </>

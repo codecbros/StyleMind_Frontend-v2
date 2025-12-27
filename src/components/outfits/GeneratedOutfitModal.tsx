@@ -1,6 +1,8 @@
 import { DialogDescription } from '@radix-ui/react-dialog';
 import { Check, Sparkles, X } from 'lucide-react';
-import { SuccessToast } from '../../lib/toast';
+import { useSaveCombination } from '../../api/generated/combinations/combinations';
+import { SaveCombinationDto } from '../../api/generated/schemas';
+import { ErrorToast, SuccessToast } from '../../lib/toast';
 import { GeneratedOutfitData } from '../../types/QuickOutfit';
 import { Button } from '../ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../ui/dialog';
@@ -11,6 +13,8 @@ interface GeneratedOutfitModalProps {
   outfitData: GeneratedOutfitData | null;
   onGenerateAnother: () => void;
   resetForm: () => void;
+  description?: string;
+  occasion?: string[] | string;
 }
 
 const GeneratedOutfitModal = ({
@@ -19,17 +23,43 @@ const GeneratedOutfitModal = ({
   outfitData,
   onGenerateAnother,
   resetForm,
+  description,
+  occasion,
 }: GeneratedOutfitModalProps) => {
+  const { mutate, isPending } = useSaveCombination();
+
   if (!outfitData) return null;
 
-  const isSaving = false; // Placeholder for saving state
-
   const handleSaveOutfit = () => {
-    // TODO: Implement save outfit logic
-    SuccessToast({
-      title: 'Outfit guardado con éxito',
-    });
-    resetForm();
+    const outfitDataSave = {
+      description: description || '',
+      occasions: occasion || [],
+      name: occasion?.[0] || '',
+      isAIGenerated: true,
+      combinationItems: outfitData?.items?.map((item) => ({
+        wardrobeItemId: item.id,
+      })),
+    };
+
+    mutate(
+      { data: outfitDataSave as SaveCombinationDto },
+      {
+        onSuccess: (success) => {
+          console.log(success);
+          SuccessToast({
+            title: 'Outfit guardado con éxito',
+          });
+          resetForm();
+        },
+        onError: () => {
+          ErrorToast({
+            title: 'Error al guardar el outfit',
+            description:
+              'Hubo un problema al guardar el outfit. Por favor, intenta de nuevo.',
+          });
+        },
+      }
+    );
   };
 
   return (
@@ -120,16 +150,16 @@ const GeneratedOutfitModal = ({
           <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t border-border/40">
             <Button
               onClick={handleSaveOutfit}
-              disabled={isSaving}
+              disabled={isPending}
               className="flex-1 font-semibold uppercase tracking-wide text-xs md:text-sm cursor-pointer"
             >
               <Check className="mr-2 size-4" />
-              {isSaving ? 'Guardando...' : 'Guardar Outfit'}
+              {isPending ? 'Guardando...' : 'Guardar Outfit'}
             </Button>
             <Button
               onClick={onGenerateAnother}
               variant="outline"
-              disabled={isSaving}
+              disabled={isPending}
               className="flex-1 font-semibold uppercase tracking-wide text-xs md:text-sm cursor-pointer"
             >
               <Sparkles className="mr-2 size-4" />
