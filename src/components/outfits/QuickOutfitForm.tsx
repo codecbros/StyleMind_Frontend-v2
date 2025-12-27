@@ -103,7 +103,7 @@ const QuickOutfitForm = () => {
   };
 
   const handleModalClose = (open: boolean) => {
-    setShowModal(false);
+    setShowModal(open);
   };
 
   return (

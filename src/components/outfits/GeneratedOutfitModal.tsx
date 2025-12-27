@@ -38,8 +38,8 @@ const GeneratedOutfitModal = ({
   const handleSaveOutfit = () => {
     const outfitDataSave = {
       description: description || '',
-      occasions: transformedOccasion || [],
-      name: occasion?.[0] || '',
+      occasions: transformedOccasion,
+      name: occasion || '',
       isAIGenerated: true,
       combinationItems: outfitData?.items?.map((item) => ({
         wardrobeItemId: item.id,
@@ -49,15 +49,13 @@ const GeneratedOutfitModal = ({
     mutate(
       { data: outfitDataSave as SaveCombinationDto },
       {
-        onSuccess: (success) => {
-          console.log(success);
+        onSuccess: () => {
           SuccessToast({
             title: 'Outfit guardado con éxito',
           });
           resetForm();
         },
-        onError: (error) => {
-          console.log(error);
+        onError: () => {
           ErrorToast({
             title: 'Error al guardar el outfit',
             description:
@@ -119,7 +117,7 @@ const GeneratedOutfitModal = ({
                 >
                   <div className="aspect-square overflow-hidden bg-muted">
                     <img
-                      src={item.images[0]}
+                      src={item.images?.[0] || '/path/to/placeholder.jpg'}
                       alt={item.name}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                     />

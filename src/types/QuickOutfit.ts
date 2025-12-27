@@ -1,4 +1,4 @@
-export interface ClothingItem {
+export interface GeneratedOutfitClothingItem {
   id: string;
   name: string;
   images: string[];
@@ -8,6 +8,6 @@ export interface ClothingItem {
 
 export interface GeneratedOutfitData {
   explanation: string;
-  items: ClothingItem[];
+  items: GeneratedOutfitClothingItem[];
   message: string;
 }
