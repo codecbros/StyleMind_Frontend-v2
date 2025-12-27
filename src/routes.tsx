@@ -9,6 +9,7 @@ import Login from './pages/auth/Login';
 import Register from './pages/auth/Register';
 import HomePage from './pages/Home';
 import NewClothing from './pages/NewClothing';
+import NewOutfit from './pages/NewOutfit';
 import Outfits from './pages/Outfits';
 import Profile from './pages/Profile';
 import Wardrobe from './pages/Wardrobe';
@@ -56,6 +57,10 @@ export const router = createBrowserRouter([
               {
                 path: PATHS.NewClothing,
                 element: <NewClothing />,
+              },
+              {
+                path: PATHS.NewOutfit,
+                element: <NewOutfit />,
               },
               {
                 path: PATHS.Outfits,
