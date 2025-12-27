@@ -1,5 +1,6 @@
 import { DialogDescription } from '@radix-ui/react-dialog';
 import { Check, Sparkles, X } from 'lucide-react';
+import { SuccessToast } from '../../lib/toast';
 import { GeneratedOutfitData } from '../../types/QuickOutfit';
 import { Button } from '../ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../ui/dialog';
@@ -8,20 +9,28 @@ interface GeneratedOutfitModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   outfitData: GeneratedOutfitData | null;
-  onSave: () => void;
   onGenerateAnother: () => void;
-  isSaving?: boolean;
+  resetForm: () => void;
 }
 
 const GeneratedOutfitModal = ({
   open,
   onOpenChange,
   outfitData,
-  onSave,
   onGenerateAnother,
-  isSaving = false,
+  resetForm,
 }: GeneratedOutfitModalProps) => {
   if (!outfitData) return null;
+
+  const isSaving = false; // Placeholder for saving state
+
+  const handleSaveOutfit = () => {
+    // TODO: Implement save outfit logic
+    SuccessToast({
+      title: 'Outfit guardado con éxito',
+    });
+    resetForm();
+  };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -110,7 +119,7 @@ const GeneratedOutfitModal = ({
           {/* Action Buttons */}
           <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t border-border/40">
             <Button
-              onClick={onSave}
+              onClick={handleSaveOutfit}
               disabled={isSaving}
               className="flex-1 font-semibold uppercase tracking-wide text-xs md:text-sm cursor-pointer"
             >

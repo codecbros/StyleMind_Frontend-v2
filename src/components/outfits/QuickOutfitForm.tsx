@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form';
 import { useGenerateCombinations } from '../../api/generated/combinations/combinations';
 import type { CreateCombinationDto } from '../../api/generated/schemas';
 import { useGetMyWardrobe } from '../../api/generated/wardrobe/wardrobe';
-import { ErrorToast, SuccessToast } from '../../lib/toast';
+import { ErrorToast } from '../../lib/toast';
 import { quickOutfitSchema } from '../../schemas/quickOutfitSchema';
 import type { ClothingItem, QuickOutfitFormValues } from '../../types/clothing';
 import { GeneratedOutfitData } from '../../types/QuickOutfit';
@@ -90,11 +90,7 @@ const QuickOutfitForm = () => {
     );
   };
 
-  const handleSaveOutfit = () => {
-    // TODO: Implement save outfit logic
-    SuccessToast({
-      title: 'Outfit guardado con éxito',
-    });
+  const handleResetForm = () => {
     setShowModal(false);
     form.reset();
     setBaseCategoryId(null);
@@ -103,15 +99,11 @@ const QuickOutfitForm = () => {
 
   const handleGenerateAnother = () => {
     setShowModal(false);
-    setGeneratedOutfit(null);
+    onSubmit(form.getValues());
   };
 
   const handleModalClose = (open: boolean) => {
-    setShowModal(open);
-    if (!open) {
-      setBaseCategoryId(null);
-      setGeneratedOutfit(null);
-    }
+    setShowModal(false);
   };
 
   return (
@@ -307,7 +299,7 @@ const QuickOutfitForm = () => {
         open={showModal}
         onOpenChange={handleModalClose}
         outfitData={generatedOutfit}
-        onSave={handleSaveOutfit}
+        resetForm={handleResetForm}
         onGenerateAnother={handleGenerateAnother}
       />
     </>
